@@ -6,7 +6,7 @@
 <meta name="description" content="Projected college football scores from the Fathom offence/defence split.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Italianno&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
   color-scheme: light;
@@ -131,12 +131,28 @@ th[aria-sort]{color:var(--ink)}
   color:#fff}
 .subtabs button:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
 
+.brand h1 .script{font-family:Italianno,cursive;font-weight:400;
+  font-size:.62em;margin-left:.12em;color:var(--depth);letter-spacing:0;
+  vertical-align:baseline;text-transform:none}
+
+/* Logos are hotlinked from ESPN's CDN, keyed on the team id already in the
+   games file (CFBD's team ids ARE ESPN's). Nothing is downloaded or stored.
+   Every <img> carries an onerror that removes it, so a team without a logo
+   renders as a plain name rather than a broken-image icon. */
+.tcell{display:flex;align-items:center;gap:9px;min-width:0}
+.logo{width:22px;height:22px;object-fit:contain;flex:none}
+.tmeta{min-width:0}
+.badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.06em;padding:1px 5px;border-radius:3px;border:1px solid var(--rule);
+  color:var(--ink2);background:var(--paper);margin-right:6px;vertical-align:1px}
+
 .stat{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
   font-size:13px;color:var(--ink2);text-align:right;white-space:nowrap}
 th.r{text-align:right}
 .view{display:none}
 .view.on{display:block}
-.matchup{font-weight:600}
+.matchup{font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.logo.sm{width:18px;height:18px}
 .matchup .at{color:var(--muted);font-weight:400;margin:0 4px}
 .pscore{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
   font-size:17px;font-weight:600;white-space:nowrap}
@@ -148,7 +164,7 @@ th.r{text-align:right}
 <div class="wrap">
   <header class="mast">
     <div class="brand">
-      <h1>Fathom</h1>
+      <h1>Fathom<span class="script">ratings</span></h1>
       <div class="tag">Every game. Every pick. Graded.</div>
     </div>
     <div class="issue">
@@ -220,7 +236,18 @@ th.r{text-align:right}
 </div>
 
 <script>
-const DATA = [{"h":"Washington State","a":"Fresno State","ph":19.9,"pa":20.0,"m":-0.1,"tt":39.9,"n":false},{"h":"Arizona","a":"Cincinnati","ph":30.9,"pa":30.4,"m":0.4,"tt":61.3,"n":false},{"h":"Coastal Carolina","a":"Georgia Southern","ph":24.3,"pa":25.2,"m":-0.9,"tt":49.5,"n":false},{"h":"UConn","a":"Syracuse","ph":28.8,"pa":27.3,"m":1.5,"tt":56.0,"n":false},{"h":"San Diego State","a":"Texas State","ph":30.2,"pa":28.6,"m":1.6,"tt":58.9,"n":false},{"h":"NC State","a":"Louisville","ph":36.4,"pa":34.6,"m":1.8,"tt":71.0,"n":false},{"h":"UNLV","a":"California","ph":24.2,"pa":22.2,"m":2.0,"tt":46.4,"n":false},{"h":"Colorado State","a":"Oregon State","ph":32.5,"pa":34.5,"m":-2.0,"tt":67.0,"n":false},{"h":"Delaware","a":"Liberty","ph":24.3,"pa":26.7,"m":-2.4,"tt":50.9,"n":false},{"h":"New Mexico State","a":"Western Kentucky","ph":31.4,"pa":29.0,"m":2.5,"tt":60.4,"n":false},{"h":"Minnesota","a":"Michigan","ph":22.0,"pa":25.6,"m":-3.6,"tt":47.6,"n":false},{"h":"Air Force","a":"Navy","ph":32.6,"pa":29.0,"m":3.6,"tt":61.6,"n":false},{"h":"Houston","a":"UCF","ph":31.1,"pa":27.2,"m":4.0,"tt":58.3,"n":false},{"h":"Louisiana Tech","a":"Army","ph":29.5,"pa":25.5,"m":4.0,"tt":54.9,"n":false},{"h":"Northwestern","a":"Penn State","ph":21.7,"pa":25.7,"m":-4.1,"tt":47.4,"n":false},{"h":"Hawai'i","a":"San José State","ph":27.8,"pa":23.6,"m":4.2,"tt":51.3,"n":false},{"h":"Arizona State","a":"Baylor","ph":28.2,"pa":23.8,"m":4.5,"tt":52.0,"n":false},{"h":"Georgia State","a":"Old Dominion","ph":32.1,"pa":27.6,"m":4.6,"tt":59.7,"n":false},{"h":"South Carolina","a":"Kentucky","ph":29.3,"pa":24.5,"m":4.7,"tt":53.8,"n":false},{"h":"Wisconsin","a":"Michigan State","ph":22.9,"pa":17.6,"m":5.3,"tt":40.5,"n":false},{"h":"Florida State","a":"Virginia","ph":23.8,"pa":29.1,"m":-5.3,"tt":52.8,"n":false},{"h":"Louisiana","a":"Arkansas State","ph":27.0,"pa":21.2,"m":5.7,"tt":48.2,"n":false},{"h":"Central Michigan","a":"Akron","ph":25.0,"pa":19.3,"m":5.7,"tt":44.2,"n":false},{"h":"Missouri","a":"Florida","ph":29.3,"pa":35.3,"m":-6.0,"tt":64.6,"n":false},{"h":"Virginia Tech","a":"Pittsburgh","ph":26.4,"pa":32.6,"m":-6.2,"tt":58.9,"n":false},{"h":"TCU","a":"BYU","ph":21.8,"pa":28.7,"m":-6.9,"tt":50.6,"n":false},{"h":"Tennessee","a":"Auburn","ph":33.5,"pa":25.7,"m":7.9,"tt":59.2,"n":false},{"h":"Mississippi State","a":"Alabama","ph":33.0,"pa":41.7,"m":-8.7,"tt":74.6,"n":false},{"h":"Massachusetts","a":"Eastern Michigan","ph":29.0,"pa":18.6,"m":10.3,"tt":47.6,"n":false},{"h":"Iowa","a":"Ohio State","ph":17.5,"pa":28.4,"m":-10.8,"tt":45.9,"n":false},{"h":"Iowa State","a":"West Virginia","ph":33.7,"pa":22.6,"m":11.1,"tt":56.3,"n":false},{"h":"Kent State","a":"Ohio","ph":24.1,"pa":35.4,"m":-11.3,"tt":59.5,"n":false},{"h":"Tulsa","a":"North Texas","ph":24.0,"pa":35.5,"m":-11.5,"tt":59.5,"n":false},{"h":"South Florida","a":"Temple","ph":36.1,"pa":24.0,"m":12.2,"tt":60.1,"n":false},{"h":"Rice","a":"UTSA","ph":22.9,"pa":35.6,"m":-12.7,"tt":58.5,"n":false},{"h":"USC","a":"Washington","ph":37.8,"pa":25.0,"m":12.8,"tt":62.8,"n":false},{"h":"Nebraska","a":"Maryland","ph":34.7,"pa":21.6,"m":13.1,"tt":56.3,"n":false},{"h":"Illinois","a":"Purdue","ph":41.7,"pa":27.7,"m":14.0,"tt":69.3,"n":false},{"h":"Wake Forest","a":"Stanford","ph":33.5,"pa":18.4,"m":15.0,"tt":51.9,"n":false},{"h":"Buffalo","a":"Western Michigan","ph":14.8,"pa":32.1,"m":-17.3,"tt":47.0,"n":false},{"h":"SMU","a":"Boston College","ph":33.1,"pa":15.8,"m":17.4,"tt":48.9,"n":false},{"h":"Colorado","a":"Texas Tech","ph":15.7,"pa":34.2,"m":-18.5,"tt":49.9,"n":false},{"h":"Texas A&M","a":"Arkansas","ph":38.7,"pa":20.0,"m":18.8,"tt":58.7,"n":false},{"h":"Boise State","a":"Utah State","ph":31.6,"pa":11.9,"m":19.8,"tt":43.5,"n":false},{"h":"South Alabama","a":"UL Monroe","ph":42.7,"pa":21.5,"m":21.3,"tt":64.2,"n":false},{"h":"Clemson","a":"Miami","ph":17.1,"pa":38.5,"m":-21.4,"tt":55.5,"n":false},{"h":"Charlotte","a":"Memphis","ph":18.6,"pa":40.3,"m":-21.7,"tt":58.9,"n":false},{"h":"Kansas","a":"Middle Tennessee","ph":36.3,"pa":14.4,"m":21.8,"tt":50.7,"n":false},{"h":"Miami (OH)","a":"Bowling Green","ph":34.8,"pa":11.2,"m":23.6,"tt":46.0,"n":false},{"h":"UAB","a":"Samford","ph":40.7,"pa":16.3,"m":24.4,"tt":56.9,"n":false},{"h":"North Dakota State","a":"Wyoming","ph":29.0,"pa":4.1,"m":24.9,"tt":33.1,"n":false},{"h":"Georgia","a":"Vanderbilt","ph":44.2,"pa":19.2,"m":25.1,"tt":63.4,"n":false},{"h":"Rutgers","a":"Indiana","ph":17.0,"pa":44.5,"m":-27.5,"tt":61.5,"n":false},{"h":"Ball State","a":"Toledo","ph":17.8,"pa":46.9,"m":-29.1,"tt":64.8,"n":false},{"h":"Florida Atlantic","a":"Texas Southern","ph":48.9,"pa":19.7,"m":29.3,"tt":68.6,"n":false},{"h":"North Carolina","a":"Notre Dame","ph":6.4,"pa":36.9,"m":-30.5,"tt":43.2,"n":false},{"h":"New Mexico","a":"UTEP","ph":46.6,"pa":14.1,"m":32.5,"tt":60.7,"n":false},{"h":"James Madison","a":"Marshall","ph":50.4,"pa":12.7,"m":37.7,"tt":63.2,"n":false},{"h":"LSU","a":"McNeese","ph":57.3,"pa":-5.1,"m":62.4,"tt":52.2,"n":false}];
+const DATA = [{"h":"Washington State","a":"Fresno State","hi":265,"ai":278,"ph":19.9,"pa":20.0,"m":-0.1,"tt":39.9,"n":false},{"h":"Arizona","a":"Cincinnati","hi":12,"ai":2132,"ph":30.9,"pa":30.4,"m":0.4,"tt":61.3,"n":false},{"h":"Coastal Carolina","a":"Georgia Southern","hi":324,"ai":290,"ph":24.3,"pa":25.2,"m":-0.9,"tt":49.5,"n":false},{"h":"UConn","a":"Syracuse","hi":41,"ai":183,"ph":28.8,"pa":27.3,"m":1.5,"tt":56.0,"n":false},{"h":"San Diego State","a":"Texas State","hi":21,"ai":326,"ph":30.2,"pa":28.6,"m":1.6,"tt":58.9,"n":false},{"h":"NC State","a":"Louisville","hi":152,"ai":97,"ph":36.4,"pa":34.6,"m":1.8,"tt":71.0,"n":false},{"h":"UNLV","a":"California","hi":2439,"ai":25,"ph":24.2,"pa":22.2,"m":2.0,"tt":46.4,"n":false},{"h":"Colorado State","a":"Oregon State","hi":36,"ai":204,"ph":32.5,"pa":34.5,"m":-2.0,"tt":67.0,"n":false},{"h":"Delaware","a":"Liberty","hi":48,"ai":2335,"ph":24.3,"pa":26.7,"m":-2.4,"tt":50.9,"n":false},{"h":"New Mexico State","a":"Western Kentucky","hi":166,"ai":98,"ph":31.4,"pa":29.0,"m":2.5,"tt":60.4,"n":false},{"h":"Minnesota","a":"Michigan","hi":135,"ai":130,"ph":22.0,"pa":25.6,"m":-3.6,"tt":47.6,"n":false},{"h":"Air Force","a":"Navy","hi":2005,"ai":2426,"ph":32.6,"pa":29.0,"m":3.6,"tt":61.6,"n":false},{"h":"Houston","a":"UCF","hi":248,"ai":2116,"ph":31.1,"pa":27.2,"m":4.0,"tt":58.3,"n":false},{"h":"Louisiana Tech","a":"Army","hi":2348,"ai":349,"ph":29.5,"pa":25.5,"m":4.0,"tt":54.9,"n":false},{"h":"Northwestern","a":"Penn State","hi":77,"ai":213,"ph":21.7,"pa":25.7,"m":-4.1,"tt":47.4,"n":false},{"h":"Hawai'i","a":"San José State","hi":62,"ai":23,"ph":27.8,"pa":23.6,"m":4.2,"tt":51.3,"n":false},{"h":"Arizona State","a":"Baylor","hi":9,"ai":239,"ph":28.2,"pa":23.8,"m":4.5,"tt":52.0,"n":false},{"h":"Georgia State","a":"Old Dominion","hi":2247,"ai":295,"ph":32.1,"pa":27.6,"m":4.6,"tt":59.7,"n":false},{"h":"South Carolina","a":"Kentucky","hi":2579,"ai":96,"ph":29.3,"pa":24.5,"m":4.7,"tt":53.8,"n":false},{"h":"Wisconsin","a":"Michigan State","hi":275,"ai":127,"ph":22.9,"pa":17.6,"m":5.3,"tt":40.5,"n":false},{"h":"Florida State","a":"Virginia","hi":52,"ai":258,"ph":23.8,"pa":29.1,"m":-5.3,"tt":52.8,"n":false},{"h":"Louisiana","a":"Arkansas State","hi":309,"ai":2032,"ph":27.0,"pa":21.2,"m":5.7,"tt":48.2,"n":false},{"h":"Central Michigan","a":"Akron","hi":2117,"ai":2006,"ph":25.0,"pa":19.3,"m":5.7,"tt":44.2,"n":false},{"h":"Missouri","a":"Florida","hi":142,"ai":57,"ph":29.3,"pa":35.3,"m":-6.0,"tt":64.6,"n":false},{"h":"Virginia Tech","a":"Pittsburgh","hi":259,"ai":221,"ph":26.4,"pa":32.6,"m":-6.2,"tt":58.9,"n":false},{"h":"TCU","a":"BYU","hi":2628,"ai":252,"ph":21.8,"pa":28.7,"m":-6.9,"tt":50.6,"n":false},{"h":"Tennessee","a":"Auburn","hi":2633,"ai":2,"ph":33.5,"pa":25.7,"m":7.9,"tt":59.2,"n":false},{"h":"Mississippi State","a":"Alabama","hi":344,"ai":333,"ph":33.0,"pa":41.7,"m":-8.7,"tt":74.6,"n":false},{"h":"Massachusetts","a":"Eastern Michigan","hi":113,"ai":2199,"ph":29.0,"pa":18.6,"m":10.3,"tt":47.6,"n":false},{"h":"Iowa","a":"Ohio State","hi":2294,"ai":194,"ph":17.5,"pa":28.4,"m":-10.8,"tt":45.9,"n":false},{"h":"Iowa State","a":"West Virginia","hi":66,"ai":277,"ph":33.7,"pa":22.6,"m":11.1,"tt":56.3,"n":false},{"h":"Kent State","a":"Ohio","hi":2309,"ai":195,"ph":24.1,"pa":35.4,"m":-11.3,"tt":59.5,"n":false},{"h":"Tulsa","a":"North Texas","hi":202,"ai":249,"ph":24.0,"pa":35.5,"m":-11.5,"tt":59.5,"n":false},{"h":"South Florida","a":"Temple","hi":58,"ai":218,"ph":36.1,"pa":24.0,"m":12.2,"tt":60.1,"n":false},{"h":"Rice","a":"UTSA","hi":242,"ai":2636,"ph":22.9,"pa":35.6,"m":-12.7,"tt":58.5,"n":false},{"h":"USC","a":"Washington","hi":30,"ai":264,"ph":37.8,"pa":25.0,"m":12.8,"tt":62.8,"n":false},{"h":"Nebraska","a":"Maryland","hi":158,"ai":120,"ph":34.7,"pa":21.6,"m":13.1,"tt":56.3,"n":false},{"h":"Illinois","a":"Purdue","hi":356,"ai":2509,"ph":41.7,"pa":27.7,"m":14.0,"tt":69.3,"n":false},{"h":"Wake Forest","a":"Stanford","hi":154,"ai":24,"ph":33.5,"pa":18.4,"m":15.0,"tt":51.9,"n":false},{"h":"Buffalo","a":"Western Michigan","hi":2084,"ai":2711,"ph":14.8,"pa":32.1,"m":-17.3,"tt":47.0,"n":false},{"h":"SMU","a":"Boston College","hi":2567,"ai":103,"ph":33.1,"pa":15.8,"m":17.4,"tt":48.9,"n":false},{"h":"Colorado","a":"Texas Tech","hi":38,"ai":2641,"ph":15.7,"pa":34.2,"m":-18.5,"tt":49.9,"n":false},{"h":"Texas A&M","a":"Arkansas","hi":245,"ai":8,"ph":38.7,"pa":20.0,"m":18.8,"tt":58.7,"n":false},{"h":"Boise State","a":"Utah State","hi":68,"ai":328,"ph":31.6,"pa":11.9,"m":19.8,"tt":43.5,"n":false},{"h":"South Alabama","a":"UL Monroe","hi":6,"ai":2433,"ph":42.7,"pa":21.5,"m":21.3,"tt":64.2,"n":false},{"h":"Clemson","a":"Miami","hi":228,"ai":2390,"ph":17.1,"pa":38.5,"m":-21.4,"tt":55.5,"n":false},{"h":"Charlotte","a":"Memphis","hi":2429,"ai":235,"ph":18.6,"pa":40.3,"m":-21.7,"tt":58.9,"n":false},{"h":"Kansas","a":"Middle Tennessee","hi":2305,"ai":2393,"ph":36.3,"pa":14.4,"m":21.8,"tt":50.7,"n":false},{"h":"Miami (OH)","a":"Bowling Green","hi":193,"ai":189,"ph":34.8,"pa":11.2,"m":23.6,"tt":46.0,"n":false},{"h":"UAB","a":"Samford","hi":5,"ai":null,"ph":40.7,"pa":16.3,"m":24.4,"tt":56.9,"n":false},{"h":"North Dakota State","a":"Wyoming","hi":2449,"ai":2751,"ph":29.0,"pa":4.1,"m":24.9,"tt":33.1,"n":false},{"h":"Georgia","a":"Vanderbilt","hi":61,"ai":238,"ph":44.2,"pa":19.2,"m":25.1,"tt":63.4,"n":false},{"h":"Rutgers","a":"Indiana","hi":164,"ai":84,"ph":17.0,"pa":44.5,"m":-27.5,"tt":61.5,"n":false},{"h":"Ball State","a":"Toledo","hi":2050,"ai":2649,"ph":17.8,"pa":46.9,"m":-29.1,"tt":64.8,"n":false},{"h":"Florida Atlantic","a":"Texas Southern","hi":2226,"ai":null,"ph":48.9,"pa":19.7,"m":29.3,"tt":68.6,"n":false},{"h":"North Carolina","a":"Notre Dame","hi":153,"ai":87,"ph":6.4,"pa":36.9,"m":-30.5,"tt":43.2,"n":false},{"h":"New Mexico","a":"UTEP","hi":167,"ai":2638,"ph":46.6,"pa":14.1,"m":32.5,"tt":60.7,"n":false},{"h":"James Madison","a":"Marshall","hi":256,"ai":276,"ph":50.4,"pa":12.7,"m":37.7,"tt":63.2,"n":false},{"h":"LSU","a":"McNeese","hi":99,"ai":null,"ph":57.3,"pa":-5.1,"m":62.4,"tt":52.2,"n":false}];
+
+const LOGO='https://a.espncdn.com/i/teamlogos/ncaa/500/';
+function teamCell(name, sub, id, badge){
+  const img = id ? '<img class="logo" src="'+LOGO+id+'.png" alt="" loading="lazy"'+
+                   ' onerror="this.remove()">' : '';
+  return '<div class="tcell">'+img+'<div class="tmeta"><div class="tm">'+name+'</div>'+
+         '<div class="cf">'+(badge?'<span class="badge">'+badge+'</span>':'')+(sub||'')+
+         '</div></div></div>';
+}
+
+function lg(id){return id?'<img class="logo sm" src="'+LOGO+id+'.png" alt="" loading="lazy" onerror="this.remove()">':'';}
 const rows=document.getElementById('rows'), q=document.getElementById('q');
 const count=document.getElementById('count');
 let sortKey='m', sortDir=1;
@@ -231,7 +258,8 @@ function render(){
   rows.innerHTML=shown.map(d=>{
     const fav = d.m>=0 ? d.h : d.a;
     return '<tr>'+
-      '<td><div class="matchup">'+d.a+'<span class="at">'+(d.n?'vs':'at')+'</span>'+d.h+'</div>'+
+      '<td><div class="matchup">'+lg(d.ai)+d.a+'<span class="at">'+(d.n?'vs':'at')+'</span>'+
+        lg(d.hi)+d.h+'</div>'+
         '<div class="cf">'+fav+' by '+Math.abs(d.m).toFixed(1)+'</div></td>'+
       '<td class="pscore" style="text-align:right">'+d.pa.toFixed(0)+'–'+d.ph.toFixed(0)+'</td>'+
       '<td class="stat">'+(d.m>0?'+':'')+d.m.toFixed(1)+'</td>'+
