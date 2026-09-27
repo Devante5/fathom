@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fathom Projections</title>
+<meta name="description" content="Projected college football scores from the Fathom offence/defence split.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#f2f0e9; --card:#faf9f4; --ink:#10202e; --ink2:#43586a; --muted:#86949e;
+  --rule:#d8d5c9; --hair:#e6e3d9;
+  --depth:#1c5f8c; --depth-soft:#dce8f0;
+  --above:#1c5f8c; --below:#a14a3c;
+  --shoal:#c9a227;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme: dark;
+  --paper:#0a1620; --card:#101f2b; --ink:#e6eef4; --ink2:#9fb3c0; --muted:#6b808e;
+  --rule:#1f3442; --hair:#182935;
+  --depth:#4a9fd4; --depth-soft:#12303f;
+  --above:#4a9fd4; --below:#d4796a;
+  --shoal:#d9b44a;
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0a1620; --card:#101f2b; --ink:#e6eef4; --ink2:#9fb3c0; --muted:#6b808e;
+  --rule:#1f3442; --hair:#182935;
+  --depth:#4a9fd4; --depth-soft:#12303f;
+  --above:#4a9fd4; --below:#d4796a;
+  --shoal:#d9b44a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:36px 72px}
+
+/* masthead */
+.mast{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:8px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-family:Spectral,Georgia,serif;font-weight:600;font-size:clamp(34px,7vw,52px);
+  margin:0;letter-spacing:-.015em;line-height:1}
+.brand .tag{font-size:13px;color:var(--ink2);margin-top:6px;letter-spacing:.01em}
+.mast .issue{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+  text-align:right;letter-spacing:.06em;text-transform:uppercase;line-height:1.7}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);
+  padding-bottom:10px;margin-bottom:22px}
+
+/* depth key */
+.key{background:var(--card);border:1px solid var(--rule);border-radius:3px;
+  padding:14px 16px;margin-bottom:22px}
+.key h2{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.scale{display:flex;align-items:flex-end;gap:0;height:34px}
+.scale .tick{flex:1;text-align:center;border-left:1px solid var(--hair);
+  font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);padding-top:18px;position:relative}
+.scale .tick:first-child{border-left:none}
+.scale .tick b{display:block;color:var(--ink2);font-weight:500;font-size:11px}
+.scale .tick.mid b{color:var(--depth)}
+.keynote{font-size:12.5px;color:var(--ink2);margin:10px 0 0}
+
+/* controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input[type=search],select{font-family:inherit;font-size:14px;padding:7px 11px;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);color:var(--ink)}
+input[type=search]{flex:1;min-width:170px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+.count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);align-self:center}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;text-align:left;padding:10px 12px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--card)}
+td{padding:8px 12px;border-bottom:1px solid var(--hair);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--depth-soft)}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rk{color:var(--muted);font-size:13px;width:46px}
+.tm{font-weight:600}
+.cf{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
+.sc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:19px;font-weight:600;width:64px}
+.pts{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;color:var(--ink2);width:72px}
+.rec{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink2);width:56px}
+
+/* sounding bar */
+.bar{position:relative;height:16px;min-width:130px;width:100%}
+.bar .axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule)}
+.bar i{position:absolute;top:4px;height:8px;border-radius:1px}
+.bar i.up{left:50%;background:var(--above)}
+.bar i.dn{right:50%;background:var(--below)}
+
+footer{margin-top:28px;border-top:1px solid var(--rule);padding-top:18px;
+  font-size:13px;color:var(--ink2);max-width:74ch}
+footer h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+footer p{margin:0 0 10px}
+footer .fine{font-size:12px;color:var(--muted)}
+@media(max-width:620px){ .hide-sm{display:none} }
+.nav{display:flex;gap:2px;margin:0 0 20px;border-bottom:1px solid var(--rule);
+  overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none;padding:9px 14px;
+  border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;
+  margin-bottom:-1px;white-space:nowrap}
+.nav a:hover{color:var(--ink2);background:var(--card)}
+.nav a[aria-current]{color:var(--ink);background:var(--card);
+  border-color:var(--rule);border-bottom-color:var(--card)}
+.nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
+
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink2)}
+th .car{display:inline-block;width:9px;margin-left:4px;color:var(--rule)}
+th[aria-sort] .car{color:var(--depth)}
+th[aria-sort]{color:var(--ink)}
+.asof{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);
+  letter-spacing:.06em;margin:-8px 0 16px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.subtabs button{font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);
+  color:var(--muted)}
+.subtabs button[aria-pressed="true"]{background:var(--depth);border-color:var(--depth);
+  color:#fff}
+.subtabs button:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+
+.stat{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;color:var(--ink2);text-align:right;white-space:nowrap}
+th.r{text-align:right}
+.view{display:none}
+.view.on{display:block}
+.matchup{font-weight:600}
+.matchup .at{color:var(--muted);font-weight:400;margin:0 4px}
+.pscore{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:17px;font-weight:600;white-space:nowrap}
+.caveat{background:var(--card);border:1px solid var(--shoal);border-left-width:3px;
+  border-radius:3px;padding:12px 14px;margin:0 0 18px;font-size:13px;color:var(--ink2)}
+.caveat b{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <h1>Fathom</h1>
+      <div class="tag">Every game. Every pick. Graded.</div>
+    </div>
+    <div class="issue">
+      2026 Season · Week 5<br>
+      Projections<br>
+      59 games
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="./" data-tab="teams">Team Ratings</a>
+    <a href="stats.html#efficiency" data-tab="efficiency">Efficiency</a>
+    <a href="stats.html#advanced" data-tab="advanced">Advanced</a>
+    <a href="stats.html#traditional" data-tab="traditional">Traditional</a>
+    <a href="projections.html" data-tab="projections" aria-current="page">Projections</a>
+    <a href="players.html" data-tab="players">Players</a>
+  </nav>
+
+  <div class="subhead">Projected scores — and how good they are not</div>
+
+  <div class="caveat">
+    <b>Read this before using these to bet.</b> Measured walk-forward on 3,108 games
+    from 2023–2025, the Fathom projected margin misses by <b>13.95 points</b> on
+    average. The market spread on the same games misses by <b>11.89</b>. We are
+    <b>2.06 points worse</b> (p&nbsp;&lt;&nbsp;10⁻⁴⁰). Picking over/under off our
+    projected total went 50.6% — a coin flip. These scores are published because a
+    number like “31–24” is easier to read than “+7.0”, not because they beat the number
+    you can already get from a book.
+  </div>
+
+  <section class="key">
+    <h2>Where the score comes from</h2>
+    <p class="keynote">The team rating solves for one number per team against margin.
+    This solves for <em>two</em> — an offence and a defence rating — against points
+    scored, so a score falls out directly instead of only a margin. The two agree
+    closely (r&nbsp;=&nbsp;0.981 with the published Fathom margin), which is the point:
+    it is the same opinion, written so you can read it.</p>
+  </section>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search team…" aria-label="Search team">
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th>Matchup</th><th class="r">Projected</th>
+        <th class="r sortable" data-k="m">Margin<span class="car">▼</span></th>
+        <th class="r sortable" data-k="tt">Total<span class="car"></span></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <h3>Method</h3>
+    <p>Points scored are fit as <em>league mean + offence(team) + defence(opponent) +
+    home field</em>, iterated to convergence, with each team anchored to its own
+    offence and defence ratings from last season and that anchor fading as games
+    accumulate — the same prior, with the same weight, as the team and player ratings.
+    Margin is not capped here: capping points would distort the scoring level, which is
+    the quantity being estimated.</p>
+    <p class="fine">No betting line is used to produce these numbers. When a game's
+    result lands, the projection is graded against the closing spread, and the grade
+    published is the against-the-spread result — not whether the projected winner won.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = [{"h":"Washington State","a":"Fresno State","ph":19.9,"pa":20.0,"m":-0.1,"tt":39.9,"n":false},{"h":"Arizona","a":"Cincinnati","ph":30.9,"pa":30.4,"m":0.4,"tt":61.3,"n":false},{"h":"Coastal Carolina","a":"Georgia Southern","ph":24.3,"pa":25.2,"m":-0.9,"tt":49.5,"n":false},{"h":"UConn","a":"Syracuse","ph":28.8,"pa":27.3,"m":1.5,"tt":56.0,"n":false},{"h":"San Diego State","a":"Texas State","ph":30.2,"pa":28.6,"m":1.6,"tt":58.9,"n":false},{"h":"NC State","a":"Louisville","ph":36.4,"pa":34.6,"m":1.8,"tt":71.0,"n":false},{"h":"UNLV","a":"California","ph":24.2,"pa":22.2,"m":2.0,"tt":46.4,"n":false},{"h":"Colorado State","a":"Oregon State","ph":32.5,"pa":34.5,"m":-2.0,"tt":67.0,"n":false},{"h":"Delaware","a":"Liberty","ph":24.3,"pa":26.7,"m":-2.4,"tt":50.9,"n":false},{"h":"New Mexico State","a":"Western Kentucky","ph":31.4,"pa":29.0,"m":2.5,"tt":60.4,"n":false},{"h":"Minnesota","a":"Michigan","ph":22.0,"pa":25.6,"m":-3.6,"tt":47.6,"n":false},{"h":"Air Force","a":"Navy","ph":32.6,"pa":29.0,"m":3.6,"tt":61.6,"n":false},{"h":"Houston","a":"UCF","ph":31.1,"pa":27.2,"m":4.0,"tt":58.3,"n":false},{"h":"Louisiana Tech","a":"Army","ph":29.5,"pa":25.5,"m":4.0,"tt":54.9,"n":false},{"h":"Northwestern","a":"Penn State","ph":21.7,"pa":25.7,"m":-4.1,"tt":47.4,"n":false},{"h":"Hawai'i","a":"San José State","ph":27.8,"pa":23.6,"m":4.2,"tt":51.3,"n":false},{"h":"Arizona State","a":"Baylor","ph":28.2,"pa":23.8,"m":4.5,"tt":52.0,"n":false},{"h":"Georgia State","a":"Old Dominion","ph":32.1,"pa":27.6,"m":4.6,"tt":59.7,"n":false},{"h":"South Carolina","a":"Kentucky","ph":29.3,"pa":24.5,"m":4.7,"tt":53.8,"n":false},{"h":"Wisconsin","a":"Michigan State","ph":22.9,"pa":17.6,"m":5.3,"tt":40.5,"n":false},{"h":"Florida State","a":"Virginia","ph":23.8,"pa":29.1,"m":-5.3,"tt":52.8,"n":false},{"h":"Louisiana","a":"Arkansas State","ph":27.0,"pa":21.2,"m":5.7,"tt":48.2,"n":false},{"h":"Central Michigan","a":"Akron","ph":25.0,"pa":19.3,"m":5.7,"tt":44.2,"n":false},{"h":"Missouri","a":"Florida","ph":29.3,"pa":35.3,"m":-6.0,"tt":64.6,"n":false},{"h":"Virginia Tech","a":"Pittsburgh","ph":26.4,"pa":32.6,"m":-6.2,"tt":58.9,"n":false},{"h":"TCU","a":"BYU","ph":21.8,"pa":28.7,"m":-6.9,"tt":50.6,"n":false},{"h":"Tennessee","a":"Auburn","ph":33.5,"pa":25.7,"m":7.9,"tt":59.2,"n":false},{"h":"Mississippi State","a":"Alabama","ph":33.0,"pa":41.7,"m":-8.7,"tt":74.6,"n":false},{"h":"Massachusetts","a":"Eastern Michigan","ph":29.0,"pa":18.6,"m":10.3,"tt":47.6,"n":false},{"h":"Iowa","a":"Ohio State","ph":17.5,"pa":28.4,"m":-10.8,"tt":45.9,"n":false},{"h":"Iowa State","a":"West Virginia","ph":33.7,"pa":22.6,"m":11.1,"tt":56.3,"n":false},{"h":"Kent State","a":"Ohio","ph":24.1,"pa":35.4,"m":-11.3,"tt":59.5,"n":false},{"h":"Tulsa","a":"North Texas","ph":24.0,"pa":35.5,"m":-11.5,"tt":59.5,"n":false},{"h":"South Florida","a":"Temple","ph":36.1,"pa":24.0,"m":12.2,"tt":60.1,"n":false},{"h":"Rice","a":"UTSA","ph":22.9,"pa":35.6,"m":-12.7,"tt":58.5,"n":false},{"h":"USC","a":"Washington","ph":37.8,"pa":25.0,"m":12.8,"tt":62.8,"n":false},{"h":"Nebraska","a":"Maryland","ph":34.7,"pa":21.6,"m":13.1,"tt":56.3,"n":false},{"h":"Illinois","a":"Purdue","ph":41.7,"pa":27.7,"m":14.0,"tt":69.3,"n":false},{"h":"Wake Forest","a":"Stanford","ph":33.5,"pa":18.4,"m":15.0,"tt":51.9,"n":false},{"h":"Buffalo","a":"Western Michigan","ph":14.8,"pa":32.1,"m":-17.3,"tt":47.0,"n":false},{"h":"SMU","a":"Boston College","ph":33.1,"pa":15.8,"m":17.4,"tt":48.9,"n":false},{"h":"Colorado","a":"Texas Tech","ph":15.7,"pa":34.2,"m":-18.5,"tt":49.9,"n":false},{"h":"Texas A&M","a":"Arkansas","ph":38.7,"pa":20.0,"m":18.8,"tt":58.7,"n":false},{"h":"Boise State","a":"Utah State","ph":31.6,"pa":11.9,"m":19.8,"tt":43.5,"n":false},{"h":"South Alabama","a":"UL Monroe","ph":42.7,"pa":21.5,"m":21.3,"tt":64.2,"n":false},{"h":"Clemson","a":"Miami","ph":17.1,"pa":38.5,"m":-21.4,"tt":55.5,"n":false},{"h":"Charlotte","a":"Memphis","ph":18.6,"pa":40.3,"m":-21.7,"tt":58.9,"n":false},{"h":"Kansas","a":"Middle Tennessee","ph":36.3,"pa":14.4,"m":21.8,"tt":50.7,"n":false},{"h":"Miami (OH)","a":"Bowling Green","ph":34.8,"pa":11.2,"m":23.6,"tt":46.0,"n":false},{"h":"UAB","a":"Samford","ph":40.7,"pa":16.3,"m":24.4,"tt":56.9,"n":false},{"h":"North Dakota State","a":"Wyoming","ph":29.0,"pa":4.1,"m":24.9,"tt":33.1,"n":false},{"h":"Georgia","a":"Vanderbilt","ph":44.2,"pa":19.2,"m":25.1,"tt":63.4,"n":false},{"h":"Rutgers","a":"Indiana","ph":17.0,"pa":44.5,"m":-27.5,"tt":61.5,"n":false},{"h":"Ball State","a":"Toledo","ph":17.8,"pa":46.9,"m":-29.1,"tt":64.8,"n":false},{"h":"Florida Atlantic","a":"Texas Southern","ph":48.9,"pa":19.7,"m":29.3,"tt":68.6,"n":false},{"h":"North Carolina","a":"Notre Dame","ph":6.4,"pa":36.9,"m":-30.5,"tt":43.2,"n":false},{"h":"New Mexico","a":"UTEP","ph":46.6,"pa":14.1,"m":32.5,"tt":60.7,"n":false},{"h":"James Madison","a":"Marshall","ph":50.4,"pa":12.7,"m":37.7,"tt":63.2,"n":false},{"h":"LSU","a":"McNeese","ph":57.3,"pa":-5.1,"m":62.4,"tt":52.2,"n":false}];
+const rows=document.getElementById('rows'), q=document.getElementById('q');
+const count=document.getElementById('count');
+let sortKey='m', sortDir=1;
+function render(){
+  const term=q.value.trim().toLowerCase();
+  let shown=DATA.filter(d=>!term||d.h.toLowerCase().includes(term)||d.a.toLowerCase().includes(term));
+  shown.sort((x,y)=>sortDir*(Math.abs(x[sortKey])-Math.abs(y[sortKey])));
+  rows.innerHTML=shown.map(d=>{
+    const fav = d.m>=0 ? d.h : d.a;
+    return '<tr>'+
+      '<td><div class="matchup">'+d.a+'<span class="at">'+(d.n?'vs':'at')+'</span>'+d.h+'</div>'+
+        '<div class="cf">'+fav+' by '+Math.abs(d.m).toFixed(1)+'</div></td>'+
+      '<td class="pscore" style="text-align:right">'+d.pa.toFixed(0)+'–'+d.ph.toFixed(0)+'</td>'+
+      '<td class="stat">'+(d.m>0?'+':'')+d.m.toFixed(1)+'</td>'+
+      '<td class="stat">'+d.tt.toFixed(1)+'</td></tr>';
+  }).join('');
+  count.textContent=shown.length+' games';
+}
+document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',()=>{
+  const k=th.dataset.k;
+  if(k===sortKey) sortDir=-sortDir; else {sortKey=k; sortDir=1;}
+  document.querySelectorAll('th[data-k] .car').forEach(c=>c.textContent='');
+  th.querySelector('.car').textContent=sortDir>0?'▲':'▼';
+  render();
+}));
+q.addEventListener('input',render);
+render();
+</script>
