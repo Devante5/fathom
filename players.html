@@ -6,6 +6,7 @@
 <meta name="description" content="Opponent-adjusted college football player ratings, in points.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z' fill='%23c3d3e0'/%3E%3Cg transform='rotate(-26 32 17)'%3E%3Cellipse cx='32' cy='17' rx='21' ry='9.5' fill='none' stroke='%237cb4e0' stroke-width='3.4'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>/* ============================================================================
    Fathom — steel. Dark is the DEFAULT.
@@ -187,6 +188,15 @@ footer .fine{font-size:12px;color:var(--muted)}
   color:var(--ink2);background:var(--paper);white-space:nowrap}
 .confcol{width:1%;white-space:nowrap}
 
+.mark{width:42px;height:42px;flex:none}
+.mark .bd{fill:url(#fb-d)} .mark .rg{stroke:url(#fr-d)}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .mark .bd{fill:url(#fb-l)}
+  :root:not([data-theme="dark"]) .mark .rg{stroke:url(#fr-l)} }
+:root[data-theme="light"] .mark .bd{fill:url(#fb-l)}
+:root[data-theme="light"] .mark .rg{stroke:url(#fr-l)}
+.brand{display:flex;align-items:center;gap:13px}
+@media(max-width:620px){ .mark{width:34px;height:34px} }
+
 .split{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
   font-size:13px;color:var(--data);text-align:right;white-space:nowrap;width:56px}
 th.r{text-align:right}
@@ -238,6 +248,15 @@ th.r{text-align:right}
   color:var(--ink2);background:var(--paper);white-space:nowrap}
 .confcol{width:1%;white-space:nowrap}
 
+.mark{width:42px;height:42px;flex:none}
+.mark .bd{fill:url(#fb-d)} .mark .rg{stroke:url(#fr-d)}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .mark .bd{fill:url(#fb-l)}
+  :root:not([data-theme="dark"]) .mark .rg{stroke:url(#fr-l)} }
+:root[data-theme="light"] .mark .bd{fill:url(#fb-l)}
+:root[data-theme="light"] .mark .rg{stroke:url(#fr-l)}
+.brand{display:flex;align-items:center;gap:13px}
+@media(max-width:620px){ .mark{width:34px;height:34px} }
+
 /* No separate position column: on a phone it pushed Score -- the column the
    page exists for -- off the right edge. Position rides in the subtitle
    instead, which scans just as well and costs no width. */
@@ -255,8 +274,45 @@ table{min-width:auto}
 <div class="wrap">
   <header class="mast">
     <div class="brand">
+      <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Fathom">
+  <defs>
+    <linearGradient id="fb-d" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#f6fafd"/><stop offset=".38" stop-color="#9dafbf"/>
+      <stop offset=".64" stop-color="#74879a"/><stop offset=".84" stop-color="#eaf1f7"/>
+      <stop offset="1" stop-color="#8396a8"/>
+    </linearGradient>
+    <linearGradient id="fr-d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bcd9f0"/><stop offset=".5" stop-color="#7cb4e0"/>
+      <stop offset="1" stop-color="#2d6da6"/>
+    </linearGradient>
+    <linearGradient id="fb-l" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#b9c6d3"/><stop offset=".4" stop-color="#6b7e90"/>
+      <stop offset=".7" stop-color="#93a6b8"/><stop offset="1" stop-color="#5d7183"/>
+    </linearGradient>
+    <linearGradient id="fr-l" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a8cc2"/><stop offset=".5" stop-color="#1f5f96"/>
+      <stop offset="1" stop-color="#14476f"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 1 37 8.2" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+    <path class="rg" d="M45 11.5 A 21 9.5 0 0 1 53 17" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+  </g>
+  <path class="bd" d="M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z"/>
+  <path d="M32 3 Q23 25 23 44 L14 59 L27 51 L32 48 Z" fill="#ffffff" opacity=".26"/>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 0 53 17" fill="none" stroke-width="2.8"
+          stroke-linecap="round"/>
+    <ellipse class="rg" cx="32" cy="17" rx="26" ry="12" fill="none" stroke-width="1.3"
+             opacity=".22"/>
+  </g>
+</svg>
+      <div>
       <h1>Fathom<span class="script">ratings</span></h1>
       <div class="tag">The numbers behind the number</div>
+      </div>
     </div>
     <div class="issue">
       2026 Season · Week 5<br>
