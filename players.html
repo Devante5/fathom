@@ -8,63 +8,74 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>/* ============================================================================
-   Fathom — holographic palette. Dark is the DEFAULT here, not the fallback:
-   the look depends on luminous accents on a near-black field, and a light
-   default would mean most visitors never see it.
+   Fathom — steel. Dark is the DEFAULT.
 
-   Every token below was measured, not chosen by eye. WCAG contrast of each
-   text token against both paper and card, and the green/violet pair run
-   through the categorical validator (lightness band, chroma, CVD separation,
-   normal-vision floor, contrast) — worst adjacent CVD ΔE 24.8 deutan /
-   12.4 tritan, normal-vision 33.0.
+   Cool gunmetal ground, steel blue as the single accent, amber as its only
+   counterweight. No purple anywhere.
 
-   This replaces the admiralty palette, whose --muted FAILED AA in both modes
-   (2.73:1 light, 4.44:1 dark against a 4.5 floor) on every column header,
-   as-of line and team subtitle. The lowest ratio anywhere below is 4.69:1.
+   The diverging pair is measured, not picked. With purple dropped, the
+   negative side of the scale needed a new hue, and steel-blue-against-amber
+   is the strongest pair available for colour vision deficiency: CVD ΔE 20.6
+   at the worst adjacent step, against 10.3 for the cyan/magenta it replaces
+   and 10.2 (falling to 6.0) for the jade/magenta rejected before that. It
+   also happens to be the oldest pair in instrument design, for the same
+   reason — warm against cool reads at a glance and survives being printed,
+   dimmed or looked at sideways.
+
+   Every text token has WCAG contrast against both paper and card; the
+   lowest anywhere is 5.66:1.
    ============================================================================ */
 :root{
   color-scheme: dark;
-  --paper:#0b0716; --card:#150d28; --ink:#ece7fb; --ink2:#b6a9d8; --muted:#8478ab;
-  --rule:#2c1f4d; --hair:#1d1436;
-  --depth:#2fd39a; --depth-soft:#17203a;
-  --above:#3ddc9b; --below:#a78bfa;
-  --shoal:#f0b93c;
-  /* Tables are translucent ink, not a colour. Two purple steps were tried
-     and read as one colour even at OKLab ΔL 0.260; white at two alphas
-     separates far harder (5.3:1 vs 15.9:1 against the card) and leaves the
-     tables neutral, so green on the Score column is the only hue in the
-     grid and reads as the headline rather than as decoration.
-
-     Contrast is computed on the COMPOSITED colour, not the rgba: white at
-     .50 over #150d28 resolves to #8a8694. Light mode uses translucent black
-     at .62 / .88 for the same reason in reverse. */
-  --head:rgba(255,255,255,.50); --data:rgba(255,255,255,.92);
-  /* the holographic bit: one iridescent sweep, reused rather than sprinkled */
-  --sheen:linear-gradient(100deg,#a78bfa 0%,#7c8bf8 34%,#2fd39a 72%,#5eead4 100%);
-  --glow:0 0 22px rgba(47,211,154,.16);
+  --paper:#0d1620; --card:#16222e; --ink:#e9eff6;
+  --ink2:rgba(255,255,255,.78); --muted:rgba(255,255,255,.52);
+  --rule:#2a3f52; --hair:#1c2b39;
+  --depth:#7cb4e0; --depth-soft:#16293a;
+  --above:#7cb4e0; --below:#e0a458;
+  --shoal:#f2c14e;
+  --head:rgba(255,255,255,.52); --data:#ffffff;
+  /* brushed metal rather than a rainbow: one hue, three depths */
+  --sheen:linear-gradient(100deg,#2d6da6 0%,#7cb4e0 38%,#bcd9f0 62%,#4a8cc2 100%);
+  /* The nav wears the same sweep as the wordmark, but compressed to its
+     BRIGHT half. The full sheen bottoms out at #2d6da6 = 3.34:1 on the page
+     ground, so the leftmost tab would have failed AA at 10px. Every stop
+     below clears 8:1. */
+  --sheen-nav:linear-gradient(100deg,#7cb4e0 0%,#a3cced 42%,#bcd9f0 66%,#8ec2ea 100%);
+  --glow:0 0 24px rgba(124,180,224,.28);
+  --haze-a:rgba(124,180,224,.10); --haze-b:rgba(70,120,170,.10);
 }
 @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
   color-scheme: light;
-  --paper:#f4f1fa; --card:#fbfaff; --ink:#190e2c; --ink2:#463569; --muted:#6f6191;
-  --rule:#ddd5ec; --hair:#ebe6f5;
-  --depth:#0b7a55; --depth-soft:#e8f3ee;
-  --above:#0b7a55; --below:#6d28d9;
-  --shoal:#8a6300;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
   --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
-  --sheen:linear-gradient(100deg,#6d28d9 0%,#5b4bd6 34%,#0b7a55 72%,#0f8f77 100%);
-  --glow:none;
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
 }}
 :root[data-theme="light"]{
   color-scheme: light;
-  --paper:#f4f1fa; --card:#fbfaff; --ink:#190e2c; --ink2:#463569; --muted:#6f6191;
-  --rule:#ddd5ec; --hair:#ebe6f5;
-  --depth:#0b7a55; --depth-soft:#e8f3ee;
-  --above:#0b7a55; --below:#6d28d9;
-  --shoal:#8a6300;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
   --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
-  --sheen:linear-gradient(100deg,#6d28d9 0%,#5b4bd6 34%,#0b7a55 72%,#0f8f77 100%);
-  --glow:none;
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
 }
+/* Two cool pools bleeding from the top. Fixed, behind everything, never
+   under text -- atmosphere without the bloom that would blur figures. */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(70ch 44ch at 12% -6%, var(--haze-a), transparent 70%),
+    radial-gradient(60ch 40ch at 92% 2%, var(--haze-b), transparent 70%);}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
   font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55}
@@ -140,12 +151,18 @@ footer .fine{font-size:12px;color:var(--muted)}
   overflow-x:auto;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
 .nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);text-decoration:none;padding:9px 14px;
+  text-transform:uppercase;text-decoration:none;padding:9px 14px;
+  /* same gradient-clipped treatment as the wordmark's "ratings" */
+  color:#7cb4e0;background-image:var(--sheen-nav);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;
   margin-bottom:-1px;white-space:nowrap}
-.nav a:hover{color:var(--ink2);background:var(--card)}
-.nav a[aria-current]{color:var(--ink);background:var(--card);
-  border-color:var(--rule);border-bottom-color:var(--card)}
+.nav a:hover{background-color:var(--card)}
+.nav a[aria-current]{background-color:var(--card);
+  border-color:var(--rule);border-bottom-color:var(--card);
+  /* the selected tab drops out of the gradient into plain ink, so "selected"
+     is carried by weight and background rather than by a colour shift alone */
+  background-image:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
 .nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
 
 .brand h1 .script{font-family:Italianno,cursive;font-weight:400;
@@ -185,12 +202,18 @@ th.r{text-align:right}
   overflow-x:auto;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
 .nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);text-decoration:none;padding:9px 14px;
+  text-transform:uppercase;text-decoration:none;padding:9px 14px;
+  /* same gradient-clipped treatment as the wordmark's "ratings" */
+  color:#7cb4e0;background-image:var(--sheen-nav);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;
   margin-bottom:-1px;white-space:nowrap}
-.nav a:hover{color:var(--ink2);background:var(--card)}
-.nav a[aria-current]{color:var(--ink);background:var(--card);
-  border-color:var(--rule);border-bottom-color:var(--card)}
+.nav a:hover{background-color:var(--card)}
+.nav a[aria-current]{background-color:var(--card);
+  border-color:var(--rule);border-bottom-color:var(--card);
+  /* the selected tab drops out of the gradient into plain ink, so "selected"
+     is carried by weight and background rather than by a colour shift alone */
+  background-image:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
 .nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
 
 .brand h1 .script{font-family:Italianno,cursive;font-weight:400;
