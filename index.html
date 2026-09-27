@@ -7,30 +7,63 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Italianno&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<style>
+<style>/* ============================================================================
+   Fathom — holographic palette. Dark is the DEFAULT here, not the fallback:
+   the look depends on luminous accents on a near-black field, and a light
+   default would mean most visitors never see it.
+
+   Every token below was measured, not chosen by eye. WCAG contrast of each
+   text token against both paper and card, and the green/violet pair run
+   through the categorical validator (lightness band, chroma, CVD separation,
+   normal-vision floor, contrast) — worst adjacent CVD ΔE 24.8 deutan /
+   12.4 tritan, normal-vision 33.0.
+
+   This replaces the admiralty palette, whose --muted FAILED AA in both modes
+   (2.73:1 light, 4.44:1 dark against a 4.5 floor) on every column header,
+   as-of line and team subtitle. The lowest ratio anywhere below is 4.69:1.
+   ============================================================================ */
 :root{
-  color-scheme: light;
-  --paper:#f2f0e9; --card:#faf9f4; --ink:#10202e; --ink2:#43586a; --muted:#86949e;
-  --rule:#d8d5c9; --hair:#e6e3d9;
-  --depth:#1c5f8c; --depth-soft:#dce8f0;
-  --above:#1c5f8c; --below:#a14a3c;
-  --shoal:#c9a227;
+  color-scheme: dark;
+  --paper:#0b0716; --card:#150d28; --ink:#ece7fb; --ink2:#b6a9d8; --muted:#8478ab;
+  --rule:#2c1f4d; --hair:#1d1436;
+  --depth:#2fd39a; --depth-soft:#17203a;
+  --above:#3ddc9b; --below:#a78bfa;
+  --shoal:#f0b93c;
+  /* Tables are translucent ink, not a colour. Two purple steps were tried
+     and read as one colour even at OKLab ΔL 0.260; white at two alphas
+     separates far harder (5.3:1 vs 15.9:1 against the card) and leaves the
+     tables neutral, so green on the Score column is the only hue in the
+     grid and reads as the headline rather than as decoration.
+
+     Contrast is computed on the COMPOSITED colour, not the rgba: white at
+     .50 over #150d28 resolves to #8a8694. Light mode uses translucent black
+     at .62 / .88 for the same reason in reverse. */
+  --head:rgba(255,255,255,.50); --data:rgba(255,255,255,.92);
+  /* the holographic bit: one iridescent sweep, reused rather than sprinkled */
+  --sheen:linear-gradient(100deg,#a78bfa 0%,#7c8bf8 34%,#2fd39a 72%,#5eead4 100%);
+  --glow:0 0 22px rgba(47,211,154,.16);
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  color-scheme: dark;
-  --paper:#0a1620; --card:#101f2b; --ink:#e6eef4; --ink2:#9fb3c0; --muted:#6b808e;
-  --rule:#1f3442; --hair:#182935;
-  --depth:#4a9fd4; --depth-soft:#12303f;
-  --above:#4a9fd4; --below:#d4796a;
-  --shoal:#d9b44a;
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme: light;
+  --paper:#f4f1fa; --card:#fbfaff; --ink:#190e2c; --ink2:#463569; --muted:#6f6191;
+  --rule:#ddd5ec; --hair:#ebe6f5;
+  --depth:#0b7a55; --depth-soft:#e8f3ee;
+  --above:#0b7a55; --below:#6d28d9;
+  --shoal:#8a6300;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#6d28d9 0%,#5b4bd6 34%,#0b7a55 72%,#0f8f77 100%);
+  --glow:none;
 }}
-:root[data-theme="dark"]{
-  color-scheme: dark;
-  --paper:#0a1620; --card:#101f2b; --ink:#e6eef4; --ink2:#9fb3c0; --muted:#6b808e;
-  --rule:#1f3442; --hair:#182935;
-  --depth:#4a9fd4; --depth-soft:#12303f;
-  --above:#4a9fd4; --below:#d4796a;
-  --shoal:#d9b44a;
+:root[data-theme="light"]{
+  color-scheme: light;
+  --paper:#f4f1fa; --card:#fbfaff; --ink:#190e2c; --ink2:#463569; --muted:#6f6191;
+  --rule:#ddd5ec; --hair:#ebe6f5;
+  --depth:#0b7a55; --depth-soft:#e8f3ee;
+  --above:#0b7a55; --below:#6d28d9;
+  --shoal:#8a6300;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#6d28d9 0%,#5b4bd6 34%,#0b7a55 72%,#0f8f77 100%);
+  --glow:none;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
@@ -38,7 +71,7 @@ body{margin:0;background:var(--paper);color:var(--ink);
 .wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:36px 72px}
 
 /* masthead */
-.mast{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:8px;
+.mast{border-bottom:2px solid transparent;border-image:var(--sheen) 1;padding-bottom:14px;margin-bottom:8px;
   display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
 .brand h1{font-family:Spectral,Georgia,serif;font-weight:600;font-size:clamp(34px,7vw,52px);
   margin:0;letter-spacing:-.015em;line-height:1}
@@ -74,7 +107,7 @@ input:focus-visible,select:focus-visible{outline:2px solid var(--depth);outline-
 .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
 table{width:100%;border-collapse:collapse;min-width:620px}
 th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);font-weight:500;text-align:left;padding:10px 12px;
+  color:var(--head);font-weight:500;text-align:left;padding:10px 12px;
   border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--card)}
 td{padding:8px 12px;border-bottom:1px solid var(--hair);vertical-align:middle}
 tr:last-child td{border-bottom:none}
@@ -84,10 +117,10 @@ tbody tr:hover{background:var(--depth-soft)}
 .tm{font-weight:600}
 .cf{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
 .sc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
-  font-size:19px;font-weight:600;width:64px}
+  font-size:19px;font-weight:600;width:64px;text-shadow:var(--glow)}
 .pts{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
-  font-size:13px;color:var(--ink2);width:72px}
-.rec{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink2);width:56px}
+  font-size:13px;color:var(--data);width:72px}
+.rec{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--data);width:56px}
 
 /* sounding bar */
 .bar{position:relative;height:16px;min-width:130px;width:100%}
@@ -116,8 +149,14 @@ footer .fine{font-size:12px;color:var(--muted)}
 .nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
 
 .brand h1 .script{font-family:Italianno,cursive;font-weight:400;
-  font-size:.62em;margin-left:.12em;color:var(--depth);letter-spacing:0;
-  vertical-align:baseline;text-transform:none}
+  font-size:.62em;margin-left:.12em;letter-spacing:0;
+  vertical-align:baseline;text-transform:none;
+  background:var(--sheen);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--depth)}
+/* the active tab sits under its own slice of the same sweep */
+.nav a[aria-current]{position:relative}
+.nav a[aria-current]::before{content:"";position:absolute;inset:-1px -1px auto -1px;
+  height:2px;background:var(--sheen);border-radius:3px 3px 0 0}
 
 /* Logos are hotlinked from ESPN's CDN, keyed on the team id already in the
    games file (CFBD's team ids ARE ESPN's). Nothing is downloaded or stored.
@@ -132,7 +171,7 @@ footer .fine{font-size:12px;color:var(--muted)}
 .confcol{width:1%;white-space:nowrap}
 
 .split{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
-  font-size:13px;color:var(--ink2);text-align:right;white-space:nowrap;width:56px}
+  font-size:13px;color:var(--data);text-align:right;white-space:nowrap;width:56px}
 th.r{text-align:right}
 .scale{display:flex;align-items:flex-end;gap:0;height:34px}
 .scale .tick{flex:1;text-align:center;border-left:1px solid var(--hair);
@@ -217,18 +256,42 @@ th.r{text-align:right}
     <p class="fine">No betting lines are used anywhere in this rating. North Dakota State and
     Sacramento State are new to FBS and have no prior season, so they start from the FBS average.
     Games played is shown for every team; a rating built on three games deserves less of your
-    confidence than one built on ten. Team logos are served by ESPN.</p>
+    confidence than one built on ten. Team logos are served by CollegeFootballData.</p>
   </footer>
 </div>
 
 <script>
 const DATA = [{"r":1,"t":"Notre Dame","m":"Fighting Irish","s":8.7,"p":26.1,"g":4,"c":"FBS Independents","cb":"IND","i":87,"ppg":42.2,"papg":8.2,"ypg":408.5,"ypg_a":196.0,"pass_ypg":267.8,"rush_ypg":140.8,"w":4,"l":0},{"r":2,"t":"Alabama","m":"Crimson Tide","s":8.5,"p":24.4,"g":4,"c":"SEC","cb":"SEC","i":333,"ppg":48.0,"papg":20.2,"ypg":466.5,"ypg_a":316.8,"pass_ypg":282.2,"rush_ypg":184.2,"w":4,"l":0},{"r":3,"t":"Ohio State","m":"Buckeyes","s":8.1,"p":22.0,"g":4,"c":"Big Ten","cb":"B10","i":194,"ppg":45.0,"papg":12.2,"ypg":515.8,"ypg_a":257.0,"pass_ypg":365.2,"rush_ypg":150.5,"w":3,"l":1},{"r":4,"t":"Georgia","m":"Bulldogs","s":8.0,"p":21.1,"g":4,"c":"SEC","cb":"SEC","i":61,"ppg":54.8,"papg":13.2,"ypg":398.0,"ypg_a":232.0,"pass_ypg":236.2,"rush_ypg":161.8,"w":4,"l":0},{"r":5,"t":"Indiana","m":"Hoosiers","s":8.0,"p":21.0,"g":4,"c":"Big Ten","cb":"B10","i":84,"ppg":43.5,"papg":9.8,"ypg":432.5,"ypg_a":224.8,"pass_ypg":212.5,"rush_ypg":220.0,"w":4,"l":0},{"r":6,"t":"Utah","m":"Utes","s":7.9,"p":20.6,"g":4,"c":"Big 12","cb":"B12","i":254,"ppg":43.2,"papg":10.2,"ypg":460.0,"ypg_a":254.0,"pass_ypg":255.5,"rush_ypg":204.5,"w":4,"l":0},{"r":7,"t":"Miami","m":"Hurricanes","s":7.9,"p":20.1,"g":4,"c":"ACC","cb":"ACC","i":2390,"ppg":51.8,"papg":9.0,"ypg":569.2,"ypg_a":222.8,"pass_ypg":361.2,"rush_ypg":208.0,"w":4,"l":0},{"r":8,"t":"LSU","m":"Tigers","s":7.9,"p":20.0,"g":4,"c":"SEC","cb":"SEC","i":99,"ppg":38.8,"papg":15.5,"ypg":475.8,"ypg_a":222.2,"pass_ypg":279.0,"rush_ypg":196.8,"w":3,"l":1},{"r":9,"t":"Texas","m":"Longhorns","s":7.8,"p":19.9,"g":4,"c":"SEC","cb":"SEC","i":251,"ppg":33.2,"papg":13.2,"ypg":374.5,"ypg_a":269.0,"pass_ypg":230.0,"rush_ypg":144.5,"w":4,"l":0},{"r":10,"t":"Florida","m":"Gators","s":7.2,"p":15.1,"g":4,"c":"SEC","cb":"SEC","i":57,"ppg":53.5,"papg":22.8,"ypg":511.5,"ypg_a":350.0,"pass_ypg":260.8,"rush_ypg":250.8,"w":4,"l":0},{"r":11,"t":"Tennessee","m":"Volunteers","s":7.0,"p":14.2,"g":4,"c":"SEC","cb":"SEC","i":2633,"ppg":40.0,"papg":15.5,"ypg":432.2,"ypg_a":273.2,"pass_ypg":189.8,"rush_ypg":242.5,"w":3,"l":1},{"r":12,"t":"Oregon","m":"Ducks","s":7.0,"p":14.2,"g":4,"c":"Big Ten","cb":"B10","i":2483,"ppg":47.5,"papg":23.2,"ypg":494.0,"ypg_a":348.5,"pass_ypg":339.2,"rush_ypg":154.8,"w":3,"l":1},{"r":13,"t":"Texas Tech","m":"Red Raiders","s":7.0,"p":14.0,"g":4,"c":"Big 12","cb":"B12","i":2641,"ppg":36.2,"papg":18.5,"ypg":422.0,"ypg_a":340.8,"pass_ypg":248.8,"rush_ypg":173.2,"w":4,"l":0},{"r":14,"t":"BYU","m":"Cougars","s":6.9,"p":13.6,"g":3,"c":"Big 12","cb":"B12","i":252,"ppg":44.0,"papg":15.7,"ypg":448.3,"ypg_a":263.0,"pass_ypg":214.0,"rush_ypg":234.3,"w":3,"l":0},{"r":15,"t":"Mississippi State","m":"Bulldogs","s":6.7,"p":12.1,"g":4,"c":"SEC","cb":"SEC","i":344,"ppg":43.0,"papg":21.0,"ypg":523.2,"ypg_a":349.2,"pass_ypg":313.8,"rush_ypg":209.5,"w":4,"l":0},{"r":16,"t":"Texas A&M","m":"Aggies","s":6.7,"p":12.1,"g":4,"c":"SEC","cb":"SEC","i":245,"ppg":31.2,"papg":21.5,"ypg":342.5,"ypg_a":333.5,"pass_ypg":193.5,"rush_ypg":149.0,"w":2,"l":2},{"r":17,"t":"Penn State","m":"Nittany Lions","s":6.7,"p":11.9,"g":4,"c":"Big Ten","cb":"B10","i":213,"ppg":36.8,"papg":11.5,"ypg":412.0,"ypg_a":237.8,"pass_ypg":241.8,"rush_ypg":170.2,"w":3,"l":1},{"r":18,"t":"UCLA","m":"Bruins","s":6.6,"p":11.3,"g":4,"c":"Big Ten","cb":"B10","i":26,"ppg":44.8,"papg":18.8,"ypg":482.8,"ypg_a":301.8,"pass_ypg":205.0,"rush_ypg":277.8,"w":4,"l":0},{"r":19,"t":"Iowa","m":"Hawkeyes","s":6.6,"p":11.0,"g":4,"c":"Big Ten","cb":"B10","i":2294,"ppg":32.8,"papg":8.0,"ypg":406.0,"ypg_a":229.0,"pass_ypg":206.2,"rush_ypg":199.8,"w":4,"l":0},{"r":20,"t":"Pittsburgh","m":"Panthers","s":6.6,"p":11.0,"g":4,"c":"ACC","cb":"ACC","i":221,"ppg":39.2,"papg":8.5,"ypg":497.5,"ypg_a":229.8,"pass_ypg":340.5,"rush_ypg":157.0,"w":4,"l":0},{"r":21,"t":"James Madison","m":"Dukes","s":6.6,"p":11.0,"g":4,"c":"Sun Belt","cb":"SBC","i":256,"ppg":44.8,"papg":12.2,"ypg":414.0,"ypg_a":291.5,"pass_ypg":222.2,"rush_ypg":191.8,"w":4,"l":0},{"r":22,"t":"Ole Miss","m":"Rebels","s":6.6,"p":11.0,"g":4,"c":"SEC","cb":"SEC","i":145,"ppg":35.5,"papg":30.8,"ypg":443.0,"ypg_a":402.5,"pass_ypg":322.5,"rush_ypg":120.5,"w":3,"l":1},{"r":23,"t":"USC","m":"Trojans","s":6.6,"p":11.0,"g":5,"c":"Big Ten","cb":"B10","i":30,"ppg":39.8,"papg":26.4,"ypg":481.0,"ypg_a":340.2,"pass_ypg":323.4,"rush_ypg":157.6,"w":4,"l":1},{"r":24,"t":"Virginia","m":"Cavaliers","s":6.4,"p":9.9,"g":4,"c":"ACC","cb":"ACC","i":258,"ppg":40.5,"papg":13.0,"ypg":434.0,"ypg_a":241.5,"pass_ypg":244.5,"rush_ypg":189.5,"w":3,"l":1},{"r":25,"t":"Auburn","m":"Tigers","s":6.4,"p":9.7,"g":4,"c":"SEC","cb":"SEC","i":2,"ppg":30.0,"papg":20.8,"ypg":394.8,"ypg_a":362.5,"pass_ypg":223.2,"rush_ypg":171.5,"w":3,"l":1},{"r":26,"t":"Nebraska","m":"Cornhuskers","s":6.4,"p":9.6,"g":4,"c":"Big Ten","cb":"B10","i":158,"ppg":42.5,"papg":12.0,"ypg":454.2,"ypg_a":224.2,"pass_ypg":241.0,"rush_ypg":213.2,"w":4,"l":0},{"r":27,"t":"Oklahoma","m":"Sooners","s":6.4,"p":9.5,"g":4,"c":"SEC","cb":"SEC","i":201,"ppg":22.0,"papg":16.0,"ypg":318.5,"ypg_a":229.8,"pass_ypg":220.8,"rush_ypg":97.8,"w":2,"l":2},{"r":28,"t":"Duke","m":"Blue Devils","s":6.4,"p":9.5,"g":4,"c":"ACC","cb":"ACC","i":150,"ppg":36.2,"papg":11.0,"ypg":465.0,"ypg_a":257.2,"pass_ypg":222.8,"rush_ypg":242.2,"w":4,"l":0},{"r":29,"t":"Missouri","m":"Tigers","s":6.3,"p":9.2,"g":4,"c":"SEC","cb":"SEC","i":142,"ppg":35.8,"papg":20.8,"ypg":410.8,"ypg_a":324.8,"pass_ypg":254.2,"rush_ypg":156.5,"w":3,"l":1},{"r":30,"t":"Michigan","m":"Wolverines","s":6.3,"p":9.0,"g":4,"c":"Big Ten","cb":"B10","i":130,"ppg":25.2,"papg":14.8,"ypg":333.2,"ypg_a":224.0,"pass_ypg":195.0,"rush_ypg":138.2,"w":3,"l":1},{"r":31,"t":"Boise State","m":"Broncos","s":6.2,"p":8.2,"g":4,"c":"Pac-12","cb":"PAC","i":68,"ppg":33.8,"papg":21.2,"ypg":432.8,"ypg_a":378.2,"pass_ypg":203.5,"rush_ypg":229.2,"w":3,"l":1},{"r":32,"t":"Houston","m":"Cougars","s":6.2,"p":8.1,"g":4,"c":"Big 12","cb":"B12","i":248,"ppg":44.5,"papg":20.5,"ypg":478.8,"ypg_a":303.5,"pass_ypg":257.2,"rush_ypg":221.5,"w":3,"l":1},{"r":33,"t":"Northwestern","m":"Wildcats","s":6.1,"p":7.8,"g":3,"c":"Big Ten","cb":"B10","i":77,"ppg":32.7,"papg":18.0,"ypg":399.0,"ypg_a":413.3,"pass_ypg":269.0,"rush_ypg":130.0,"w":2,"l":1},{"r":34,"t":"Kansas State","m":"Wildcats","s":6.1,"p":7.8,"g":4,"c":"Big 12","cb":"B12","i":2306,"ppg":40.5,"papg":15.2,"ypg":476.0,"ypg_a":250.5,"pass_ypg":237.5,"rush_ypg":238.5,"w":3,"l":1},{"r":35,"t":"Louisville","m":"Cardinals","s":6.1,"p":7.4,"g":4,"c":"ACC","cb":"ACC","i":97,"ppg":41.2,"papg":28.8,"ypg":465.0,"ypg_a":405.2,"pass_ypg":285.0,"rush_ypg":180.0,"w":2,"l":2},{"r":36,"t":"Arizona","m":"Wildcats","s":6.0,"p":7.0,"g":4,"c":"Big 12","cb":"B12","i":12,"ppg":32.0,"papg":19.0,"ypg":413.2,"ypg_a":305.0,"pass_ypg":291.5,"rush_ypg":121.8,"w":3,"l":1},{"r":37,"t":"Iowa State","m":"Cyclones","s":6.0,"p":6.9,"g":4,"c":"Big 12","cb":"B12","i":66,"ppg":30.8,"papg":16.0,"ypg":331.8,"ypg_a":267.0,"pass_ypg":159.8,"rush_ypg":172.0,"w":2,"l":2},{"r":38,"t":"SMU","m":"Mustangs","s":5.9,"p":6.6,"g":4,"c":"ACC","cb":"ACC","i":2567,"ppg":37.0,"papg":24.8,"ypg":544.8,"ypg_a":303.5,"pass_ypg":389.2,"rush_ypg":155.5,"w":3,"l":1},{"r":39,"t":"Kentucky","m":"Wildcats","s":5.9,"p":6.4,"g":4,"c":"SEC","cb":"SEC","i":96,"ppg":34.5,"papg":25.0,"ypg":407.5,"ypg_a":351.2,"pass_ypg":219.0,"rush_ypg":188.5,"w":3,"l":1},{"r":40,"t":"New Mexico","m":"Lobos","s":5.9,"p":6.3,"g":4,"c":"Mountain West","cb":"MW","i":167,"ppg":39.0,"papg":11.5,"ypg":353.0,"ypg_a":237.2,"pass_ypg":155.5,"rush_ypg":197.5,"w":3,"l":1},{"r":41,"t":"North Dakota State","m":"Bison","s":5.9,"p":6.0,"g":4,"c":"Mountain West","cb":"MW","i":2449,"ppg":35.0,"papg":12.2,"ypg":348.2,"ypg_a":231.2,"pass_ypg":202.0,"rush_ypg":146.2,"w":4,"l":0},{"r":42,"t":"Illinois","m":"Fighting Illini","s":5.8,"p":5.9,"g":4,"c":"Big Ten","cb":"B10","i":356,"ppg":34.0,"papg":26.5,"ypg":418.0,"ypg_a":377.0,"pass_ypg":255.2,"rush_ypg":162.8,"w":2,"l":2},{"r":43,"t":"North Texas","m":"Mean Green","s":5.8,"p":5.9,"g":4,"c":"American Athletic","cb":"AAC","i":249,"ppg":39.5,"papg":30.2,"ypg":487.2,"ypg_a":357.5,"pass_ypg":327.0,"rush_ypg":160.2,"w":2,"l":2},{"r":44,"t":"Wisconsin","m":"Badgers","s":5.7,"p":5.2,"g":4,"c":"Big Ten","cb":"B10","i":275,"ppg":31.8,"papg":20.0,"ypg":381.0,"ypg_a":273.5,"pass_ypg":246.8,"rush_ypg":134.2,"w":3,"l":1},{"r":45,"t":"South Florida","m":"Bulls","s":5.7,"p":5.2,"g":4,"c":"American Athletic","cb":"AAC","i":58,"ppg":30.0,"papg":14.0,"ypg":331.2,"ypg_a":315.8,"pass_ypg":172.8,"rush_ypg":158.5,"w":4,"l":0},{"r":46,"t":"South Carolina","m":"Gamecocks","s":5.7,"p":5.2,"g":4,"c":"SEC","cb":"SEC","i":2579,"ppg":38.5,"papg":24.8,"ypg":490.5,"ypg_a":299.5,"pass_ypg":231.0,"rush_ypg":259.5,"w":2,"l":2},{"r":47,"t":"Vanderbilt","m":"Commodores","s":5.7,"p":5.2,"g":4,"c":"SEC","cb":"SEC","i":238,"ppg":28.2,"papg":21.8,"ypg":361.0,"ypg_a":301.0,"pass_ypg":231.0,"rush_ypg":130.0,"w":3,"l":1},{"r":48,"t":"Baylor","m":"Bears","s":5.7,"p":5.0,"g":4,"c":"Big 12","cb":"B12","i":239,"ppg":29.8,"papg":13.0,"ypg":434.5,"ypg_a":294.8,"pass_ypg":281.8,"rush_ypg":152.8,"w":3,"l":1},{"r":49,"t":"Cincinnati","m":"Bearcats","s":5.7,"p":4.9,"g":4,"c":"Big 12","cb":"B12","i":2132,"ppg":40.5,"papg":20.5,"ypg":471.5,"ypg_a":365.2,"pass_ypg":203.5,"rush_ypg":268.0,"w":4,"l":0},{"r":50,"t":"Florida State","m":"Seminoles","s":5.7,"p":4.8,"g":4,"c":"ACC","cb":"ACC","i":52,"ppg":32.0,"papg":25.2,"ypg":410.5,"ypg_a":425.8,"pass_ypg":235.5,"rush_ypg":175.0,"w":2,"l":2},{"r":51,"t":"UCF","m":"Knights","s":5.7,"p":4.8,"g":4,"c":"Big 12","cb":"B12","i":2116,"ppg":36.2,"papg":15.2,"ypg":337.5,"ypg_a":324.2,"pass_ypg":147.5,"rush_ypg":190.0,"w":3,"l":1},{"r":52,"t":"TCU","m":"Horned Frogs","s":5.6,"p":4.5,"g":4,"c":"Big 12","cb":"B12","i":2628,"ppg":29.2,"papg":12.5,"ypg":446.2,"ypg_a":258.8,"pass_ypg":303.2,"rush_ypg":143.0,"w":2,"l":2},{"r":53,"t":"Wake Forest","m":"Demon Deacons","s":5.6,"p":4.4,"g":4,"c":"ACC","cb":"ACC","i":154,"ppg":31.5,"papg":28.0,"ypg":412.0,"ypg_a":369.0,"pass_ypg":278.0,"rush_ypg":134.0,"w":3,"l":1},{"r":54,"t":"Toledo","m":"Rockets","s":5.6,"p":4.3,"g":4,"c":"Mid-American","cb":"MAC","i":2649,"ppg":43.2,"papg":26.0,"ypg":451.5,"ypg_a":304.5,"pass_ypg":295.5,"rush_ypg":156.0,"w":3,"l":1},{"r":55,"t":"Clemson","m":"Tigers","s":5.6,"p":4.2,"g":4,"c":"ACC","cb":"ACC","i":228,"ppg":21.0,"papg":22.0,"ypg":305.5,"ypg_a":359.0,"pass_ypg":156.2,"rush_ypg":149.2,"w":3,"l":1},{"r":56,"t":"Washington","m":"Huskies","s":5.6,"p":4.1,"g":4,"c":"Big Ten","cb":"B10","i":264,"ppg":28.0,"papg":16.8,"ypg":386.8,"ypg_a":284.2,"pass_ypg":282.2,"rush_ypg":104.5,"w":3,"l":1},{"r":57,"t":"Virginia Tech","m":"Hokies","s":5.5,"p":3.7,"g":4,"c":"ACC","cb":"ACC","i":259,"ppg":43.2,"papg":16.0,"ypg":456.5,"ypg_a":270.2,"pass_ypg":284.8,"rush_ypg":171.8,"w":4,"l":0},{"r":58,"t":"Michigan State","m":"Spartans","s":5.4,"p":2.7,"g":4,"c":"Big Ten","cb":"B10","i":127,"ppg":22.0,"papg":21.2,"ypg":313.2,"ypg_a":311.2,"pass_ypg":200.5,"rush_ypg":112.8,"w":2,"l":2},{"r":59,"t":"Arizona State","m":"Sun Devils","s":5.3,"p":2.2,"g":3,"c":"Big 12","cb":"B12","i":9,"ppg":38.0,"papg":24.0,"ypg":412.7,"ypg_a":269.0,"pass_ypg":256.0,"rush_ypg":156.7,"w":2,"l":1},{"r":60,"t":"Memphis","m":"Tigers","s":5.3,"p":2.1,"g":4,"c":"American Athletic","cb":"AAC","i":235,"ppg":33.5,"papg":26.0,"ypg":502.5,"ypg_a":428.0,"pass_ypg":263.2,"rush_ypg":239.2,"w":3,"l":1},{"r":61,"t":"Minnesota","m":"Golden Gophers","s":5.3,"p":2.1,"g":4,"c":"Big Ten","cb":"B10","i":135,"ppg":35.0,"papg":19.0,"ypg":363.5,"ypg_a":268.0,"pass_ypg":246.2,"rush_ypg":117.2,"w":3,"l":1},{"r":62,"t":"UTSA","m":"Roadrunners","s":5.3,"p":1.9,"g":4,"c":"American Athletic","cb":"AAC","i":2636,"ppg":35.2,"papg":29.2,"ypg":387.2,"ypg_a":446.8,"pass_ypg":215.5,"rush_ypg":171.8,"w":3,"l":1},{"r":63,"t":"NC State","m":"Wolfpack","s":5.2,"p":1.2,"g":4,"c":"ACC","cb":"ACC","i":152,"ppg":38.2,"papg":25.0,"ypg":434.2,"ypg_a":330.5,"pass_ypg":229.5,"rush_ypg":204.8,"w":2,"l":2},{"r":64,"t":"Oklahoma State","m":"Cowboys","s":5.1,"p":0.5,"g":4,"c":"Big 12","cb":"B12","i":197,"ppg":37.2,"papg":19.8,"ypg":526.3,"ypg_a":256.7,"pass_ypg":306.3,"rush_ypg":220.0,"w":3,"l":1},{"r":65,"t":"Texas State","m":"Bobcats","s":5.0,"p":-0.1,"g":4,"c":"Pac-12","cb":"PAC","i":326,"ppg":36.2,"papg":33.8,"ypg":522.2,"ypg_a":442.2,"pass_ypg":242.0,"rush_ypg":280.2,"w":2,"l":2},{"r":66,"t":"Kansas","m":"Jayhawks","s":5.0,"p":-0.2,"g":3,"c":"Big 12","cb":"B12","i":2305,"ppg":29.7,"papg":22.7,"ypg":417.7,"ypg_a":280.3,"pass_ypg":246.3,"rush_ypg":171.3,"w":1,"l":2},{"r":67,"t":"Arkansas","m":"Razorbacks","s":4.9,"p":-0.5,"g":4,"c":"SEC","cb":"SEC","i":8,"ppg":23.0,"papg":27.0,"ypg":360.2,"ypg_a":302.8,"pass_ypg":277.0,"rush_ypg":83.2,"w":2,"l":2},{"r":68,"t":"Fresno State","m":"Bulldogs","s":4.9,"p":-0.6,"g":4,"c":"Pac-12","cb":"PAC","i":278,"ppg":28.2,"papg":19.0,"ypg":348.8,"ypg_a":399.0,"pass_ypg":197.2,"rush_ypg":151.5,"w":3,"l":1},{"r":69,"t":"North Carolina","m":"Tar Heels","s":4.9,"p":-0.6,"g":3,"c":"ACC","cb":"ACC","i":153,"ppg":23.3,"papg":13.7,"ypg":359.7,"ypg_a":312.3,"pass_ypg":211.0,"rush_ypg":148.7,"w":2,"l":1},{"r":70,"t":"Army","m":"Black Knights","s":4.9,"p":-0.7,"g":3,"c":"American Athletic","cb":"AAC","i":349,"ppg":34.7,"papg":16.0,"ypg":396.7,"ypg_a":329.3,"pass_ypg":62.0,"rush_ypg":334.7,"w":2,"l":1},{"r":71,"t":"East Carolina","m":"Pirates","s":4.9,"p":-1.0,"g":4,"c":"American Athletic","cb":"AAC","i":151,"ppg":24.0,"papg":25.2,"ypg":333.2,"ypg_a":340.0,"pass_ypg":197.0,"rush_ypg":136.2,"w":2,"l":2},{"r":72,"t":"West Virginia","m":"Mountaineers","s":4.9,"p":-1.0,"g":4,"c":"Big 12","cb":"B12","i":277,"ppg":36.2,"papg":24.8,"ypg":424.0,"ypg_a":346.0,"pass_ypg":159.0,"rush_ypg":265.0,"w":3,"l":1},{"r":73,"t":"Maryland","m":"Terrapins","s":4.8,"p":-1.4,"g":4,"c":"Big Ten","cb":"B10","i":120,"ppg":32.2,"papg":25.8,"ypg":410.5,"ypg_a":308.2,"pass_ypg":273.5,"rush_ypg":137.0,"w":2,"l":2},{"r":74,"t":"Western Michigan","m":"Broncos","s":4.8,"p":-1.5,"g":4,"c":"Mid-American","cb":"MAC","i":2711,"ppg":24.0,"papg":20.0,"ypg":295.8,"ypg_a":349.5,"pass_ypg":145.2,"rush_ypg":150.5,"w":2,"l":2},{"r":75,"t":"UConn","m":"Huskies","s":4.8,"p":-1.6,"g":4,"c":"FBS Independents","cb":"IND","i":41,"ppg":34.8,"papg":22.2,"ypg":419.5,"ypg_a":362.0,"pass_ypg":238.8,"rush_ypg":180.8,"w":2,"l":2},{"r":76,"t":"Oregon State","m":"Beavers","s":4.7,"p":-1.8,"g":4,"c":"Pac-12","cb":"PAC","i":204,"ppg":32.2,"papg":23.0,"ypg":441.5,"ypg_a":356.8,"pass_ypg":355.8,"rush_ypg":85.8,"w":2,"l":2},{"r":77,"t":"Tulane","m":"Green Wave","s":4.7,"p":-1.8,"g":4,"c":"American Athletic","cb":"AAC","i":2655,"ppg":18.8,"papg":23.2,"ypg":346.5,"ypg_a":419.2,"pass_ypg":186.2,"rush_ypg":160.2,"w":2,"l":2},{"r":78,"t":"Georgia Tech","m":"Yellow Jackets","s":4.7,"p":-2.4,"g":4,"c":"ACC","cb":"ACC","i":59,"ppg":27.0,"papg":26.0,"ypg":372.8,"ypg_a":374.5,"pass_ypg":243.8,"rush_ypg":129.0,"w":1,"l":3},{"r":79,"t":"UNLV","m":"Rebels","s":4.7,"p":-2.4,"g":4,"c":"Mountain West","cb":"MW","i":2439,"ppg":21.5,"papg":21.8,"ypg":390.0,"ypg_a":353.5,"pass_ypg":225.0,"rush_ypg":165.0,"w":2,"l":2},{"r":80,"t":"San Diego State","m":"Aztecs","s":4.6,"p":-2.7,"g":4,"c":"Pac-12","cb":"PAC","i":21,"ppg":23.0,"papg":28.8,"ypg":305.5,"ypg_a":408.5,"pass_ypg":159.8,"rush_ypg":145.8,"w":1,"l":3},{"r":81,"t":"Liberty","m":"Flames","s":4.6,"p":-2.8,"g":4,"c":"Conference USA","cb":"CUSA","i":2335,"ppg":30.5,"papg":18.8,"ypg":388.5,"ypg_a":284.8,"pass_ypg":196.2,"rush_ypg":192.2,"w":3,"l":1},{"r":82,"t":"Washington State","m":"Cougars","s":4.6,"p":-3.0,"g":4,"c":"Pac-12","cb":"PAC","i":265,"ppg":22.2,"papg":24.8,"ypg":316.0,"ypg_a":378.0,"pass_ypg":161.0,"rush_ypg":155.0,"w":1,"l":3},{"r":83,"t":"Louisiana Tech","m":"Bulldogs","s":4.5,"p":-3.7,"g":3,"c":"Sun Belt","cb":"SBC","i":2348,"ppg":37.7,"papg":29.0,"ypg":288.3,"ypg_a":347.7,"pass_ypg":194.3,"rush_ypg":94.0,"w":1,"l":2},{"r":84,"t":"Air Force","m":"Falcons","s":4.5,"p":-3.8,"g":3,"c":"Mountain West","cb":"MW","i":2005,"ppg":34.0,"papg":23.7,"ypg":376.0,"ypg_a":287.7,"pass_ypg":71.3,"rush_ypg":304.7,"w":2,"l":1},{"r":85,"t":"Miami (OH)","m":"RedHawks","s":4.4,"p":-3.9,"g":4,"c":"Mid-American","cb":"MAC","i":193,"ppg":28.5,"papg":30.5,"ypg":373.0,"ypg_a":389.0,"pass_ypg":283.2,"rush_ypg":89.8,"w":2,"l":2},{"r":86,"t":"Syracuse","m":"Orange","s":4.4,"p":-4.1,"g":3,"c":"ACC","cb":"ACC","i":183,"ppg":32.3,"papg":17.0,"ypg":389.3,"ypg_a":252.3,"pass_ypg":258.0,"rush_ypg":131.3,"w":1,"l":2},{"r":87,"t":"Louisiana","m":"Ragin' Cajuns","s":4.4,"p":-4.2,"g":4,"c":"Sun Belt","cb":"SBC","i":309,"ppg":30.8,"papg":19.2,"ypg":363.0,"ypg_a":250.5,"pass_ypg":178.0,"rush_ypg":185.0,"w":3,"l":1},{"r":88,"t":"California","m":"Golden Bears","s":4.4,"p":-4.2,"g":4,"c":"ACC","cb":"ACC","i":25,"ppg":26.0,"papg":23.5,"ypg":380.5,"ypg_a":333.2,"pass_ypg":277.5,"rush_ypg":103.0,"w":2,"l":2},{"r":89,"t":"Purdue","m":"Boilermakers","s":4.4,"p":-4.2,"g":4,"c":"Big Ten","cb":"B10","i":2509,"ppg":32.0,"papg":39.5,"ypg":406.0,"ypg_a":435.8,"pass_ypg":307.8,"rush_ypg":98.2,"w":1,"l":3},{"r":90,"t":"Navy","m":"Midshipmen","s":4.3,"p":-4.7,"g":3,"c":"American Athletic","cb":"AAC","i":2426,"ppg":30.7,"papg":25.7,"ypg":414.3,"ypg_a":337.3,"pass_ypg":90.7,"rush_ypg":323.7,"w":1,"l":2},{"r":91,"t":"Colorado","m":"Buffaloes","s":4.3,"p":-4.8,"g":4,"c":"Big 12","cb":"B12","i":38,"ppg":21.5,"papg":24.5,"ypg":390.0,"ypg_a":337.2,"pass_ypg":243.2,"rush_ypg":146.8,"w":2,"l":2},{"r":92,"t":"Georgia State","m":"Panthers","s":4.3,"p":-4.9,"g":4,"c":"Sun Belt","cb":"SBC","i":2247,"ppg":38.8,"papg":21.2,"ypg":438.5,"ypg_a":338.5,"pass_ypg":243.2,"rush_ypg":195.2,"w":3,"l":1},{"r":93,"t":"Temple","m":"Owls","s":4.3,"p":-5.1,"g":4,"c":"American Athletic","cb":"AAC","i":218,"ppg":28.0,"papg":27.8,"ypg":370.0,"ypg_a":387.8,"pass_ypg":164.0,"rush_ypg":206.0,"w":1,"l":3},{"r":94,"t":"Rutgers","m":"Scarlet Knights","s":4.2,"p":-5.3,"g":4,"c":"Big Ten","cb":"B10","i":164,"ppg":33.8,"papg":28.5,"ypg":423.5,"ypg_a":355.0,"pass_ypg":267.2,"rush_ypg":156.2,"w":1,"l":3},{"r":95,"t":"Florida Atlantic","m":"Owls","s":4.1,"p":-6.1,"g":4,"c":"American Athletic","cb":"AAC","i":2226,"ppg":30.0,"papg":30.8,"ypg":425.2,"ypg_a":417.2,"pass_ypg":299.0,"rush_ypg":126.2,"w":3,"l":1},{"r":96,"t":"Colorado State","m":"Rams","s":4.1,"p":-6.3,"g":4,"c":"Pac-12","cb":"PAC","i":36,"ppg":40.2,"papg":34.2,"ypg":453.5,"ypg_a":446.2,"pass_ypg":290.0,"rush_ypg":163.5,"w":2,"l":2},{"r":97,"t":"Tulsa","m":"Golden Hurricane","s":4.1,"p":-6.4,"g":4,"c":"American Athletic","cb":"AAC","i":202,"ppg":23.8,"papg":15.2,"ypg":333.2,"ypg_a":365.8,"pass_ypg":173.2,"rush_ypg":160.0,"w":3,"l":1},{"r":98,"t":"Jacksonville State","m":"Gamecocks","s":4.0,"p":-6.8,"g":5,"c":"Conference USA","cb":"CUSA","i":55,"ppg":27.4,"papg":21.8,"ypg":382.4,"ypg_a":316.6,"pass_ypg":222.4,"rush_ypg":160.0,"w":3,"l":2},{"r":99,"t":"Old Dominion","m":"Monarchs","s":4.0,"p":-6.8,"g":4,"c":"Sun Belt","cb":"SBC","i":295,"ppg":22.2,"papg":30.0,"ypg":294.5,"ypg_a":326.0,"pass_ypg":169.8,"rush_ypg":124.8,"w":1,"l":3},{"r":100,"t":"App State","m":"Mountaineers","s":4.0,"p":-6.9,"g":4,"c":"Sun Belt","cb":"SBC","i":2026,"ppg":34.8,"papg":22.2,"ypg":427.0,"ypg_a":354.0,"pass_ypg":306.5,"rush_ypg":120.5,"w":3,"l":1},{"r":101,"t":"Ohio","m":"Bobcats","s":4.0,"p":-7.2,"g":4,"c":"Mid-American","cb":"MAC","i":195,"ppg":30.2,"papg":31.0,"ypg":360.8,"ypg_a":381.5,"pass_ypg":179.0,"rush_ypg":181.8,"w":2,"l":2},{"r":102,"t":"Kennesaw State","m":"Owls","s":3.9,"p":-7.7,"g":4,"c":"Conference USA","cb":"CUSA","i":338,"ppg":21.8,"papg":22.5,"ypg":358.0,"ypg_a":356.2,"pass_ypg":194.2,"rush_ypg":163.8,"w":1,"l":3},{"r":103,"t":"Georgia Southern","m":"Eagles","s":3.9,"p":-7.7,"g":4,"c":"Sun Belt","cb":"SBC","i":290,"ppg":23.2,"papg":23.8,"ypg":366.8,"ypg_a":294.8,"pass_ypg":267.8,"rush_ypg":99.0,"w":1,"l":3},{"r":104,"t":"Massachusetts","m":"Minutemen","s":3.9,"p":-7.8,"g":4,"c":"Mid-American","cb":"MAC","i":113,"ppg":36.2,"papg":12.8,"ypg":328.2,"ypg_a":274.8,"pass_ypg":152.5,"rush_ypg":175.8,"w":4,"l":0},{"r":105,"t":"Stanford","m":"Cardinal","s":3.9,"p":-7.9,"g":4,"c":"ACC","cb":"ACC","i":24,"ppg":21.0,"papg":33.5,"ypg":364.5,"ypg_a":436.5,"pass_ypg":267.8,"rush_ypg":96.8,"w":2,"l":2},{"r":106,"t":"Delaware","m":"Blue Hens","s":3.9,"p":-8.0,"g":4,"c":"Conference USA","cb":"CUSA","i":48,"ppg":23.2,"papg":24.5,"ypg":343.5,"ypg_a":378.5,"pass_ypg":243.2,"rush_ypg":100.2,"w":2,"l":2},{"r":107,"t":"Florida International","m":"Panthers","s":3.9,"p":-8.0,"g":4,"c":"Conference USA","cb":"CUSA","i":2229,"ppg":18.0,"papg":14.5,"ypg":404.2,"ypg_a":243.5,"pass_ypg":289.2,"rush_ypg":115.0,"w":2,"l":2},{"r":108,"t":"Utah State","m":"Aggies","s":3.9,"p":-8.0,"g":4,"c":"Pac-12","cb":"PAC","i":328,"ppg":13.0,"papg":22.0,"ypg":318.2,"ypg_a":362.0,"pass_ypg":203.2,"rush_ypg":115.0,"w":1,"l":3},{"r":109,"t":"South Alabama","m":"Jaguars","s":3.8,"p":-8.2,"g":4,"c":"Sun Belt","cb":"SBC","i":6,"ppg":31.2,"papg":30.8,"ypg":421.0,"ypg_a":404.2,"pass_ypg":227.0,"rush_ypg":194.0,"w":2,"l":2},{"r":110,"t":"Arkansas State","m":"Red Wolves","s":3.8,"p":-8.7,"g":4,"c":"Sun Belt","cb":"SBC","i":2032,"ppg":25.0,"papg":23.5,"ypg":352.0,"ypg_a":387.2,"pass_ypg":209.2,"rush_ypg":142.8,"w":2,"l":2},{"r":111,"t":"Missouri State","m":"Bears","s":3.8,"p":-8.7,"g":4,"c":"Conference USA","cb":"CUSA","i":2623,"ppg":24.0,"papg":32.0,"ypg":313.8,"ypg_a":436.2,"pass_ypg":192.0,"rush_ypg":121.8,"w":1,"l":3},{"r":112,"t":"Troy","m":"Trojans","s":3.7,"p":-8.8,"g":4,"c":"Sun Belt","cb":"SBC","i":2653,"ppg":21.2,"papg":21.5,"ypg":369.0,"ypg_a":309.5,"pass_ypg":205.5,"rush_ypg":163.5,"w":2,"l":2},{"r":113,"t":"Boston College","m":"Eagles","s":3.7,"p":-9.3,"g":4,"c":"ACC","cb":"ACC","i":103,"ppg":19.8,"papg":23.0,"ypg":342.8,"ypg_a":337.2,"pass_ypg":189.8,"rush_ypg":153.0,"w":2,"l":2},{"r":114,"t":"Rice","m":"Owls","s":3.6,"p":-9.9,"g":4,"c":"American Athletic","cb":"AAC","i":242,"ppg":19.0,"papg":30.2,"ypg":343.5,"ypg_a":372.8,"pass_ypg":83.0,"rush_ypg":260.5,"w":1,"l":3},{"r":115,"t":"Coastal Carolina","m":"Chanticleers","s":3.5,"p":-10.3,"g":4,"c":"Sun Belt","cb":"SBC","i":324,"ppg":25.0,"papg":23.5,"ypg":378.2,"ypg_a":376.5,"pass_ypg":259.8,"rush_ypg":118.5,"w":1,"l":3},{"r":116,"t":"Southern Miss","m":"Golden Eagles","s":3.4,"p":-11.1,"g":4,"c":"Sun Belt","cb":"SBC","i":2572,"ppg":24.5,"papg":29.5,"ypg":369.0,"ypg_a":413.2,"pass_ypg":227.0,"rush_ypg":142.0,"w":1,"l":3},{"r":117,"t":"Western Kentucky","m":"Hilltoppers","s":3.3,"p":-11.9,"g":4,"c":"Conference USA","cb":"CUSA","i":98,"ppg":21.5,"papg":41.0,"ypg":340.5,"ypg_a":400.5,"pass_ypg":212.8,"rush_ypg":127.8,"w":1,"l":3},{"r":118,"t":"UAB","m":"Blazers","s":3.3,"p":-12.2,"g":4,"c":"American Athletic","cb":"AAC","i":5,"ppg":21.8,"papg":25.8,"ypg":298.5,"ypg_a":314.2,"pass_ypg":163.0,"rush_ypg":135.5,"w":2,"l":2},{"r":119,"t":"Marshall","m":"Thundering Herd","s":3.2,"p":-12.5,"g":4,"c":"Sun Belt","cb":"SBC","i":276,"ppg":23.5,"papg":32.5,"ypg":363.8,"ypg_a":438.0,"pass_ypg":218.0,"rush_ypg":145.8,"w":3,"l":1},{"r":120,"t":"New Mexico State","m":"Aggies","s":3.2,"p":-12.5,"g":4,"c":"Conference USA","cb":"CUSA","i":166,"ppg":26.2,"papg":29.8,"ypg":391.0,"ypg_a":375.0,"pass_ypg":261.0,"rush_ypg":130.0,"w":1,"l":3},{"r":121,"t":"Hawai'i","m":"Rainbow Warriors","s":3.2,"p":-12.6,"g":4,"c":"Mountain West","cb":"MW","i":62,"ppg":18.0,"papg":26.0,"ypg":337.5,"ypg_a":404.0,"pass_ypg":255.0,"rush_ypg":82.5,"w":1,"l":3},{"r":122,"t":"Central Michigan","m":"Chippewas","s":3.2,"p":-12.8,"g":4,"c":"Mid-American","cb":"MAC","i":2117,"ppg":11.8,"papg":27.5,"ypg":204.8,"ypg_a":363.5,"pass_ypg":64.0,"rush_ypg":140.8,"w":2,"l":2},{"r":123,"t":"San José State","m":"Spartans","s":3.1,"p":-13.1,"g":4,"c":"Mountain West","cb":"MW","i":23,"ppg":23.2,"papg":27.2,"ypg":397.0,"ypg_a":366.8,"pass_ypg":258.0,"rush_ypg":139.0,"w":2,"l":2},{"r":124,"t":"Middle Tennessee","m":"Blue Raiders","s":3.1,"p":-13.1,"g":4,"c":"Conference USA","cb":"CUSA","i":2393,"ppg":26.0,"papg":21.2,"ypg":336.8,"ypg_a":345.5,"pass_ypg":208.0,"rush_ypg":128.8,"w":2,"l":2},{"r":125,"t":"Nevada","m":"Wolf Pack","s":3.1,"p":-13.4,"g":4,"c":"Mountain West","cb":"MW","i":2440,"ppg":27.2,"papg":24.2,"ypg":373.8,"ypg_a":364.8,"pass_ypg":184.8,"rush_ypg":189.0,"w":1,"l":3},{"r":126,"t":"Sam Houston","m":"Bearkats","s":3.0,"p":-14.0,"g":4,"c":"Conference USA","cb":"CUSA","i":2534,"ppg":27.8,"papg":24.0,"ypg":390.5,"ypg_a":323.2,"pass_ypg":292.0,"rush_ypg":98.5,"w":1,"l":3},{"r":127,"t":"Kent State","m":"Golden Flashes","s":3.0,"p":-14.2,"g":4,"c":"Mid-American","cb":"MAC","i":2309,"ppg":16.2,"papg":36.0,"ypg":263.8,"ypg_a":384.5,"pass_ypg":133.8,"rush_ypg":130.0,"w":2,"l":2},{"r":128,"t":"Wyoming","m":"Cowboys","s":2.8,"p":-15.1,"g":4,"c":"Mountain West","cb":"MW","i":2751,"ppg":17.8,"papg":20.5,"ypg":313.8,"ypg_a":338.8,"pass_ypg":164.0,"rush_ypg":149.8,"w":2,"l":2},{"r":129,"t":"Sacramento State","m":"Hornets","s":2.8,"p":-15.6,"g":5,"c":"Mid-American","cb":"MAC","i":16,"ppg":17.6,"papg":28.6,"ypg":324.6,"ypg_a":325.6,"pass_ypg":215.6,"rush_ypg":109.0,"w":1,"l":4},{"r":130,"t":"Eastern Michigan","m":"Eagles","s":2.7,"p":-16.1,"g":5,"c":"Mid-American","cb":"MAC","i":2199,"ppg":19.0,"papg":27.2,"ypg":294.2,"ypg_a":375.0,"pass_ypg":193.6,"rush_ypg":100.6,"w":2,"l":3},{"r":131,"t":"Akron","m":"Zips","s":2.6,"p":-16.8,"g":4,"c":"Mid-American","cb":"MAC","i":2006,"ppg":19.5,"papg":31.8,"ypg":332.0,"ypg_a":407.0,"pass_ypg":201.2,"rush_ypg":130.8,"w":1,"l":3},{"r":132,"t":"UTEP","m":"Miners","s":2.5,"p":-17.4,"g":4,"c":"Mountain West","cb":"MW","i":2638,"ppg":18.8,"papg":36.5,"ypg":253.8,"ypg_a":353.0,"pass_ypg":135.0,"rush_ypg":118.8,"w":1,"l":3},{"r":133,"t":"Buffalo","m":"Bulls","s":2.3,"p":-18.9,"g":4,"c":"Mid-American","cb":"MAC","i":2084,"ppg":21.2,"papg":33.2,"ypg":309.2,"ypg_a":404.8,"pass_ypg":159.5,"rush_ypg":149.8,"w":2,"l":2},{"r":134,"t":"Ball State","m":"Cardinals","s":2.3,"p":-19.0,"g":4,"c":"Mid-American","cb":"MAC","i":2050,"ppg":18.0,"papg":37.5,"ypg":264.5,"ypg_a":435.8,"pass_ypg":150.5,"rush_ypg":114.0,"w":1,"l":3},{"r":135,"t":"Bowling Green","m":"Falcons","s":2.2,"p":-19.3,"g":4,"c":"Mid-American","cb":"MAC","i":189,"ppg":8.2,"papg":36.2,"ypg":233.2,"ypg_a":420.8,"pass_ypg":141.0,"rush_ypg":92.2,"w":0,"l":4},{"r":136,"t":"Northern Illinois","m":"Huskies","s":2.0,"p":-20.8,"g":4,"c":"Mountain West","cb":"MW","i":2459,"ppg":13.8,"papg":36.2,"ypg":295.0,"ypg_a":354.5,"pass_ypg":220.2,"rush_ypg":74.8,"w":0,"l":4},{"r":137,"t":"Charlotte","m":"49ers","s":1.7,"p":-23.3,"g":4,"c":"American Athletic","cb":"AAC","i":2429,"ppg":19.5,"papg":36.0,"ypg":311.8,"ypg_a":362.8,"pass_ypg":205.5,"rush_ypg":106.2,"w":0,"l":4},{"r":138,"t":"UL Monroe","m":"Warhawks","s":1.6,"p":-23.5,"g":4,"c":"Sun Belt","cb":"SBC","i":2433,"ppg":21.2,"papg":42.8,"ypg":336.5,"ypg_a":478.5,"pass_ypg":201.2,"rush_ypg":135.2,"w":0,"l":4}];
 
-const LOGO='https://a.espncdn.com/i/teamlogos/ncaa/500/';
+// Logos come from CFBD's own CDN, keyed on the team id already in the games
+// file, and there is a DARK variant for all 138 FBS teams.
+//
+// That matters on this palette: a team whose mark is navy or black --
+// Penn State, Iowa, Army -- disappears against a #0b0716 field. <picture>
+// with a prefers-color-scheme source swaps to the light-on-dark artwork and
+// fetches only the one the browser needs.
+//
+// The onerror uses parentNode rather than closest('picture') on purpose:
+// a quote inside this string is consumed by Python at parse time, so the
+// backslash never reaches the browser and the JS string terminates early.
+// parentNode needs no quotes and is the <picture> anyway.
+//
+// Earlier these were built against a.espncdn.com. The ids were verified
+// against CFBD with zero mismatches, but that check compared the ID INSIDE
+// the URL, never the host -- CFBD serves its own CDN, and that is the source
+// actually confirmed to exist. Corrected here.
+const LOGO='https://cdn.collegefootballdata.com/logos/500/';
+const LOGO_DARK='https://cdn.collegefootballdata.com/logos-dark/500/';
+function logoImg(id, cls){
+  if(!id) return '';
+  return '<picture>'+
+    '<source srcset="'+LOGO_DARK+id+'.png" media="(prefers-color-scheme: dark)">'+
+    '<img class="'+(cls||'logo')+'" src="'+LOGO+id+'.png" alt="" loading="lazy"'+
+    ' onerror="this.parentNode.remove()">'+
+  '</picture>';
+}
 function teamCell(name, sub, id){
-  const img = id ? '<img class="logo" src="'+LOGO+id+'.png" alt="" loading="lazy"'+
-                   ' onerror="this.remove()">' : '';
-  return '<div class="tcell">'+img+'<div class="tmeta"><div class="tm">'+name+'</div>'+
+  return '<div class="tcell">'+logoImg(id)+'<div class="tmeta"><div class="tm">'+name+'</div>'+
          (sub?'<div class="cf">'+sub+'</div>':'')+'</div></div>';
 }
 function confCell(b){
