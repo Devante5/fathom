@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fathom Projections</title>
-<meta name="description" content="Projected college football scores from the Fathom offence/defence split.">
+<meta name="description" content="Opponent-adjusted college football game forecasts — projected scores, the market number beside each, and how accurate the model has been.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z' fill='%23c3d3e0'/%3E%3Cg transform='rotate(-26 32 17)'%3E%3Cellipse cx='32' cy='17' rx='21' ry='9.5' fill='none' stroke='%237cb4e0' stroke-width='3.4'/%3E%3C/g%3E%3C/svg%3E">
@@ -213,19 +213,61 @@ th[aria-sort]{color:var(--ink)}
 .brand{display:flex;align-items:center;gap:13px}
 @media(max-width:620px){ .mark{width:34px;height:34px} }
 
-.stat{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
-  font-size:13px;color:var(--data);text-align:right;white-space:nowrap}
-th.r{text-align:right}
 .view{display:none}
 .view.on{display:block}
-.matchup{font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.logo.sm{width:18px;height:18px}
-.matchup .at{color:var(--muted);font-weight:400;margin:0 4px}
+.vswitch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.vswitch a{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;text-decoration:none;color:var(--ink2);background:var(--card);
+  border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
+.vswitch a.on{background:var(--depth-soft);border-color:var(--depth);color:var(--depth)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0 0 20px}
+.scard{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--depth);
+  border-radius:3px;padding:13px 15px}
+.scard.warn{border-left-color:var(--shoal)}
+.scard h3{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--head);margin:0 0 6px;font-weight:500}
+.scard .big{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;
+  color:var(--data);line-height:1.1;margin-bottom:5px}
+.scard p{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5}
+.kick{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+.mu{display:flex;flex-direction:column;gap:3px;min-width:180px}
+.mu .side{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.mu .side img.logo{width:17px;height:17px;object-fit:contain;flex:none}
+.mu .side .rk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--shoal);
+  width:22px;flex:none;text-align:right}
+.mu .side .nmx{color:var(--ink2)}
+.mu .side.win .nmx{color:var(--data);font-weight:600}
+.mu .side .rec{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
 .pscore{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
-  font-size:17px;font-weight:600;white-space:nowrap}
-.caveat{background:var(--card);border:1px solid var(--shoal);border-left-width:3px;
-  border-radius:3px;padding:12px 14px;margin:0 0 18px;font-size:13px;color:var(--ink2)}
-.caveat b{color:var(--ink)}
+  font-size:16px;font-weight:600;white-space:nowrap;color:var(--data)}
+.pscore .lo{color:var(--muted);font-weight:400}
+.pm{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
+.pm.close{color:var(--shoal)}
+.edgev{font-family:"IBM Plex Mono",monospace;color:var(--muted)}
+.edgev.big{color:var(--shoal);font-weight:600}
+.movef{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--shoal)}
+.fcs{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+  color:var(--shoal);border:1px solid var(--shoal);border-radius:2px;padding:1px 5px}
+tr.dim{opacity:.55}
+.dash{color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:8px;margin:10px 0 0}
+.bar{display:grid;grid-template-columns:230px 1fr 66px;align-items:center;gap:12px;font-size:12.5px}
+.bar .lab{color:var(--ink2)}
+.bar.model .lab{color:var(--data);font-weight:600}
+.bar .track{display:block;height:11px;background:var(--depth-soft);border:1px solid var(--hair);
+  border-radius:2px;overflow:hidden}
+.bar .fill{display:block;height:100%}
+.bar.model .fill{background:var(--depth)}
+.bar.mkt .fill{background:var(--above)}
+.bar.ctrl .fill{background:var(--below)}
+.bar.ref .fill{background:var(--muted)}
+.bar .val{font-family:"IBM Plex Mono",monospace;text-align:right;color:var(--data)}
+@media(max-width:620px){.bar{grid-template-columns:128px 1fr 56px;gap:8px;font-size:11.5px}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:800px){.pair{grid-template-columns:1fr}}
+.pair h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 4px;font-weight:500}
+.pair .note{font-size:12.5px;color:var(--ink2);margin:10px 0 0;line-height:1.55}
 </style>
 
 <div class="wrap">
@@ -274,7 +316,7 @@ th.r{text-align:right}
     <div class="issue">
       2026 Season · Week 5<br>
       Projections<br>
-      59 games
+      56 rated games
     </div>
   </header>
 
@@ -287,59 +329,101 @@ th.r{text-align:right}
     <a href="players.html" data-tab="players">Players</a>
   </nav>
 
-  <div class="subhead">Projected scores — and how good they are not</div>
 
-  <div class="caveat">
-    <b>Read this before using these to bet.</b> Measured walk-forward on 3,108 games
-    from 2023–2025, the Fathom projected margin misses by <b>13.95 points</b> on
-    average. The market spread on the same games misses by <b>11.89</b>. We are
-    <b>2.06 points worse</b> (p&nbsp;&lt;&nbsp;10⁻⁴⁰). Picking over/under off our
-    projected total went 50.6% — a coin flip. These scores are published because a
-    number like “31–24” is easier to read than “+7.0”, not because they beat the number
-    you can already get from a book.
+  <div class="vswitch">
+    <a href="#week5" data-v="week5">Week 5 forecast</a>
+    <a href="#accuracy" data-v="accuracy">How accurate is this</a>
   </div>
 
-  <section class="key">
-    <h2>Where the score comes from</h2>
-    <p class="keynote">The team rating solves for one number per team against margin.
-    This solves for <em>two</em> — an offence and a defence rating — against points
-    scored, so a score falls out directly instead of only a margin. The two agree
-    closely (r&nbsp;=&nbsp;0.981 with the published Fathom margin), which is the point:
-    it is the same opinion, written so you can read it.</p>
+  <section class="view" id="view-week5">
+    <div class="subhead">Week 5 — projected scores, against the market</div>
+
+    <div class="strip">
+      <div class="scard"><h3>Rated games</h3><div class="big">56 of 59</div>
+        <p>Ratings rebuilt after last week's results. The 3 unrated
+        games have an FCS opponent the model holds no rating for.</p></div>
+      <div class="scard"><h3>Close games</h3><div class="big">10</div>
+        <p>Projected inside a field goal — where the forecast is least confident
+        and the game is most worth watching.</p></div>
+      <div class="scard warn"><h3>Lines that moved</h3><div class="big">9</div>
+        <p>Moved 3+ points since opening. A move that size is the market pricing in
+        news — an injury, a suspension — that the ratings cannot see.</p></div>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Kickoff</th><th>Matchup</th><th class="r">Projected</th>
+          <th class="r">Margin</th><th class="r">Market</th><th class="r">Edge</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <p class="caveat" style="margin-top:16px"><b>No projected totals.</b> The margin
+    between the two numbers is validated; their sum is not. Fathom's projected total
+    measures worse than simply assuming each team scores its season average, so it is
+    left off rather than published as though it carried the same weight.
+    Market is the median posted spread, shown as an implied margin so it reads in the
+    same direction as ours. 56 of 59 games are priced.</p>
   </section>
 
-  <div class="controls">
-    <input type="search" id="q" placeholder="Search team…" aria-label="Search team">
-    <span class="count" id="count"></span>
-  </div>
+  <section class="view" id="view-accuracy">
+    <div class="subhead">How accurate these forecasts have been</div>
+    <p class="asof">Walk-forward on 1,659 held-out games, 2023–2025, weeks 5+,
+    both teams FBS. Every game is predicted using only what was known before it.</p>
 
-  <div class="tablewrap">
-    <table>
-      <thead><tr>
-        <th>Matchup</th><th class="r">Projected</th>
-        <th class="r sortable" data-k="m">Margin<span class="car">▼</span></th>
-        <th class="r sortable" data-k="tt">Total<span class="car"></span></th>
-      </tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-  </div>
+    <div class="pair">
+      <div>
+        <h3>Margin error — mean absolute error in points, lower is better</h3>
+<div class="bar mkt"><span class="lab">Market spread</span><span class="track"><span class="fill" style="width:77.4%"></span></span><span class="val">12.02</span></div>
+<div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:80.8%"></span></span><span class="val">12.54</span></div>
+<div class="bar ctrl"><span class="lab">Season avg point differential</span><span class="track"><span class="fill" style="width:89.4%"></span></span><span class="val">13.88</span></div>
+<div class="bar ref"><span class="lab">Home team by home-field edge</span><span class="track"><span class="fill" style="width:98.4%"></span></span><span class="val">15.27</span></div>
+<div class="bar ref"><span class="lab">Every game a tie</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="val">15.52</span></div>
+        <p class="note">Better than the best rule available for free by
+        <b>1.34 points</b>, and within <b>0.52</b> of the closing line — a number set
+        by a market with real money behind it.</p>
+      </div>
+      <div>
+        <h3>Picking the winner — accuracy, higher is better</h3>
+<div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:72.0%"></span></span><span class="val">72.0%</span></div>
+<div class="bar ctrl"><span class="lab">Season avg point differential</span><span class="track"><span class="fill" style="width:69.3%"></span></span><span class="val">69.3%</span></div>
+<div class="bar ref"><span class="lab">Better win percentage</span><span class="track"><span class="fill" style="width:67.6%"></span></span><span class="val">67.6%</span></div>
+<div class="bar ref"><span class="lab">Home team always</span><span class="track"><span class="fill" style="width:57.2%"></span></span><span class="val">57.2%</span></div>
+        <p class="note">1,194–465. Ahead of season point differential by 2.7 points,
+        the better record by 4.3, and always taking the home team by 14.8 — all
+        statistically significant, none of them close calls.</p>
+      </div>
+    </div>
+
+    <section class="key" style="margin-top:22px">
+      <h2>Why the comparison is to those rules and not to a rival model</h2>
+      <p class="keynote">A forecast is only worth something if it beats what you could
+      do without it. Backing the home team costs nothing. Ranking teams by their average
+      point differential costs nothing. A model that cannot clear those is decoration.
+      Every number above is measured against them on the same held-out games, and the
+      comparison is reported whether it flatters the model or not — which is why
+      projected totals are missing from the other tab.</p>
+    </section>
+  </section>
 
   <footer>
     <h3>Method</h3>
-    <p>Points scored are fit as <em>league mean + offence(team) + defence(opponent) +
-    home field</em>, iterated to convergence, with each team anchored to its own
-    offence and defence ratings from last season and that anchor fading as games
-    accumulate — the same prior, with the same weight, as the team and player ratings.
-    Margin is not capped here: capping points would distort the scoring level, which is
-    the quantity being estimated.</p>
-    <p class="fine">No betting line is used to produce these numbers. When a game's
-    result lands, the projection is graded against the closing spread, and the grade
-    published is the against-the-spread result — not whether the projected winner won.</p>
+    <p>One rating per team explains margin. Splitting that same fixed point in two —
+    an offence rating and a defence rating solved against points scored — produces a
+    projected score directly. Each team is anchored to its own prior-season rating
+    with the anchor fading as games accumulate, so an early-season number is not built
+    on two games pretending to be a season.</p>
+    <p class="fine">No betting lines are used anywhere in the projections themselves;
+    the market column is shown for comparison only, after the fact. This is a
+    description of what the model expects, not betting advice, and a 0.52-point gap to
+    the closing line is nowhere near an edge over it.</p>
   </footer>
 </div>
 
 <script>
-const DATA = [{"h":"Washington State","a":"Fresno State","hi":265,"ai":278,"ph":19.9,"pa":20.0,"m":-0.1,"tt":39.9,"n":false},{"h":"Arizona","a":"Cincinnati","hi":12,"ai":2132,"ph":30.9,"pa":30.4,"m":0.4,"tt":61.3,"n":false},{"h":"Coastal Carolina","a":"Georgia Southern","hi":324,"ai":290,"ph":24.3,"pa":25.2,"m":-0.9,"tt":49.5,"n":false},{"h":"UConn","a":"Syracuse","hi":41,"ai":183,"ph":28.8,"pa":27.3,"m":1.5,"tt":56.0,"n":false},{"h":"San Diego State","a":"Texas State","hi":21,"ai":326,"ph":30.2,"pa":28.6,"m":1.6,"tt":58.9,"n":false},{"h":"NC State","a":"Louisville","hi":152,"ai":97,"ph":36.4,"pa":34.6,"m":1.8,"tt":71.0,"n":false},{"h":"UNLV","a":"California","hi":2439,"ai":25,"ph":24.2,"pa":22.2,"m":2.0,"tt":46.4,"n":false},{"h":"Colorado State","a":"Oregon State","hi":36,"ai":204,"ph":32.5,"pa":34.5,"m":-2.0,"tt":67.0,"n":false},{"h":"Delaware","a":"Liberty","hi":48,"ai":2335,"ph":24.3,"pa":26.7,"m":-2.4,"tt":50.9,"n":false},{"h":"New Mexico State","a":"Western Kentucky","hi":166,"ai":98,"ph":31.4,"pa":29.0,"m":2.5,"tt":60.4,"n":false},{"h":"Minnesota","a":"Michigan","hi":135,"ai":130,"ph":22.0,"pa":25.6,"m":-3.6,"tt":47.6,"n":false},{"h":"Air Force","a":"Navy","hi":2005,"ai":2426,"ph":32.6,"pa":29.0,"m":3.6,"tt":61.6,"n":false},{"h":"Houston","a":"UCF","hi":248,"ai":2116,"ph":31.1,"pa":27.2,"m":4.0,"tt":58.3,"n":false},{"h":"Louisiana Tech","a":"Army","hi":2348,"ai":349,"ph":29.5,"pa":25.5,"m":4.0,"tt":54.9,"n":false},{"h":"Northwestern","a":"Penn State","hi":77,"ai":213,"ph":21.7,"pa":25.7,"m":-4.1,"tt":47.4,"n":false},{"h":"Hawai'i","a":"San José State","hi":62,"ai":23,"ph":27.8,"pa":23.6,"m":4.2,"tt":51.3,"n":false},{"h":"Arizona State","a":"Baylor","hi":9,"ai":239,"ph":28.2,"pa":23.8,"m":4.5,"tt":52.0,"n":false},{"h":"Georgia State","a":"Old Dominion","hi":2247,"ai":295,"ph":32.1,"pa":27.6,"m":4.6,"tt":59.7,"n":false},{"h":"South Carolina","a":"Kentucky","hi":2579,"ai":96,"ph":29.3,"pa":24.5,"m":4.7,"tt":53.8,"n":false},{"h":"Wisconsin","a":"Michigan State","hi":275,"ai":127,"ph":22.9,"pa":17.6,"m":5.3,"tt":40.5,"n":false},{"h":"Florida State","a":"Virginia","hi":52,"ai":258,"ph":23.8,"pa":29.1,"m":-5.3,"tt":52.8,"n":false},{"h":"Louisiana","a":"Arkansas State","hi":309,"ai":2032,"ph":27.0,"pa":21.2,"m":5.7,"tt":48.2,"n":false},{"h":"Central Michigan","a":"Akron","hi":2117,"ai":2006,"ph":25.0,"pa":19.3,"m":5.7,"tt":44.2,"n":false},{"h":"Missouri","a":"Florida","hi":142,"ai":57,"ph":29.3,"pa":35.3,"m":-6.0,"tt":64.6,"n":false},{"h":"Virginia Tech","a":"Pittsburgh","hi":259,"ai":221,"ph":26.4,"pa":32.6,"m":-6.2,"tt":58.9,"n":false},{"h":"TCU","a":"BYU","hi":2628,"ai":252,"ph":21.8,"pa":28.7,"m":-6.9,"tt":50.6,"n":false},{"h":"Tennessee","a":"Auburn","hi":2633,"ai":2,"ph":33.5,"pa":25.7,"m":7.9,"tt":59.2,"n":false},{"h":"Mississippi State","a":"Alabama","hi":344,"ai":333,"ph":33.0,"pa":41.7,"m":-8.7,"tt":74.6,"n":false},{"h":"Massachusetts","a":"Eastern Michigan","hi":113,"ai":2199,"ph":29.0,"pa":18.6,"m":10.3,"tt":47.6,"n":false},{"h":"Iowa","a":"Ohio State","hi":2294,"ai":194,"ph":17.5,"pa":28.4,"m":-10.8,"tt":45.9,"n":false},{"h":"Iowa State","a":"West Virginia","hi":66,"ai":277,"ph":33.7,"pa":22.6,"m":11.1,"tt":56.3,"n":false},{"h":"Kent State","a":"Ohio","hi":2309,"ai":195,"ph":24.1,"pa":35.4,"m":-11.3,"tt":59.5,"n":false},{"h":"Tulsa","a":"North Texas","hi":202,"ai":249,"ph":24.0,"pa":35.5,"m":-11.5,"tt":59.5,"n":false},{"h":"South Florida","a":"Temple","hi":58,"ai":218,"ph":36.1,"pa":24.0,"m":12.2,"tt":60.1,"n":false},{"h":"Rice","a":"UTSA","hi":242,"ai":2636,"ph":22.9,"pa":35.6,"m":-12.7,"tt":58.5,"n":false},{"h":"USC","a":"Washington","hi":30,"ai":264,"ph":37.8,"pa":25.0,"m":12.8,"tt":62.8,"n":false},{"h":"Nebraska","a":"Maryland","hi":158,"ai":120,"ph":34.7,"pa":21.6,"m":13.1,"tt":56.3,"n":false},{"h":"Illinois","a":"Purdue","hi":356,"ai":2509,"ph":41.7,"pa":27.7,"m":14.0,"tt":69.3,"n":false},{"h":"Wake Forest","a":"Stanford","hi":154,"ai":24,"ph":33.5,"pa":18.4,"m":15.0,"tt":51.9,"n":false},{"h":"Buffalo","a":"Western Michigan","hi":2084,"ai":2711,"ph":14.8,"pa":32.1,"m":-17.3,"tt":47.0,"n":false},{"h":"SMU","a":"Boston College","hi":2567,"ai":103,"ph":33.1,"pa":15.8,"m":17.4,"tt":48.9,"n":false},{"h":"Colorado","a":"Texas Tech","hi":38,"ai":2641,"ph":15.7,"pa":34.2,"m":-18.5,"tt":49.9,"n":false},{"h":"Texas A&M","a":"Arkansas","hi":245,"ai":8,"ph":38.7,"pa":20.0,"m":18.8,"tt":58.7,"n":false},{"h":"Boise State","a":"Utah State","hi":68,"ai":328,"ph":31.6,"pa":11.9,"m":19.8,"tt":43.5,"n":false},{"h":"South Alabama","a":"UL Monroe","hi":6,"ai":2433,"ph":42.7,"pa":21.5,"m":21.3,"tt":64.2,"n":false},{"h":"Clemson","a":"Miami","hi":228,"ai":2390,"ph":17.1,"pa":38.5,"m":-21.4,"tt":55.5,"n":false},{"h":"Charlotte","a":"Memphis","hi":2429,"ai":235,"ph":18.6,"pa":40.3,"m":-21.7,"tt":58.9,"n":false},{"h":"Kansas","a":"Middle Tennessee","hi":2305,"ai":2393,"ph":36.3,"pa":14.4,"m":21.8,"tt":50.7,"n":false},{"h":"Miami (OH)","a":"Bowling Green","hi":193,"ai":189,"ph":34.8,"pa":11.2,"m":23.6,"tt":46.0,"n":false},{"h":"UAB","a":"Samford","hi":5,"ai":null,"ph":40.7,"pa":16.3,"m":24.4,"tt":56.9,"n":false},{"h":"North Dakota State","a":"Wyoming","hi":2449,"ai":2751,"ph":29.0,"pa":4.1,"m":24.9,"tt":33.1,"n":false},{"h":"Georgia","a":"Vanderbilt","hi":61,"ai":238,"ph":44.2,"pa":19.2,"m":25.1,"tt":63.4,"n":false},{"h":"Rutgers","a":"Indiana","hi":164,"ai":84,"ph":17.0,"pa":44.5,"m":-27.5,"tt":61.5,"n":false},{"h":"Ball State","a":"Toledo","hi":2050,"ai":2649,"ph":17.8,"pa":46.9,"m":-29.1,"tt":64.8,"n":false},{"h":"Florida Atlantic","a":"Texas Southern","hi":2226,"ai":null,"ph":48.9,"pa":19.7,"m":29.3,"tt":68.6,"n":false},{"h":"North Carolina","a":"Notre Dame","hi":153,"ai":87,"ph":6.4,"pa":36.9,"m":-30.5,"tt":43.2,"n":false},{"h":"New Mexico","a":"UTEP","hi":167,"ai":2638,"ph":46.6,"pa":14.1,"m":32.5,"tt":60.7,"n":false},{"h":"James Madison","a":"Marshall","hi":256,"ai":276,"ph":50.4,"pa":12.7,"m":37.7,"tt":63.2,"n":false},{"h":"LSU","a":"McNeese","hi":99,"ai":null,"ph":57.3,"pa":-5.1,"m":62.4,"tt":52.2,"n":false}];
+const GAMES = [{"t":"Thu 7:00p","a":"Western Kentucky","h":"New Mexico State","ai":98,"hi":166,"ar":117,"hr":120,"arec":"1-3","hrec":"1-3","ps":[29.0,31.4],"pm":2.5,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Thu 8:00p","a":"North Texas","h":"Tulsa","ai":249,"hi":202,"ar":43,"hr":97,"arec":"2-2","hrec":"3-1","ps":[35.5,24.0],"pm":-11.5,"mk":2.5,"mv":4.0,"u":false,"nt":false},{"t":"Fri 6:00p","a":"Pittsburgh","h":"Virginia Tech","ai":221,"hi":259,"ar":20,"hr":57,"arec":"4-0","hrec":"4-0","ps":[32.6,26.4],"pm":-6.2,"mk":4.5,"mv":-1.0,"u":false,"nt":false},{"t":"Fri 6:00p","a":"Liberty","h":"Delaware","ai":2335,"hi":48,"ar":81,"hr":106,"arec":"3-1","hrec":"2-2","ps":[26.7,24.3],"pm":-2.4,"mk":-7.0,"mv":0.0,"u":false,"nt":false},{"t":"Fri 7:00p","a":"Penn State","h":"Northwestern","ai":213,"hi":77,"ar":17,"hr":33,"arec":"3-1","hrec":"2-1","ps":[25.7,21.7],"pm":-4.1,"mk":-3.0,"mv":4.0,"u":false,"nt":false},{"t":"Sat 11:00a","a":"Navy","h":"Air Force","ai":2426,"hi":2005,"ar":90,"hr":84,"arec":"1-2","hrec":"2-1","ps":[29.0,32.6],"pm":3.6,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 11:00a","a":"Syracuse","h":"UConn","ai":183,"hi":41,"ar":86,"hr":75,"arec":"1-2","hrec":"2-2","ps":[27.3,28.8],"pm":1.5,"mk":-5.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","a":"California","h":"UNLV","ai":25,"hi":2439,"ar":88,"hr":79,"arec":"2-2","hrec":"2-2","ps":[22.2,24.2],"pm":2.0,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","a":"Samford","h":"UAB","ai":null,"hi":5,"ar":null,"hr":118,"arec":null,"hrec":"2-2","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 2:30p","a":"Wyoming","h":"North Dakota State","ai":2751,"hi":2449,"ar":128,"hr":41,"arec":"2-2","hrec":"4-0","ps":[4.1,29.0],"pm":24.9,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 5:00p","a":"Texas Southern","h":"Florida Atlantic","ai":null,"hi":2226,"ar":null,"hr":95,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 5:00p","a":"Oregon State","h":"Colorado State","ai":204,"hi":36,"ar":76,"hr":96,"arec":"2-2","hrec":"2-2","ps":[34.5,32.5],"pm":-2.0,"mk":-4.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 6:30p","a":"Utah State","h":"Boise State","ai":328,"hi":68,"ar":108,"hr":31,"arec":"1-3","hrec":"3-1","ps":[11.9,31.6],"pm":19.8,"mk":21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 6:45p","a":"McNeese","h":"LSU","ai":null,"hi":99,"ar":null,"hr":8,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 7:00p","a":"Indiana","h":"Rutgers","ai":84,"hi":164,"ar":5,"hr":94,"arec":"4-0","hrec":"1-3","ps":[44.5,17.0],"pm":-27.5,"mk":-23.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat 8:30p","a":"Fresno State","h":"Washington State","ai":278,"hi":265,"ar":68,"hr":82,"arec":"3-1","hrec":"1-3","ps":[20.0,19.9],"pm":-0.1,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat 9:30p","a":"Texas State","h":"San Diego State","ai":326,"hi":21,"ar":65,"hr":80,"arec":"2-2","hrec":"1-3","ps":[28.6,30.2],"pm":1.6,"mk":-4.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 10:59p","a":"San José State","h":"Hawai'i","ai":23,"hi":62,"ar":123,"hr":121,"arec":"2-2","hrec":"1-3","ps":[23.6,27.8],"pm":4.2,"mk":3.0,"mv":-2.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"UCF","h":"Houston","ai":2116,"hi":248,"ar":51,"hr":32,"arec":"3-1","hrec":"3-1","ps":[27.2,31.1],"pm":4.0,"mk":11.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Old Dominion","h":"Georgia State","ai":295,"hi":2247,"ar":99,"hr":92,"arec":"1-3","hrec":"3-1","ps":[27.6,32.1],"pm":4.6,"mk":-1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Virginia","h":"Florida State","ai":258,"hi":52,"ar":24,"hr":50,"arec":"3-1","hrec":"2-2","ps":[29.1,23.8],"pm":-5.3,"mk":-2.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Arkansas State","h":"Louisiana","ai":2032,"hi":309,"ar":110,"hr":87,"arec":"2-2","hrec":"3-1","ps":[21.2,27.0],"pm":5.7,"mk":6.5,"mv":2.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Akron","h":"Central Michigan","ai":2006,"hi":2117,"ar":131,"hr":122,"arec":"1-3","hrec":"2-2","ps":[19.3,25.0],"pm":5.7,"mk":6.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Michigan State","h":"Wisconsin","ai":127,"hi":275,"ar":58,"hr":44,"arec":"2-2","hrec":"3-1","ps":[17.6,22.9],"pm":5.3,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Florida","h":"Missouri","ai":57,"hi":142,"ar":10,"hr":29,"arec":"4-0","hrec":"3-1","ps":[35.3,29.3],"pm":-6.0,"mk":-4.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Baylor","h":"Arizona State","ai":239,"hi":9,"ar":48,"hr":59,"arec":"3-1","hrec":"2-1","ps":[23.8,28.2],"pm":4.5,"mk":3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Kentucky","h":"South Carolina","ai":96,"hi":2579,"ar":39,"hr":46,"arec":"3-1","hrec":"2-2","ps":[24.5,29.3],"pm":4.7,"mk":3.5,"mv":-3.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Cincinnati","h":"Arizona","ai":2132,"hi":12,"ar":49,"hr":36,"arec":"4-0","hrec":"3-1","ps":[30.4,30.9],"pm":0.4,"mk":7.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Louisville","h":"NC State","ai":97,"hi":152,"ar":35,"hr":63,"arec":"2-2","hrec":"2-2","ps":[34.6,36.4],"pm":1.8,"mk":-6.0,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Michigan","h":"Minnesota","ai":130,"hi":135,"ar":30,"hr":61,"arec":"3-1","hrec":"3-1","ps":[25.6,22.0],"pm":-3.6,"mk":-6.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Army","h":"Louisiana Tech","ai":349,"hi":2348,"ar":70,"hr":83,"arec":"2-1","hrec":"1-2","ps":[25.5,29.5],"pm":4.0,"mk":-3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Georgia Southern","h":"Coastal Carolina","ai":290,"hi":324,"ar":103,"hr":115,"arec":"1-3","hrec":"1-3","ps":[25.2,24.3],"pm":-0.9,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Ohio","h":"Kent State","ai":195,"hi":2309,"ar":101,"hr":127,"arec":"2-2","hrec":"2-2","ps":[35.4,24.1],"pm":-11.3,"mk":-5.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"West Virginia","h":"Iowa State","ai":277,"hi":66,"ar":72,"hr":37,"arec":"3-1","hrec":"2-2","ps":[22.6,33.7],"pm":11.1,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Ohio State","h":"Iowa","ai":194,"hi":2294,"ar":3,"hr":19,"arec":"3-1","hrec":"4-0","ps":[28.4,17.5],"pm":-10.8,"mk":-13.5,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Eastern Michigan","h":"Massachusetts","ai":2199,"hi":113,"ar":130,"hr":104,"arec":"2-3","hrec":"4-0","ps":[18.6,29.0],"pm":10.3,"mk":5.5,"mv":3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Alabama","h":"Mississippi State","ai":333,"hi":344,"ar":2,"hr":15,"arec":"4-0","hrec":"4-0","ps":[41.7,33.0],"pm":-8.7,"mk":-6.0,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Auburn","h":"Tennessee","ai":2,"hi":2633,"ar":25,"hr":11,"arec":"3-1","hrec":"3-1","ps":[25.7,33.5],"pm":7.9,"mk":7.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"BYU","h":"TCU","ai":252,"hi":2628,"ar":14,"hr":52,"arec":"3-0","hrec":"2-2","ps":[28.7,21.8],"pm":-6.9,"mk":-6.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"UTSA","h":"Rice","ai":2636,"hi":242,"ar":62,"hr":114,"arec":"3-1","hrec":"1-3","ps":[35.6,22.9],"pm":-12.7,"mk":-10.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Western Michigan","h":"Buffalo","ai":2711,"hi":2084,"ar":74,"hr":133,"arec":"2-2","hrec":"2-2","ps":[32.1,14.8],"pm":-17.3,"mk":-15.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Boston College","h":"SMU","ai":103,"hi":2567,"ar":113,"hr":38,"arec":"2-2","hrec":"3-1","ps":[15.8,33.1],"pm":17.4,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Texas Tech","h":"Colorado","ai":2641,"hi":38,"ar":13,"hr":91,"arec":"4-0","hrec":"2-2","ps":[34.2,15.7],"pm":-18.5,"mk":-14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Temple","h":"South Florida","ai":218,"hi":58,"ar":93,"hr":45,"arec":"1-3","hrec":"4-0","ps":[24.0,36.1],"pm":12.2,"mk":6.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Maryland","h":"Nebraska","ai":120,"hi":158,"ar":73,"hr":26,"arec":"2-2","hrec":"4-0","ps":[21.6,34.7],"pm":13.1,"mk":13.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Purdue","h":"Illinois","ai":2509,"hi":356,"ar":89,"hr":42,"arec":"1-3","hrec":"2-2","ps":[27.7,41.7],"pm":14.0,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Stanford","h":"Wake Forest","ai":24,"hi":154,"ar":105,"hr":53,"arec":"2-2","hrec":"3-1","ps":[18.4,33.5],"pm":15.0,"mk":12.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Washington","h":"USC","ai":264,"hi":30,"ar":56,"hr":23,"arec":"3-1","hrec":"4-1","ps":[25.0,37.8],"pm":12.8,"mk":9.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Middle Tennessee","h":"Kansas","ai":2393,"hi":2305,"ar":124,"hr":66,"arec":"2-2","hrec":"1-2","ps":[14.4,36.3],"pm":21.8,"mk":20.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Memphis","h":"Charlotte","ai":235,"hi":2429,"ar":60,"hr":137,"arec":"3-1","hrec":"0-4","ps":[40.3,18.6],"pm":-21.7,"mk":-21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Miami","h":"Clemson","ai":2390,"hi":228,"ar":7,"hr":55,"arec":"4-0","hrec":"3-1","ps":[38.5,17.1],"pm":-21.4,"mk":-17.5,"mv":-10.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"UL Monroe","h":"South Alabama","ai":2433,"hi":6,"ar":138,"hr":109,"arec":"0-4","hrec":"2-2","ps":[21.5,42.7],"pm":21.3,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Arkansas","h":"Texas A&M","ai":8,"hi":245,"ar":67,"hr":16,"arec":"2-2","hrec":"2-2","ps":[20.0,38.7],"pm":18.8,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Vanderbilt","h":"Georgia","ai":238,"hi":61,"ar":47,"hr":4,"arec":"3-1","hrec":"4-0","ps":[19.2,44.2],"pm":25.1,"mk":25.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Toledo","h":"Ball State","ai":2649,"hi":2050,"ar":54,"hr":134,"arec":"3-1","hrec":"1-3","ps":[46.9,17.8],"pm":-29.1,"mk":-19.5,"mv":-2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Bowling Green","h":"Miami (OH)","ai":189,"hi":193,"ar":135,"hr":85,"arec":"0-4","hrec":"2-2","ps":[11.2,34.8],"pm":23.6,"mk":14.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Notre Dame","h":"North Carolina","ai":87,"hi":153,"ar":1,"hr":69,"arec":"4-0","hrec":"2-1","ps":[36.9,6.4],"pm":-30.5,"mk":-21.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"UTEP","h":"New Mexico","ai":2638,"hi":167,"ar":132,"hr":40,"arec":"1-3","hrec":"3-1","ps":[14.1,46.6],"pm":32.5,"mk":22.5,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Marshall","h":"James Madison","ai":276,"hi":256,"ar":119,"hr":21,"arec":"3-1","hrec":"4-0","ps":[12.7,50.4],"pm":37.7,"mk":16.5,"mv":3.0,"u":false,"nt":false}];
 
 // Logos come from CFBD's own CDN, keyed on the team id already in the games
 // file, and there is a DARK variant for all 138 FBS teams.
@@ -376,33 +460,51 @@ function confCell(b){
   return '<td class="confcol">'+(b?'<span class="badge">'+b+'</span>':'')+'</td>';
 }
 
-function lg(id){return logoImg(id,'logo sm');}
-const rows=document.getElementById('rows'), q=document.getElementById('q');
-const count=document.getElementById('count');
-let sortKey='m', sortDir=1;
-function render(){
-  const term=q.value.trim().toLowerCase();
-  let shown=DATA.filter(d=>!term||d.h.toLowerCase().includes(term)||d.a.toLowerCase().includes(term));
-  shown.sort((x,y)=>sortDir*(Math.abs(x[sortKey])-Math.abs(y[sortKey])));
-  rows.innerHTML=shown.map(d=>{
-    const fav = d.m>=0 ? d.h : d.a;
-    return '<tr>'+
-      '<td><div class="matchup">'+lg(d.ai)+d.a+'<span class="at">'+(d.n?'vs':'at')+'</span>'+
-        lg(d.hi)+d.h+'</div>'+
-        '<div class="cf">'+fav+' by '+Math.abs(d.m).toFixed(1)+'</div></td>'+
-      '<td class="pscore" style="text-align:right">'+d.pa.toFixed(0)+'–'+d.ph.toFixed(0)+'</td>'+
-      '<td class="stat">'+(d.m>0?'+':'')+d.m.toFixed(1)+'</td>'+
-      '<td class="stat">'+d.tt.toFixed(1)+'</td></tr>';
-  }).join('');
-  count.textContent=shown.length+' games';
+function side(nm, id, rec, rk, win) {
+  return '<div class="side' + (win ? ' win' : '') + '">' +
+    '<span class="rk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
+    '<span class="nmx">' + nm + '</span>' +
+    (rec ? '<span class="rec">' + rec + '</span>' : '') + '</div>';
 }
-document.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',()=>{
-  const k=th.dataset.k;
-  if(k===sortKey) sortDir=-sortDir; else {sortKey=k; sortDir=1;}
-  document.querySelectorAll('th[data-k] .car').forEach(c=>c.textContent='');
-  th.querySelector('.car').textContent=sortDir>0?'▲':'▼';
-  render();
-}));
-q.addEventListener('input',render);
-render();
+// Same H/A wording in every margin column. A bare signed number beside
+// "A +2.4" reads as a different quantity when it is the same one.
+function fmt(v) { return (v > 0 ? 'H +' : 'A +') + Math.abs(v).toFixed(1); }
+function edge(g) {
+  if (g.u || g.mk == null || g.pm == null) return '<span class="dash">—</span>';
+  const e = g.pm - g.mk;
+  return '<span class="edgev' + (Math.abs(e) >= 7 ? ' big' : '') + '">' +
+         fmt(e) + '</span>';
+}
+document.getElementById('rows').innerHTML = GAMES.map(function (g) {
+  const mv = (g.mv != null && Math.abs(g.mv) >= 3)
+    ? '<span class="movef">moved ' + (g.mv > 0 ? '+' : '') + g.mv.toFixed(1) + '</span>' : '';
+  const mu = '<div class="mu">' + side(g.a, g.ai, g.arec, g.ar, !g.u && g.pm < 0) +
+             side(g.h, g.hi, g.hrec, g.hr, !g.u && g.pm > 0) + '</div>';
+  if (g.u) {
+    return '<tr class="dim"><td class="kick">' + g.t + '</td><td>' + mu + '</td>' +
+      '<td class="r"><span class="fcs">FCS — not rated</span></td>' +
+      '<td class="r dash">—</td><td class="r dash">' +
+      (g.mk == null ? '—' : fmt(g.mk)) + '</td><td class="r dash">—</td></tr>';
+  }
+  const homeWin = g.pm > 0;
+  return '<tr><td class="kick">' + g.t + (g.nt ? '<br>neutral' : '') + '</td>' +
+    '<td>' + mu + '</td>' +
+    '<td class="r"><span class="pscore"><span class="' + (homeWin ? 'lo' : '') + '">' +
+      g.ps[0].toFixed(1) + '</span> <span class="lo">–</span> <span class="' +
+      (homeWin ? '' : 'lo') + '">' + g.ps[1].toFixed(1) + '</span></span></td>' +
+    '<td class="r"><span class="pm' + (Math.abs(g.pm) < 3 ? ' close' : '') + '">' +
+      fmt(g.pm) + '</span></td>' +
+    '<td class="r">' + (g.mk == null ? '<span class="dash">—</span>' : fmt(g.mk) + mv) + '</td>' +
+    '<td class="r">' + edge(g) + '</td></tr>';
+}).join('');
+
+function setView(v) {
+  if (v !== 'week5' && v !== 'accuracy') v = 'week5';
+  document.querySelectorAll('.view').forEach(e => e.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  document.querySelectorAll('.vswitch a').forEach(
+    a => a.classList.toggle('on', a.dataset.v === v));
+}
+addEventListener('hashchange', () => setView(location.hash.slice(1)));
+setView(location.hash.slice(1) || 'week5');
 </script>
