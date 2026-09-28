@@ -323,6 +323,7 @@ th.r{text-align:right}
     <a href="stats.html#talent" data-tab="talent">Talent</a>
     <a href="projections.html" data-tab="projections">Projections</a>
     <a href="players.html" data-tab="players">Players</a>
+    <a href="methodology.html" data-tab="methodology">Methodology</a>
   </nav>
 
 
@@ -363,7 +364,7 @@ th.r{text-align:right}
     them than it is. Each tab states the week its data runs through, because they do
     not all refresh at the same time — results land immediately, the advanced box
     scores need their own pull.</p>
-    <p class="fine">No betting lines are used anywhere on this page. Rank and Score
+    <p class="fine">No betting lines are used anywhere on this page. Rank and FPS
     come from the Fathom team rating; everything else is descriptive.</p>
   </footer>
 </div>
@@ -420,7 +421,7 @@ let view='efficiency', sortKey=SPEC.efficiency.sort, sortDir=-1;
 });
 
 const BASE=[['r','#',0,'Fathom rank'],['t','Team',null,null],
-            ['cb','Conf',null,'Conference'],['s','Score',1,'Fathom score, 0-10']];
+            ['cb','Conf',null,'Conference'],['s','FPS',1,'Fathom Point Scale, 0-10']];
 
 function setView(v){
   if(!SPEC[v]) v='efficiency';
