@@ -91,6 +91,50 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
 .hdr .fp,.hdr .rk,.hdr .cf{font-size:9.5px;font-weight:400;border:none;
   background:none;color:inherit;padding:0}
 .hdr .cf{text-align:center} .hdr .fp{text-align:right}
+
+/* ---------- matchups card ---------- */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gc{border-radius:6px;padding:11px 13px 10px;border:1px solid}
+.dk .gc{background:#16222e;border-color:rgba(233,239,246,.12)}
+.lt .gc{background:#f9fbfd;border-color:rgba(12,26,38,.13)}
+.gch{display:flex;justify-content:space-between;align-items:baseline;
+  margin:0 0 7px;font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;
+  text-transform:uppercase}
+.dk .gch{color:rgba(255,255,255,.50)} .lt .gch{color:rgba(0,0,0,.54)}
+.gs{display:grid;grid-template-columns:26px 24px 1fr auto auto;align-items:center;
+  gap:8px;padding:3px 0}
+.grk{font-family:var(--mono);font-size:10px;text-align:right}
+.dk .grk{color:rgba(255,255,255,.46)} .lt .grk{color:rgba(0,0,0,.50)}
+.glgw{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.glg{width:23px;height:23px;object-fit:contain}
+.gnm{min-width:0}
+.gt1{font-weight:600;font-size:15px;line-height:1.18;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gt2{font-size:11px;line-height:1.25;margin-top:1px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.dk .gt1{color:rgba(255,255,255,.55)} .lt .gt1{color:rgba(0,0,0,.55)}
+.dk .gt2{color:rgba(255,255,255,.42)} .lt .gt2{color:rgba(0,0,0,.46)}
+.at{font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:400;margin-right:4px;opacity:.7}
+.grec{font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums}
+.dk .grec{color:rgba(255,255,255,.44)} .lt .grec{color:rgba(0,0,0,.48)}
+.gsc{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:22px;
+  font-weight:600;text-align:right;min-width:34px;line-height:1.15}
+.dk .gsc{color:rgba(255,255,255,.46)} .lt .gsc{color:rgba(0,0,0,.48)}
+/* the projected winner takes the gold, same rule as the Projections page */
+.dk .gs.win .gt1,.dk .gs.win .gsc{color:#f2c14e}
+.lt .gs.win .gt1,.lt .gs.win .gsc{color:#7a5200}
+.gcf{display:flex;gap:18px;margin:8px 0 0;padding:7px 0 0;border-top:1px solid}
+.dk .gcf{border-color:rgba(233,239,246,.10)}
+.lt .gcf{border-color:rgba(12,26,38,.10)}
+.gfi{display:flex;align-items:baseline;gap:5px}
+.gk{font-family:var(--mono);font-size:8.5px;letter-spacing:.11em;
+  text-transform:uppercase}
+.dk .gk{color:rgba(255,255,255,.48)} .lt .gk{color:rgba(0,0,0,.52)}
+.gv{font-family:var(--mono);font-size:12px;font-weight:600}
+.dk .gv{color:#fff} .lt .gv{color:rgba(0,0,0,.88)}
+.foot{margin:14px 0 0;font-size:12.5px;line-height:1.5}
+.dk .foot{color:rgba(255,255,255,.55)} .lt .foot{color:rgba(0,0,0,.58)}
 </style>
 
 <div class="page">
@@ -99,6 +143,10 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
   weekly post. Logos and typefaces load here because the page is served from
   the site.</p>
 
+  <div class="sw" role="group" aria-label="Card">
+    <button id="v-top" aria-pressed="true">Top 25</button>
+    <button id="v-gam" aria-pressed="false">Matchups</button>
+  </div>
   <div class="sw" role="group" aria-label="Ground">
     <button id="b-dk" aria-pressed="true">Dark</button>
     <button id="b-lt" aria-pressed="false">Light</button>
@@ -489,6 +537,472 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
     </div>
   </div>
 </div>
+<div class="card dk" id="games-dk" hidden>
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="badge">Week 5 · Matchups</div>
+  </div>
+  <div class="ggrid">
+      <div class="gc">
+        <div class="gch"><span class="gkick">Fri 7:00p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#17</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/213.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Penn State</div><div class="gt2">Nittany Lions</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">26</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#33</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/77.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Northwestern</div><div class="gt2">Wildcats</div></div>
+          <div class="grec">2-1</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +4.1</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +2.6</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 11:00a CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#2</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Alabama</div><div class="gt2">Crimson Tide</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">42</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#15</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/344.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Mississippi State</div><div class="gt2">Bulldogs</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">33</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +8.7</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +5.9</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 11:45a CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#47</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/238.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Vanderbilt</div><div class="gt2">Commodores</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">19</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#4</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Georgia</div><div class="gt2">Bulldogs</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">44</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +25.1</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +24.4</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#3</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Ohio State</div><div class="gt2">Buckeyes</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">28</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#19</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2294.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Iowa</div><div class="gt2">Hawkeyes</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">18</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +10.8</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +13.6</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#25</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Auburn</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">26</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#11</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2633.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Tennessee</div><div class="gt2">Volunteers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">34</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +7.9</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +7.0</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#10</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/57.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Florida</div><div class="gt2">Gators</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">35</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#29</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/142.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Missouri</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">29</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +6.0</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +5.2</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#88</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/25.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">California</div><div class="gt2">Golden Bears</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#79</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2439.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>UNLV</div><div class="gt2">Rebels</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">24</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +2.0</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +2.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:00p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#14</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/252.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">BYU</div><div class="gt2">Cougars</div></div>
+          <div class="grec">3-0</div>
+          <div class="gsc">29</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#52</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2628.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>TCU</div><div class="gt2">Horned Frogs</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +6.9</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +6.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#13</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Texas Tech</div><div class="gt2">Red Raiders</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">34</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#91</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/38.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Colorado</div><div class="gt2">Buffaloes</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">16</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +18.5</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +13.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#7</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Miami</div><div class="gt2">Hurricanes</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">38</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#55</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos-dark/500/228.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Clemson</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">17</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +21.4</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +16.8</span></span>
+        </div>
+      </div>
+  </div>
+  <div class="foot">The games worth watching this week. Projected score and the
+  model's margin, with the market's consensus number beside it.</div>
+</div>
+<div class="card lt" id="games-lt" hidden>
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="badge">Week 5 · Matchups</div>
+  </div>
+  <div class="ggrid">
+      <div class="gc">
+        <div class="gch"><span class="gkick">Fri 7:00p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#17</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/213.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Penn State</div><div class="gt2">Nittany Lions</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">26</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#33</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/77.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Northwestern</div><div class="gt2">Wildcats</div></div>
+          <div class="grec">2-1</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +4.1</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +2.6</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 11:00a CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#2</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Alabama</div><div class="gt2">Crimson Tide</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">42</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#15</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/344.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Mississippi State</div><div class="gt2">Bulldogs</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">33</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +8.7</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +5.9</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 11:45a CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#47</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/238.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Vanderbilt</div><div class="gt2">Commodores</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">19</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#4</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Georgia</div><div class="gt2">Bulldogs</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">44</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +25.1</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +24.4</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#3</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Ohio State</div><div class="gt2">Buckeyes</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">28</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#19</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2294.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Iowa</div><div class="gt2">Hawkeyes</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">18</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +10.8</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +13.6</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#25</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Auburn</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">26</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#11</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2633.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Tennessee</div><div class="gt2">Volunteers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">34</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +7.9</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +7.0</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#10</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/57.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Florida</div><div class="gt2">Gators</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">35</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#29</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/142.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Missouri</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">29</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +6.0</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +5.2</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 2:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs">
+          <div class="grk">#88</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/25.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">California</div><div class="gt2">Golden Bears</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gs win">
+          <div class="grk">#79</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2439.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>UNLV</div><div class="gt2">Rebels</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">24</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Home +2.0</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Home +2.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:00p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#14</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/252.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">BYU</div><div class="gt2">Cougars</div></div>
+          <div class="grec">3-0</div>
+          <div class="gsc">29</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#52</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2628.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>TCU</div><div class="gt2">Horned Frogs</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">22</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +6.9</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +6.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#13</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Texas Tech</div><div class="gt2">Red Raiders</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">34</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#91</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/38.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Colorado</div><div class="gt2">Buffaloes</div></div>
+          <div class="grec">2-2</div>
+          <div class="gsc">16</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +18.5</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +13.5</span></span>
+        </div>
+      </div>
+      <div class="gc">
+        <div class="gch"><span class="gkick">Sat 6:30p CT</span>
+          <span class="glbl">Projected</span></div>
+        <div class="gs win">
+          <div class="grk">#7</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1">Miami</div><div class="gt2">Hurricanes</div></div>
+          <div class="grec">4-0</div>
+          <div class="gsc">38</div>
+        </div>
+        <div class="gs">
+          <div class="grk">#55</div>
+          <div class="glgw"><img class="glg" src="https://cdn.collegefootballdata.com/logos/500/228.png" alt="" onerror="this.style.visibility='hidden'"></div>
+          <div class="gnm"><div class="gt1"><span class="at">at</span>Clemson</div><div class="gt2">Tigers</div></div>
+          <div class="grec">3-1</div>
+          <div class="gsc">17</div>
+        </div>
+        <div class="gcf">
+          <span class="gfi"><span class="gk">Model</span><span class="gv">Away +21.4</span></span>
+          <span class="gfi"><span class="gk">Market</span><span class="gv">Away +16.8</span></span>
+        </div>
+      </div>
+  </div>
+  <div class="foot">The games worth watching this week. Projected score and the
+  model's margin, with the market's consensus number beside it.</div>
+</div>
   </div>
 
   <p class="help"><b>To capture:</b> press <code>Cmd&nbsp;+&nbsp;Shift&nbsp;+&nbsp;4</code>
@@ -497,14 +1011,21 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
 </div>
 
 <script>
-const dk=document.getElementById('card-dk'), lt=document.getElementById('card-lt');
-const bdk=document.getElementById('b-dk'), blt=document.getElementById('b-lt');
-function show(d){
-  dk.hidden=!d; lt.hidden=d;
-  bdk.setAttribute('aria-pressed',String(d));
-  blt.setAttribute('aria-pressed',String(!d));
+const el=id=>document.getElementById(id);
+let dark=true, view='top';
+function show(){
+  const on = (view==='top' ? 'card-' : 'games-') + (dark ? 'dk' : 'lt');
+  ['card-dk','card-lt','games-dk','games-lt'].forEach(id=>{
+    el(id).hidden = (id !== on);
+  });
+  el('b-dk').setAttribute('aria-pressed',String(dark));
+  el('b-lt').setAttribute('aria-pressed',String(!dark));
+  el('v-top').setAttribute('aria-pressed',String(view==='top'));
+  el('v-gam').setAttribute('aria-pressed',String(view==='games'));
 }
-bdk.addEventListener('click',()=>show(true));
-blt.addEventListener('click',()=>show(false));
-show(true);
+el('b-dk').addEventListener('click',()=>{dark=true;show();});
+el('b-lt').addEventListener('click',()=>{dark=false;show();});
+el('v-top').addEventListener('click',()=>{view='top';show();});
+el('v-gam').addEventListener('click',()=>{view='games';show();});
+show();
 </script>
