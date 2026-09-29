@@ -261,7 +261,7 @@ th[aria-sort]{color:var(--ink)}
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0 0 20px}
 .scard{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--depth);
   border-radius:3px;padding:13px 15px}
-.scard.warn{border-left-color:var(--shoal)}
+.scard.warn{border-left-color:var(--data)}
 .scard h3{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--head);margin:0 0 6px;font-weight:500}
 .scard .big{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;
@@ -271,7 +271,7 @@ th[aria-sort]{color:var(--ink)}
 .mu{display:flex;flex-direction:column;gap:3px;min-width:180px}
 .mu .side{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .mu .side img.logo{width:17px;height:17px;object-fit:contain;flex:none}
-.mu .side .rk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--shoal);
+.mu .side .rk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data);
   width:22px;flex:none;text-align:right}
 .mu .side .nmx{color:var(--ink2)}
 .mu .side.win .nmx{color:var(--data);font-weight:600}
@@ -280,12 +280,12 @@ th[aria-sort]{color:var(--ink)}
   font-size:16px;font-weight:600;white-space:nowrap;color:var(--data)}
 .pscore .lo{color:var(--muted);font-weight:400}
 .pm{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
-.pm.close{color:var(--shoal)}
+.pm.close{color:var(--data)}
 .edgev{font-family:"IBM Plex Mono",monospace;color:var(--muted)}
-.edgev.big{color:var(--shoal);font-weight:600}
-.movef{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--shoal)}
+.edgev.big{color:var(--data);font-weight:600}
+.movef{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
 .fcs{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
-  color:var(--shoal);border:1px solid var(--shoal);border-radius:2px;padding:1px 5px}
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:1px 5px}
 tr.dim{opacity:.55}
 .dash{color:var(--muted)}
 .bars{display:flex;flex-direction:column;gap:8px;margin:10px 0 0}
@@ -306,6 +306,89 @@ tr.dim{opacity:.55}
 .pair h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
   text-transform:uppercase;color:var(--head);margin:0 0 4px;font-weight:500}
 .pair .note{font-size:12.5px;color:var(--ink2);margin:10px 0 0;line-height:1.55}
+
+/* ---------------------------------------------------------------- game cards
+   One card per game instead of one table row. A row makes fifty-nine games a
+   ledger to scan down; a card makes each game a thing you look at. The grid
+   collapses to a single column on a phone without a media query -- auto-fit
+   plus a min track does it, and minmax(0,1fr) lets a card shrink below its
+   content rather than forcing a horizontal scroll. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(298px,100%),1fr));
+  gap:13px;margin:0 0 6px}
+.dayhead{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--head);font-weight:500;
+  border-bottom:1px solid var(--rule);padding:0 0 7px;margin:22px 0 13px}
+.dayhead:first-child{margin-top:0}
+
+.gc{background:var(--card);border:1px solid var(--rule);border-radius:6px;
+  padding:12px 14px 11px;min-width:0}
+
+.gc.dim{opacity:.6}
+.gch{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 10px}
+.gch .ghl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+.gch .neu{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:0 4px}
+
+.gs{display:flex;align-items:center;gap:6px;padding:3px 0;min-width:0}
+.gs img.logo{width:19px;height:19px;object-fit:contain;flex:none}
+/* crk / cnm / crec / csc, not rk / nm / rec / sc: the shared stylesheet sets
+   .rk{width:46px}, .rec{width:56px} and .sc{width:64px} for the ratings
+   tables. Those fixed widths applied here too and squeezed the team name to
+   75px, ellipsing half the card grid. Card-local names cannot collide. */
+.gs .crk{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--data);
+  flex:none;min-width:17px;width:auto;text-align:right}
+/* 14.5px, not 16: at three columns a card is ~314px and the long names --
+   North Dakota State, Mississippi State, Western Kentucky -- were ellipsing.
+   A truncated team name on a card about that team is not a tradeoff worth
+   making for two points of type size. */
+/* Wraps rather than ellipses. At three columns a card is ~314px and the four
+   longest names -- North Dakota State, Washington State, Central Michigan,
+   Coastal Carolina -- do not fit on one line. Hiding the win-loss record to
+   make room took it off nearly every card; truncating puts an ellipsis in a
+   team's own name. A second line costs a few pixels of height on four cards
+   and loses nothing. */
+.gs .cnm{font-size:14.5px;font-weight:600;color:var(--muted);letter-spacing:0;
+  min-width:0;line-height:1.25;overflow-wrap:anywhere}
+.gs .cat{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);font-weight:400;margin-right:4px}
+.gs .crec{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--muted);
+  flex:none;width:auto}
+.gs .csc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:20px;font-weight:600;color:var(--muted);margin-left:auto;flex:none;
+  line-height:1.2;padding-left:6px;width:auto;text-shadow:none}
+.gs.win .cnm{color:var(--shoal)}
+.gs.win .csc{color:var(--shoal)}
+
+/* The bar is the projected SCORE SPLIT, not a win probability. We publish no
+   win probability and inventing one for a visual would be publishing a number
+   that has never been validated. The key under the grid says so in words. */
+.split{display:flex;height:4px;border-radius:2px;overflow:hidden;margin:9px 0 0;
+  background:var(--depth-soft)}
+.split span{display:block;height:100%}
+/* The filled side is the projected winner, so it carries the winner's gold.
+   Leaving it blue would have the bar and the name disagree about which colour
+   means "ahead". */
+.split .fa{background:var(--muted)}
+.split .fh{background:var(--shoal)}
+.split.awin .fa{background:var(--shoal)}
+.split.awin .fh{background:var(--muted)}
+
+.gcf{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  border-top:1px solid var(--hair);margin:10px 0 0;padding:9px 0 0}
+.gcf .fi{display:flex;align-items:baseline;gap:5px;min-width:0}
+.gcf .lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted)}
+/* Model, Market and Edge all carry the same weight and the same extreme
+   white. No colour-coded emphasis: a "big edge" highlight drew the eye to
+   arm 3, the one arm measured as having no edge over the market. */
+.gcf .v{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;
+  color:var(--data);white-space:nowrap}
+.gcf .v.mut{color:var(--data);font-weight:600}
+.gcf .v.close{color:var(--data)}
+.gcf .v.big{color:var(--data)}
+.gcf .mv{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
 </style>
 
 <div class="wrap">
@@ -389,17 +472,15 @@ tr.dim{opacity:.55}
         news — an injury, a suspension — that the ratings cannot see.</p></div>
     </div>
 
-    <div class="tablewrap">
-      <table>
-        <thead><tr>
-          <th>Kickoff</th><th>Matchup</th><th class="r">Projected</th>
-          <th class="r">Margin</th><th class="r">Market</th><th class="r">Edge</th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    <div id="cards"></div>
 
-    <p class="caveat" style="margin-top:16px"><b>No projected totals.</b> The margin
+    <p class="caveat" style="margin-top:18px"><b>The bar on each card is the projected
+    score split, not a win probability.</b> Fathom publishes no win probability, and
+    drawing one purely to fill a bar would put a number on the page that has never been
+    measured. The bar simply shows how the projected points divide between the two
+    teams.</p>
+
+    <p class="caveat" style="margin-top:10px"><b>No projected totals.</b> The margin
     between the two numbers is validated; their sum is not. Fathom's projected total
     measures worse than simply assuming each team scores its season average, so it is
     left off rather than published as though it carried the same weight.
@@ -462,7 +543,7 @@ tr.dim{opacity:.55}
 </div>
 
 <script>
-const GAMES = [{"t":"Thu 7:00p","a":"Western Kentucky","h":"New Mexico State","ai":98,"hi":166,"ar":117,"hr":120,"arec":"1-3","hrec":"1-3","ps":[29.0,31.4],"pm":2.5,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Thu 8:00p","a":"North Texas","h":"Tulsa","ai":249,"hi":202,"ar":43,"hr":97,"arec":"2-2","hrec":"3-1","ps":[35.5,24.0],"pm":-11.5,"mk":2.5,"mv":4.0,"u":false,"nt":false},{"t":"Fri 6:00p","a":"Pittsburgh","h":"Virginia Tech","ai":221,"hi":259,"ar":20,"hr":57,"arec":"4-0","hrec":"4-0","ps":[32.6,26.4],"pm":-6.2,"mk":4.5,"mv":-1.0,"u":false,"nt":false},{"t":"Fri 6:00p","a":"Liberty","h":"Delaware","ai":2335,"hi":48,"ar":81,"hr":106,"arec":"3-1","hrec":"2-2","ps":[26.7,24.3],"pm":-2.4,"mk":-7.0,"mv":0.0,"u":false,"nt":false},{"t":"Fri 7:00p","a":"Penn State","h":"Northwestern","ai":213,"hi":77,"ar":17,"hr":33,"arec":"3-1","hrec":"2-1","ps":[25.7,21.7],"pm":-4.1,"mk":-3.0,"mv":4.0,"u":false,"nt":false},{"t":"Sat 11:00a","a":"Navy","h":"Air Force","ai":2426,"hi":2005,"ar":90,"hr":84,"arec":"1-2","hrec":"2-1","ps":[29.0,32.6],"pm":3.6,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 11:00a","a":"Syracuse","h":"UConn","ai":183,"hi":41,"ar":86,"hr":75,"arec":"1-2","hrec":"2-2","ps":[27.3,28.8],"pm":1.5,"mk":-5.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","a":"California","h":"UNLV","ai":25,"hi":2439,"ar":88,"hr":79,"arec":"2-2","hrec":"2-2","ps":[22.2,24.2],"pm":2.0,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","a":"Samford","h":"UAB","ai":null,"hi":5,"ar":null,"hr":118,"arec":null,"hrec":"2-2","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 2:30p","a":"Wyoming","h":"North Dakota State","ai":2751,"hi":2449,"ar":128,"hr":41,"arec":"2-2","hrec":"4-0","ps":[4.1,29.0],"pm":24.9,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 5:00p","a":"Texas Southern","h":"Florida Atlantic","ai":null,"hi":2226,"ar":null,"hr":95,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 5:00p","a":"Oregon State","h":"Colorado State","ai":204,"hi":36,"ar":76,"hr":96,"arec":"2-2","hrec":"2-2","ps":[34.5,32.5],"pm":-2.0,"mk":-4.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 6:30p","a":"Utah State","h":"Boise State","ai":328,"hi":68,"ar":108,"hr":31,"arec":"1-3","hrec":"3-1","ps":[11.9,31.6],"pm":19.8,"mk":21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 6:45p","a":"McNeese","h":"LSU","ai":null,"hi":99,"ar":null,"hr":8,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 7:00p","a":"Indiana","h":"Rutgers","ai":84,"hi":164,"ar":5,"hr":94,"arec":"4-0","hrec":"1-3","ps":[44.5,17.0],"pm":-27.5,"mk":-23.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat 8:30p","a":"Fresno State","h":"Washington State","ai":278,"hi":265,"ar":68,"hr":82,"arec":"3-1","hrec":"1-3","ps":[20.0,19.9],"pm":-0.1,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat 9:30p","a":"Texas State","h":"San Diego State","ai":326,"hi":21,"ar":65,"hr":80,"arec":"2-2","hrec":"1-3","ps":[28.6,30.2],"pm":1.6,"mk":-4.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 10:59p","a":"San José State","h":"Hawai'i","ai":23,"hi":62,"ar":123,"hr":121,"arec":"2-2","hrec":"1-3","ps":[23.6,27.8],"pm":4.2,"mk":3.0,"mv":-2.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"UCF","h":"Houston","ai":2116,"hi":248,"ar":51,"hr":32,"arec":"3-1","hrec":"3-1","ps":[27.2,31.1],"pm":4.0,"mk":11.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Old Dominion","h":"Georgia State","ai":295,"hi":2247,"ar":99,"hr":92,"arec":"1-3","hrec":"3-1","ps":[27.6,32.1],"pm":4.6,"mk":-1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Virginia","h":"Florida State","ai":258,"hi":52,"ar":24,"hr":50,"arec":"3-1","hrec":"2-2","ps":[29.1,23.8],"pm":-5.3,"mk":-2.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Arkansas State","h":"Louisiana","ai":2032,"hi":309,"ar":110,"hr":87,"arec":"2-2","hrec":"3-1","ps":[21.2,27.0],"pm":5.7,"mk":6.5,"mv":2.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Akron","h":"Central Michigan","ai":2006,"hi":2117,"ar":131,"hr":122,"arec":"1-3","hrec":"2-2","ps":[19.3,25.0],"pm":5.7,"mk":6.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Michigan State","h":"Wisconsin","ai":127,"hi":275,"ar":58,"hr":44,"arec":"2-2","hrec":"3-1","ps":[17.6,22.9],"pm":5.3,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Florida","h":"Missouri","ai":57,"hi":142,"ar":10,"hr":29,"arec":"4-0","hrec":"3-1","ps":[35.3,29.3],"pm":-6.0,"mk":-4.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Baylor","h":"Arizona State","ai":239,"hi":9,"ar":48,"hr":59,"arec":"3-1","hrec":"2-1","ps":[23.8,28.2],"pm":4.5,"mk":3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Kentucky","h":"South Carolina","ai":96,"hi":2579,"ar":39,"hr":46,"arec":"3-1","hrec":"2-2","ps":[24.5,29.3],"pm":4.7,"mk":3.5,"mv":-3.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Cincinnati","h":"Arizona","ai":2132,"hi":12,"ar":49,"hr":36,"arec":"4-0","hrec":"3-1","ps":[30.4,30.9],"pm":0.4,"mk":7.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Louisville","h":"NC State","ai":97,"hi":152,"ar":35,"hr":63,"arec":"2-2","hrec":"2-2","ps":[34.6,36.4],"pm":1.8,"mk":-6.0,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Michigan","h":"Minnesota","ai":130,"hi":135,"ar":30,"hr":61,"arec":"3-1","hrec":"3-1","ps":[25.6,22.0],"pm":-3.6,"mk":-6.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Army","h":"Louisiana Tech","ai":349,"hi":2348,"ar":70,"hr":83,"arec":"2-1","hrec":"1-2","ps":[25.5,29.5],"pm":4.0,"mk":-3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Georgia Southern","h":"Coastal Carolina","ai":290,"hi":324,"ar":103,"hr":115,"arec":"1-3","hrec":"1-3","ps":[25.2,24.3],"pm":-0.9,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Ohio","h":"Kent State","ai":195,"hi":2309,"ar":101,"hr":127,"arec":"2-2","hrec":"2-2","ps":[35.4,24.1],"pm":-11.3,"mk":-5.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"West Virginia","h":"Iowa State","ai":277,"hi":66,"ar":72,"hr":37,"arec":"3-1","hrec":"2-2","ps":[22.6,33.7],"pm":11.1,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Ohio State","h":"Iowa","ai":194,"hi":2294,"ar":3,"hr":19,"arec":"3-1","hrec":"4-0","ps":[28.4,17.5],"pm":-10.8,"mk":-13.5,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Eastern Michigan","h":"Massachusetts","ai":2199,"hi":113,"ar":130,"hr":104,"arec":"2-3","hrec":"4-0","ps":[18.6,29.0],"pm":10.3,"mk":5.5,"mv":3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Alabama","h":"Mississippi State","ai":333,"hi":344,"ar":2,"hr":15,"arec":"4-0","hrec":"4-0","ps":[41.7,33.0],"pm":-8.7,"mk":-6.0,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Auburn","h":"Tennessee","ai":2,"hi":2633,"ar":25,"hr":11,"arec":"3-1","hrec":"3-1","ps":[25.7,33.5],"pm":7.9,"mk":7.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"BYU","h":"TCU","ai":252,"hi":2628,"ar":14,"hr":52,"arec":"3-0","hrec":"2-2","ps":[28.7,21.8],"pm":-6.9,"mk":-6.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"UTSA","h":"Rice","ai":2636,"hi":242,"ar":62,"hr":114,"arec":"3-1","hrec":"1-3","ps":[35.6,22.9],"pm":-12.7,"mk":-10.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Western Michigan","h":"Buffalo","ai":2711,"hi":2084,"ar":74,"hr":133,"arec":"2-2","hrec":"2-2","ps":[32.1,14.8],"pm":-17.3,"mk":-15.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Boston College","h":"SMU","ai":103,"hi":2567,"ar":113,"hr":38,"arec":"2-2","hrec":"3-1","ps":[15.8,33.1],"pm":17.4,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Texas Tech","h":"Colorado","ai":2641,"hi":38,"ar":13,"hr":91,"arec":"4-0","hrec":"2-2","ps":[34.2,15.7],"pm":-18.5,"mk":-14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Temple","h":"South Florida","ai":218,"hi":58,"ar":93,"hr":45,"arec":"1-3","hrec":"4-0","ps":[24.0,36.1],"pm":12.2,"mk":6.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Maryland","h":"Nebraska","ai":120,"hi":158,"ar":73,"hr":26,"arec":"2-2","hrec":"4-0","ps":[21.6,34.7],"pm":13.1,"mk":13.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Purdue","h":"Illinois","ai":2509,"hi":356,"ar":89,"hr":42,"arec":"1-3","hrec":"2-2","ps":[27.7,41.7],"pm":14.0,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Stanford","h":"Wake Forest","ai":24,"hi":154,"ar":105,"hr":53,"arec":"2-2","hrec":"3-1","ps":[18.4,33.5],"pm":15.0,"mk":12.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Washington","h":"USC","ai":264,"hi":30,"ar":56,"hr":23,"arec":"3-1","hrec":"4-1","ps":[25.0,37.8],"pm":12.8,"mk":9.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Middle Tennessee","h":"Kansas","ai":2393,"hi":2305,"ar":124,"hr":66,"arec":"2-2","hrec":"1-2","ps":[14.4,36.3],"pm":21.8,"mk":20.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Memphis","h":"Charlotte","ai":235,"hi":2429,"ar":60,"hr":137,"arec":"3-1","hrec":"0-4","ps":[40.3,18.6],"pm":-21.7,"mk":-21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Miami","h":"Clemson","ai":2390,"hi":228,"ar":7,"hr":55,"arec":"4-0","hrec":"3-1","ps":[38.5,17.1],"pm":-21.4,"mk":-17.5,"mv":-10.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"UL Monroe","h":"South Alabama","ai":2433,"hi":6,"ar":138,"hr":109,"arec":"0-4","hrec":"2-2","ps":[21.5,42.7],"pm":21.3,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Arkansas","h":"Texas A&M","ai":8,"hi":245,"ar":67,"hr":16,"arec":"2-2","hrec":"2-2","ps":[20.0,38.7],"pm":18.8,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Vanderbilt","h":"Georgia","ai":238,"hi":61,"ar":47,"hr":4,"arec":"3-1","hrec":"4-0","ps":[19.2,44.2],"pm":25.1,"mk":25.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Toledo","h":"Ball State","ai":2649,"hi":2050,"ar":54,"hr":134,"arec":"3-1","hrec":"1-3","ps":[46.9,17.8],"pm":-29.1,"mk":-19.5,"mv":-2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Bowling Green","h":"Miami (OH)","ai":189,"hi":193,"ar":135,"hr":85,"arec":"0-4","hrec":"2-2","ps":[11.2,34.8],"pm":23.6,"mk":14.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"Notre Dame","h":"North Carolina","ai":87,"hi":153,"ar":1,"hr":69,"arec":"4-0","hrec":"2-1","ps":[36.9,6.4],"pm":-30.5,"mk":-21.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","a":"UTEP","h":"New Mexico","ai":2638,"hi":167,"ar":132,"hr":40,"arec":"1-3","hrec":"3-1","ps":[14.1,46.6],"pm":32.5,"mk":22.5,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","a":"Marshall","h":"James Madison","ai":276,"hi":256,"ar":119,"hr":21,"arec":"3-1","hrec":"4-0","ps":[12.7,50.4],"pm":37.7,"mk":16.5,"mv":3.0,"u":false,"nt":false}];
+const GAMES = [{"t":"Thu 7:00p","d":"Thursday, October 1","a":"Western Kentucky","h":"New Mexico State","ai":98,"hi":166,"ar":117,"hr":120,"arec":"1-3","hrec":"1-3","ps":[29.0,31.4],"pm":2.5,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Thu 8:00p","d":"Thursday, October 1","a":"North Texas","h":"Tulsa","ai":249,"hi":202,"ar":43,"hr":97,"arec":"2-2","hrec":"3-1","ps":[35.5,24.0],"pm":-11.5,"mk":2.5,"mv":4.0,"u":false,"nt":false},{"t":"Fri 6:00p","d":"Friday, October 2","a":"Pittsburgh","h":"Virginia Tech","ai":221,"hi":259,"ar":20,"hr":57,"arec":"4-0","hrec":"4-0","ps":[32.6,26.4],"pm":-6.2,"mk":4.5,"mv":-1.0,"u":false,"nt":false},{"t":"Fri 6:00p","d":"Friday, October 2","a":"Liberty","h":"Delaware","ai":2335,"hi":48,"ar":81,"hr":106,"arec":"3-1","hrec":"2-2","ps":[26.7,24.3],"pm":-2.4,"mk":-7.0,"mv":0.0,"u":false,"nt":false},{"t":"Fri 7:00p","d":"Friday, October 2","a":"Penn State","h":"Northwestern","ai":213,"hi":77,"ar":17,"hr":33,"arec":"3-1","hrec":"2-1","ps":[25.7,21.7],"pm":-4.1,"mk":-3.0,"mv":4.0,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 3","a":"Navy","h":"Air Force","ai":2426,"hi":2005,"ar":90,"hr":84,"arec":"1-2","hrec":"2-1","ps":[29.0,32.6],"pm":3.6,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 3","a":"Syracuse","h":"UConn","ai":183,"hi":41,"ar":86,"hr":75,"arec":"1-2","hrec":"2-2","ps":[27.3,28.8],"pm":1.5,"mk":-5.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 3","a":"California","h":"UNLV","ai":25,"hi":2439,"ar":88,"hr":79,"arec":"2-2","hrec":"2-2","ps":[22.2,24.2],"pm":2.0,"mk":2.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 3","a":"Samford","h":"UAB","ai":null,"hi":5,"ar":null,"hr":118,"arec":null,"hrec":"2-2","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 3","a":"Wyoming","h":"North Dakota State","ai":2751,"hi":2449,"ar":128,"hr":41,"arec":"2-2","hrec":"4-0","ps":[4.1,29.0],"pm":24.9,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 5:00p","d":"Saturday, October 3","a":"Texas Southern","h":"Florida Atlantic","ai":null,"hi":2226,"ar":null,"hr":95,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 5:00p","d":"Saturday, October 3","a":"Oregon State","h":"Colorado State","ai":204,"hi":36,"ar":76,"hr":96,"arec":"2-2","hrec":"2-2","ps":[34.5,32.5],"pm":-2.0,"mk":-4.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 3","a":"Utah State","h":"Boise State","ai":328,"hi":68,"ar":108,"hr":31,"arec":"1-3","hrec":"3-1","ps":[11.9,31.6],"pm":19.8,"mk":21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 6:45p","d":"Saturday, October 3","a":"McNeese","h":"LSU","ai":null,"hi":99,"ar":null,"hr":8,"arec":null,"hrec":"3-1","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 7:00p","d":"Saturday, October 3","a":"Indiana","h":"Rutgers","ai":84,"hi":164,"ar":5,"hr":94,"arec":"4-0","hrec":"1-3","ps":[44.5,17.0],"pm":-27.5,"mk":-23.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat 8:30p","d":"Saturday, October 3","a":"Fresno State","h":"Washington State","ai":278,"hi":265,"ar":68,"hr":82,"arec":"3-1","hrec":"1-3","ps":[20.0,19.9],"pm":-0.1,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat 9:30p","d":"Saturday, October 3","a":"Texas State","h":"San Diego State","ai":326,"hi":21,"ar":65,"hr":80,"arec":"2-2","hrec":"1-3","ps":[28.6,30.2],"pm":1.6,"mk":-4.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat 10:59p","d":"Saturday, October 3","a":"San José State","h":"Hawai'i","ai":23,"hi":62,"ar":123,"hr":121,"arec":"2-2","hrec":"1-3","ps":[23.6,27.8],"pm":4.2,"mk":3.0,"mv":-2.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"UCF","h":"Houston","ai":2116,"hi":248,"ar":51,"hr":32,"arec":"3-1","hrec":"3-1","ps":[27.2,31.1],"pm":4.0,"mk":11.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Old Dominion","h":"Georgia State","ai":295,"hi":2247,"ar":99,"hr":92,"arec":"1-3","hrec":"3-1","ps":[27.6,32.1],"pm":4.6,"mk":-1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Virginia","h":"Florida State","ai":258,"hi":52,"ar":24,"hr":50,"arec":"3-1","hrec":"2-2","ps":[29.1,23.8],"pm":-5.3,"mk":-2.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Arkansas State","h":"Louisiana","ai":2032,"hi":309,"ar":110,"hr":87,"arec":"2-2","hrec":"3-1","ps":[21.2,27.0],"pm":5.7,"mk":6.5,"mv":2.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Akron","h":"Central Michigan","ai":2006,"hi":2117,"ar":131,"hr":122,"arec":"1-3","hrec":"2-2","ps":[19.3,25.0],"pm":5.7,"mk":6.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Michigan State","h":"Wisconsin","ai":127,"hi":275,"ar":58,"hr":44,"arec":"2-2","hrec":"3-1","ps":[17.6,22.9],"pm":5.3,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Florida","h":"Missouri","ai":57,"hi":142,"ar":10,"hr":29,"arec":"4-0","hrec":"3-1","ps":[35.3,29.3],"pm":-6.0,"mk":-4.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Baylor","h":"Arizona State","ai":239,"hi":9,"ar":48,"hr":59,"arec":"3-1","hrec":"2-1","ps":[23.8,28.2],"pm":4.5,"mk":3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Kentucky","h":"South Carolina","ai":96,"hi":2579,"ar":39,"hr":46,"arec":"3-1","hrec":"2-2","ps":[24.5,29.3],"pm":4.7,"mk":3.5,"mv":-3.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Cincinnati","h":"Arizona","ai":2132,"hi":12,"ar":49,"hr":36,"arec":"4-0","hrec":"3-1","ps":[30.4,30.9],"pm":0.4,"mk":7.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Louisville","h":"NC State","ai":97,"hi":152,"ar":35,"hr":63,"arec":"2-2","hrec":"2-2","ps":[34.6,36.4],"pm":1.8,"mk":-6.0,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Michigan","h":"Minnesota","ai":130,"hi":135,"ar":30,"hr":61,"arec":"3-1","hrec":"3-1","ps":[25.6,22.0],"pm":-3.6,"mk":-6.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Army","h":"Louisiana Tech","ai":349,"hi":2348,"ar":70,"hr":83,"arec":"2-1","hrec":"1-2","ps":[25.5,29.5],"pm":4.0,"mk":-3.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Georgia Southern","h":"Coastal Carolina","ai":290,"hi":324,"ar":103,"hr":115,"arec":"1-3","hrec":"1-3","ps":[25.2,24.3],"pm":-0.9,"mk":-1.5,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Ohio","h":"Kent State","ai":195,"hi":2309,"ar":101,"hr":127,"arec":"2-2","hrec":"2-2","ps":[35.4,24.1],"pm":-11.3,"mk":-5.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"West Virginia","h":"Iowa State","ai":277,"hi":66,"ar":72,"hr":37,"arec":"3-1","hrec":"2-2","ps":[22.6,33.7],"pm":11.1,"mk":1.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Ohio State","h":"Iowa","ai":194,"hi":2294,"ar":3,"hr":19,"arec":"3-1","hrec":"4-0","ps":[28.4,17.5],"pm":-10.8,"mk":-13.5,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Eastern Michigan","h":"Massachusetts","ai":2199,"hi":113,"ar":130,"hr":104,"arec":"2-3","hrec":"4-0","ps":[18.6,29.0],"pm":10.3,"mk":5.5,"mv":3.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Alabama","h":"Mississippi State","ai":333,"hi":344,"ar":2,"hr":15,"arec":"4-0","hrec":"4-0","ps":[41.7,33.0],"pm":-8.7,"mk":-6.0,"mv":-3.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Auburn","h":"Tennessee","ai":2,"hi":2633,"ar":25,"hr":11,"arec":"3-1","hrec":"3-1","ps":[25.7,33.5],"pm":7.9,"mk":7.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"BYU","h":"TCU","ai":252,"hi":2628,"ar":14,"hr":52,"arec":"3-0","hrec":"2-2","ps":[28.7,21.8],"pm":-6.9,"mk":-6.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"UTSA","h":"Rice","ai":2636,"hi":242,"ar":62,"hr":114,"arec":"3-1","hrec":"1-3","ps":[35.6,22.9],"pm":-12.7,"mk":-10.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Western Michigan","h":"Buffalo","ai":2711,"hi":2084,"ar":74,"hr":133,"arec":"2-2","hrec":"2-2","ps":[32.1,14.8],"pm":-17.3,"mk":-15.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Boston College","h":"SMU","ai":103,"hi":2567,"ar":113,"hr":38,"arec":"2-2","hrec":"3-1","ps":[15.8,33.1],"pm":17.4,"mk":20.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Texas Tech","h":"Colorado","ai":2641,"hi":38,"ar":13,"hr":91,"arec":"4-0","hrec":"2-2","ps":[34.2,15.7],"pm":-18.5,"mk":-14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Temple","h":"South Florida","ai":218,"hi":58,"ar":93,"hr":45,"arec":"1-3","hrec":"4-0","ps":[24.0,36.1],"pm":12.2,"mk":6.0,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Maryland","h":"Nebraska","ai":120,"hi":158,"ar":73,"hr":26,"arec":"2-2","hrec":"4-0","ps":[21.6,34.7],"pm":13.1,"mk":13.5,"mv":1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Purdue","h":"Illinois","ai":2509,"hi":356,"ar":89,"hr":42,"arec":"1-3","hrec":"2-2","ps":[27.7,41.7],"pm":14.0,"mk":10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Stanford","h":"Wake Forest","ai":24,"hi":154,"ar":105,"hr":53,"arec":"2-2","hrec":"3-1","ps":[18.4,33.5],"pm":15.0,"mk":12.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Washington","h":"USC","ai":264,"hi":30,"ar":56,"hr":23,"arec":"3-1","hrec":"4-1","ps":[25.0,37.8],"pm":12.8,"mk":9.5,"mv":-0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Middle Tennessee","h":"Kansas","ai":2393,"hi":2305,"ar":124,"hr":66,"arec":"2-2","hrec":"1-2","ps":[14.4,36.3],"pm":21.8,"mk":20.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Memphis","h":"Charlotte","ai":235,"hi":2429,"ar":60,"hr":137,"arec":"3-1","hrec":"0-4","ps":[40.3,18.6],"pm":-21.7,"mk":-21.0,"mv":0.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Miami","h":"Clemson","ai":2390,"hi":228,"ar":7,"hr":55,"arec":"4-0","hrec":"3-1","ps":[38.5,17.1],"pm":-21.4,"mk":-17.5,"mv":-10.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"UL Monroe","h":"South Alabama","ai":2433,"hi":6,"ar":138,"hr":109,"arec":"0-4","hrec":"2-2","ps":[21.5,42.7],"pm":21.3,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Arkansas","h":"Texas A&M","ai":8,"hi":245,"ar":67,"hr":16,"arec":"2-2","hrec":"2-2","ps":[20.0,38.7],"pm":18.8,"mk":14.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Vanderbilt","h":"Georgia","ai":238,"hi":61,"ar":47,"hr":4,"arec":"3-1","hrec":"4-0","ps":[19.2,44.2],"pm":25.1,"mk":25.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Toledo","h":"Ball State","ai":2649,"hi":2050,"ar":54,"hr":134,"arec":"3-1","hrec":"1-3","ps":[46.9,17.8],"pm":-29.1,"mk":-19.5,"mv":-2.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Bowling Green","h":"Miami (OH)","ai":189,"hi":193,"ar":135,"hr":85,"arec":"0-4","hrec":"2-2","ps":[11.2,34.8],"pm":23.6,"mk":14.5,"mv":-1.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Notre Dame","h":"North Carolina","ai":87,"hi":153,"ar":1,"hr":69,"arec":"4-0","hrec":"2-1","ps":[36.9,6.4],"pm":-30.5,"mk":-21.5,"mv":2.0,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"UTEP","h":"New Mexico","ai":2638,"hi":167,"ar":132,"hr":40,"arec":"1-3","hrec":"3-1","ps":[14.1,46.6],"pm":32.5,"mk":22.5,"mv":1.5,"u":false,"nt":false},{"t":"Sat · TBD","d":"Saturday, October 3","a":"Marshall","h":"James Madison","ai":276,"hi":256,"ar":119,"hr":21,"arec":"3-1","hrec":"4-0","ps":[12.7,50.4],"pm":37.7,"mk":16.5,"mv":3.0,"u":false,"nt":false}];
 
 // Logos come from CFBD's own CDN, keyed on the team id already in the games
 // file, and there is a DARK variant for all 138 FBS teams.
@@ -504,9 +585,9 @@ function confCell(b){
 
 function side(nm, id, rec, rk, win) {
   return '<div class="side' + (win ? ' win' : '') + '">' +
-    '<span class="rk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
+    '<span class="crk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
     '<span class="nmx">' + nm + '</span>' +
-    (rec ? '<span class="rec">' + rec + '</span>' : '') + '</div>';
+    (rec ? '<span class="crec">' + rec + '</span>' : '') + '</div>';
 }
 // Same H/A wording in every margin column. A bare signed number beside
 // "A +2.4" reads as a different quantity when it is the same one.
@@ -517,28 +598,66 @@ function edge(g) {
   return '<span class="edgev' + (Math.abs(e) >= 7 ? ' big' : '') + '">' +
          fmt(e) + '</span>';
 }
-document.getElementById('rows').innerHTML = GAMES.map(function (g) {
+// One card per game. `home` puts the "AT" prefix on the host side, so the
+// venue is legible without a separate column.
+function gside(nm, id, rec, rk, sc, win, home) {
+  return '<div class="gs' + (win ? ' win' : '') + '">' +
+    '<span class="crk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
+    '<span class="cnm">' + (home ? '<span class="cat">at</span>' : '') + nm + '</span>' +
+    (rec ? '<span class="crec">' + rec + '</span>' : '') +
+    '<span class="csc">' + sc + '</span></div>';
+}
+function fi(lab, v, cls, extra) {
+  return '<span class="fi"><span class="lbl">' + lab + '</span><span class="v' +
+    (cls ? ' ' + cls : '') + '">' + v + (extra || '') + '</span></span>';
+}
+function card(g) {
   const mv = (g.mv != null && Math.abs(g.mv) >= 3)
-    ? '<span class="movef">moved ' + (g.mv > 0 ? '+' : '') + g.mv.toFixed(1) + '</span>' : '';
-  const mu = '<div class="mu">' + side(g.a, g.ai, g.arec, g.ar, !g.u && g.pm < 0) +
-             side(g.h, g.hi, g.hrec, g.hr, !g.u && g.pm > 0) + '</div>';
+    ? ' <span class="mv">moved ' + (g.mv > 0 ? '+' : '') + g.mv.toFixed(1) + '</span>' : '';
+  const head = '<div class="gch"><span class="kick">' + g.t + '</span>' +
+    (g.nt ? '<span class="neu">neutral</span>' : '') +
+    '<span class="ghl">' + (g.u ? 'Not rated' : 'Projected') + '</span></div>';
+
   if (g.u) {
-    return '<tr class="dim"><td class="kick">' + g.t + '</td><td>' + mu + '</td>' +
-      '<td class="r"><span class="fcs">FCS — not rated</span></td>' +
-      '<td class="r dash">—</td><td class="r dash">' +
-      (g.mk == null ? '—' : fmt(g.mk)) + '</td><td class="r dash">—</td></tr>';
+    return '<article class="gc dim">' + head +
+      gside(g.a, g.ai, g.arec, g.ar, '—', false, false) +
+      gside(g.h, g.hi, g.hrec, g.hr, '—', false, true) +
+      '<div class="gcf">' + fi('Market',
+        g.mk == null ? '—' : fmt(g.mk), 'mut') +
+      fi('Note', 'FCS opponent — no rating', 'mut') + '</div></article>';
   }
+
   const homeWin = g.pm > 0;
-  return '<tr><td class="kick">' + g.t + (g.nt ? '<br>neutral' : '') + '</td>' +
-    '<td>' + mu + '</td>' +
-    '<td class="r"><span class="pscore"><span class="' + (homeWin ? 'lo' : '') + '">' +
-      g.ps[0].toFixed(1) + '</span> <span class="lo">–</span> <span class="' +
-      (homeWin ? '' : 'lo') + '">' + g.ps[1].toFixed(1) + '</span></span></td>' +
-    '<td class="r"><span class="pm' + (Math.abs(g.pm) < 3 ? ' close' : '') + '">' +
-      fmt(g.pm) + '</span></td>' +
-    '<td class="r">' + (g.mk == null ? '<span class="dash">—</span>' : fmt(g.mk) + mv) + '</td>' +
-    '<td class="r">' + edge(g) + '</td></tr>';
-}).join('');
+  const tot = g.ps[0] + g.ps[1];
+  const aw = tot > 0 ? (100 * g.ps[0] / tot) : 50;
+  const e = (g.mk == null) ? null : g.pm - g.mk;
+  return '<article class="gc">' + head +
+    gside(g.a, g.ai, g.arec, g.ar, g.ps[0].toFixed(1), !homeWin, false) +
+    gside(g.h, g.hi, g.hrec, g.hr, g.ps[1].toFixed(1), homeWin, true) +
+    '<div class="split' + (homeWin ? '' : ' awin') + '">' +
+      '<span class="fa" style="width:' + aw.toFixed(1) + '%"></span>' +
+      '<span class="fh" style="width:' + (100 - aw).toFixed(1) + '%"></span></div>' +
+    '<div class="gcf">' +
+      fi('Model', fmt(g.pm), Math.abs(g.pm) < 3 ? 'close' : '') +
+      fi('Market', g.mk == null ? '—' : fmt(g.mk), 'mut', mv) +
+      fi('Edge', e == null ? '—' : fmt(e), e != null && Math.abs(e) >= 7 ? 'big' : 'mut') +
+    '</div></article>';
+}
+// Grouped under a day heading, in kickoff order -- fifty-nine cards in one
+// undivided grid is a wall.
+(function () {
+  let out = '', day = null, open = false;
+  GAMES.forEach(function (g) {
+    if (g.d !== day) {
+      if (open) out += '</div>';
+      out += '<div class="dayhead">' + g.d + '</div><div class="grid">';
+      day = g.d; open = true;
+    }
+    out += card(g);
+  });
+  if (open) out += '</div>';
+  document.getElementById('cards').innerHTML = out;
+})();
 
 function setView(v) {
   if (v !== 'week5' && v !== 'accuracy') v = 'week5';
