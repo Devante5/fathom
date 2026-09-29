@@ -133,6 +133,54 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
 .dk .gk{color:rgba(255,255,255,.48)} .lt .gk{color:rgba(0,0,0,.52)}
 .gv{font-family:var(--mono);font-size:12px;font-weight:600}
 .dk .gv{color:#fff} .lt .gv{color:rgba(0,0,0,.88)}
+
+/* ---------- by-conference card ---------- */
+/* The scope sits in the masthead's right slot, where the badge used to be, so
+   the wordmark still has a counterweight. The question then gets the full
+   width on its own line.
+
+   It is set in ink, not gold: gold is the rating colour on this card, and a
+   gold headline made the question compete with the eight numbers it is asking
+   about. It is also set below the wordmark's size -- a headline larger than
+   the brand on the brand's own card inverts the hierarchy. */
+.cscope{margin-left:auto;text-align:right;font-family:var(--mono);font-size:11px;
+  letter-spacing:.15em;text-transform:uppercase;line-height:1.7;white-space:nowrap}
+.dk .cscope{color:rgba(255,255,255,.50)} .lt .cscope{color:rgba(0,0,0,.54)}
+.cq{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.22;
+  letter-spacing:-.012em;margin:18px 0 20px;text-wrap:balance}
+.dk .cq{color:#e9eff6} .lt .cq{color:#0c1a26}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.cb{border-radius:6px;padding:15px 18px 14px;border:1px solid;
+  border-left:4px solid var(--t);min-width:0}
+.dk .cb{background:#16222e;border-color:rgba(233,239,246,.11);border-left-color:var(--t)}
+.lt .cb{background:#f9fbfd;border-color:rgba(12,26,38,.12);border-left-color:var(--t)}
+.cbh{display:flex;align-items:baseline;gap:7px;margin:0 0 8px;min-width:0}
+.cba{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;
+  color:var(--t)}
+.cbn{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dk .cbn{color:rgba(255,255,255,.42)} .lt .cbn{color:rgba(0,0,0,.46)}
+.ctr{display:grid;grid-template-columns:34px 30px 1fr auto auto;align-items:center;
+  gap:11px;padding:9px 0}
+.ctr+.ctr{border-top:1px solid}
+.dk .ctr+.ctr{border-color:rgba(233,239,246,.08)}
+.lt .ctr+.ctr{border-color:rgba(12,26,38,.08)}
+.crk{font-family:var(--mono);font-size:12.5px;text-align:right}
+.dk .crk{color:rgba(255,255,255,.46)} .lt .crk{color:rgba(0,0,0,.50)}
+.clgw{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.clg{width:29px;height:29px;object-fit:contain}
+/* The record gets its own grid column so the name owns the 1fr track and can
+   wrap. Three names -- North Dakota State, Western Michigan, Jacksonville
+   State -- do not fit on one line at this width, and an ellipsis in a team's
+   own name is worse than a second line. */
+.ctm{min-width:0}
+.ct1{font-weight:600;font-size:19px;line-height:1.2;min-width:0;
+  overflow-wrap:anywhere}
+.ct2{font-family:var(--mono);font-size:12px}
+.dk .ct2{color:rgba(255,255,255,.42)} .lt .ct2{color:rgba(0,0,0,.46)}
+.cfps{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:30px;
+  font-weight:600;text-align:right}
+.dk .cfps{color:#f2c14e} .lt .cfps{color:#7a5200}
 .foot{margin:14px 0 0;font-size:12.5px;line-height:1.5}
 .dk .foot{color:rgba(255,255,255,.55)} .lt .foot{color:rgba(0,0,0,.58)}
 </style>
@@ -146,10 +194,11 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
   <div class="sw" role="group" aria-label="Card">
     <button id="v-top" aria-pressed="true">Top 25</button>
     <button id="v-gam" aria-pressed="false">Matchups</button>
+    <button id="v-spo" aria-pressed="false">By conference</button>
   </div>
   <div class="sw" role="group" aria-label="Ground">
-    <button id="b-dk" aria-pressed="true">Dark</button>
-    <button id="b-lt" aria-pressed="false">Light</button>
+    <button id="b-dk" aria-pressed="false">Dark</button>
+    <button id="b-lt" aria-pressed="true">Light</button>
   </div>
 
   <div class="stage">
@@ -1003,6 +1052,174 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
   <div class="foot">The games worth watching this week. Projected score and the
   model's margin, with the market's consensus number beside it.</div>
 </div>
+<div class="card dk" id="conf-dk" hidden>
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="cscope">Top 2 rated teams<br>from each conference<br>Week 5</div>
+  </div>
+  <h2 class="cq">Which conference holds up the national championship trophy
+    this year?</h2>
+  <div class="cgrid">
+      <div class="cb" style="--t:#759c00">
+        <div class="cbh"><span class="cba">SEC</span></div>
+          <div class="ctr">
+            <div class="crk">#2</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Alabama</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.5</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#4</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Georgia</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#00a9ab">
+        <div class="cbh"><span class="cba">B10</span><span class="cbn">Big Ten</span></div>
+          <div class="ctr">
+            <div class="crk">#3</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Ohio State</div></div>
+            <div class="ct2">3-1</div>
+            <div class="cfps">8.1</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#5</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/84.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Indiana</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#dc5780">
+        <div class="cbh"><span class="cba">B12</span><span class="cbn">Big 12</span></div>
+          <div class="ctr">
+            <div class="crk">#6</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/254.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Utah</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.9</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#13</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Texas Tech</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#da6600">
+        <div class="cbh"><span class="cba">ACC</span></div>
+          <div class="ctr">
+            <div class="crk">#7</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Miami</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.9</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#20</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos-dark/500/221.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Pittsburgh</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">6.6</div>
+          </div>
+      </div>
+  </div>
+  <div class="foot">The two best teams in each power-four conference, on the
+  Fathom Point Scale &mdash; a fixed 0&ndash;10 scale set across all 138 FBS
+  teams, so an 8.0 means the same thing in the ACC as it does in the SEC.</div>
+</div>
+<div class="card lt" id="conf-lt" hidden>
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="cscope">Top 2 rated teams<br>from each conference<br>Week 5</div>
+  </div>
+  <h2 class="cq">Which conference holds up the national championship trophy
+    this year?</h2>
+  <div class="cgrid">
+      <div class="cb" style="--t:#4d7200">
+        <div class="cbh"><span class="cba">SEC</span></div>
+          <div class="ctr">
+            <div class="crk">#2</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Alabama</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.5</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#4</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Georgia</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#009497">
+        <div class="cbh"><span class="cba">B10</span><span class="cbn">Big Ten</span></div>
+          <div class="ctr">
+            <div class="crk">#3</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Ohio State</div></div>
+            <div class="ct2">3-1</div>
+            <div class="cfps">8.1</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#5</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/84.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Indiana</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">8.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#af2057">
+        <div class="cbh"><span class="cba">B12</span><span class="cbn">Big 12</span></div>
+          <div class="ctr">
+            <div class="crk">#6</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/254.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Utah</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.9</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#13</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Texas Tech</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.0</div>
+          </div>
+      </div>
+      <div class="cb" style="--t:#ad3500">
+        <div class="cbh"><span class="cba">ACC</span></div>
+          <div class="ctr">
+            <div class="crk">#7</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Miami</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">7.9</div>
+          </div>
+          <div class="ctr">
+            <div class="crk">#20</div>
+            <div class="clgw"><img class="clg" src="https://cdn.collegefootballdata.com/logos/500/221.png" alt="" onerror="this.style.visibility='hidden'"></div>
+            <div class="ctm"><div class="ct1">Pittsburgh</div></div>
+            <div class="ct2">4-0</div>
+            <div class="cfps">6.6</div>
+          </div>
+      </div>
+  </div>
+  <div class="foot">The two best teams in each power-four conference, on the
+  Fathom Point Scale &mdash; a fixed 0&ndash;10 scale set across all 138 FBS
+  teams, so an 8.0 means the same thing in the ACC as it does in the SEC.</div>
+</div>
   </div>
 
   <p class="help"><b>To capture:</b> press <code>Cmd&nbsp;+&nbsp;Shift&nbsp;+&nbsp;4</code>
@@ -1012,20 +1229,23 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
 
 <script>
 const el=id=>document.getElementById(id);
-let dark=true, view='top';
+let dark=false, view='top';
 function show(){
-  const on = (view==='top' ? 'card-' : 'games-') + (dark ? 'dk' : 'lt');
-  ['card-dk','card-lt','games-dk','games-lt'].forEach(id=>{
+  const pre = view==='top' ? 'card-' : (view==='games' ? 'games-' : 'conf-');
+  const on = pre + (dark ? 'dk' : 'lt');
+  ['card-dk','card-lt','games-dk','games-lt','conf-dk','conf-lt'].forEach(id=>{
     el(id).hidden = (id !== on);
   });
   el('b-dk').setAttribute('aria-pressed',String(dark));
   el('b-lt').setAttribute('aria-pressed',String(!dark));
   el('v-top').setAttribute('aria-pressed',String(view==='top'));
   el('v-gam').setAttribute('aria-pressed',String(view==='games'));
+  el('v-spo').setAttribute('aria-pressed',String(view==='conf'));
 }
 el('b-dk').addEventListener('click',()=>{dark=true;show();});
 el('b-lt').addEventListener('click',()=>{dark=false;show();});
 el('v-top').addEventListener('click',()=>{view='top';show();});
 el('v-gam').addEventListener('click',()=>{view='games';show();});
+el('v-spo').addEventListener('click',()=>{view='conf';show();});
 show();
 </script>
