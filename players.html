@@ -376,6 +376,9 @@ th.so.dn:after{content:"\2193";opacity:.9}
 .srckey{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);
   margin:10px 0 0}
 .srckey b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
+.marketnote{font-size:12.5px;color:var(--ink2);line-height:1.55;margin:8px 0 0;
+  max-width:70ch}
+.marketnote b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
 
 /* Summary cards. Defined here rather than imported: this page reads its CSS
    from index.html, which has no .strip, so referencing the projections
@@ -582,6 +585,10 @@ th.so.dn:after{content:"\2193";opacity:.9}
     <span><b>Carries</b> — model above 9 carries a game, prior average below</span>
     <span><b>Rec</b> — prior average<span class="avg">○</span></span>
   </div>
+  <p class="marketnote">Sportsbooks post these same three quantities under different
+  names: <b>Carries</b> is listed as <em>rushing attempts</em>, <b>Pass Att</b> as
+  <em>passing attempts</em>, <b>Rec</b> as <em>receptions</em>. Same number, different
+  label — worth knowing if you are reading this beside a posted line.</p>
 
   <footer>
     <h3>Why the three are produced differently</h3>
