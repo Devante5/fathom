@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fathom — Week 5 Top 25 card</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z' fill='%23c3d3e0'/%3E%3Cg transform='rotate(-26 32 17)'%3E%3Cellipse cx='32' cy='17' rx='21' ry='9.5' fill='none' stroke='%237cb4e0' stroke-width='3.4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Italianno&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --pg:#f2f5f8; --pgink:#0c1a26; --pgink2:rgba(0,0,0,.70);
+  --pgrule:rgba(12,26,38,.16); --accent:#1f5f96;
+  --serif:Spectral,"Iowan Old Style",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --pg:#101820; --pgink:#e9eff6; --pgink2:rgba(255,255,255,.76);
+  --pgrule:rgba(233,239,246,.15); --accent:#7cb4e0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --pg:#101820; --pgink:#e9eff6; --pgink2:rgba(255,255,255,.76);
+  --pgrule:rgba(233,239,246,.15); --accent:#7cb4e0; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--pgink);font-family:var(--sans);
+  padding-block:26px 54px;padding-left:18px;padding-right:18px}
+.page{max-width:1120px;margin:0 auto}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3.4vw,28px);
+  margin:0 0 6px;letter-spacing:-.01em}
+.lede{color:var(--pgink2);font-size:14px;line-height:1.6;margin:0 0 16px;max-width:62ch}
+.sw{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.sw button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;padding:8px 14px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--pgrule);background:transparent;color:var(--pgink2)}
+.sw button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+.sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stage{overflow-x:auto;padding-bottom:6px}
+.help{margin:18px 0 0;font-size:13.5px;line-height:1.62;color:var(--pgink2);max-width:62ch}
+.help b{color:var(--pgink)} .help code{font-family:var(--mono);font-size:12.5px}
+
+.card{width:1000px;min-width:1000px;padding:26px 28px 28px;border-radius:8px}
+.card.dk{background:#0d1620;color:#e9eff6}
+.card.lt{background:#eef2f6;color:#0c1a26}
+.card[hidden]{display:none!important}
+.mast{display:flex;align-items:center;gap:22px;padding-bottom:16px;
+  border-bottom:2px solid;margin-bottom:14px}
+.dk .mast{border-color:#2d6da6} .lt .mast{border-color:#1f5f96}
+.wm{font-family:var(--serif);font-weight:600;font-size:46px;line-height:1;
+  letter-spacing:-.015em;white-space:nowrap}
+.wm .scr{font-family:Italianno,cursive;font-weight:400;font-size:.62em;margin-left:.12em}
+.dk .wm .scr{color:#7cb4e0} .lt .wm .scr{color:#1f5f96}
+.tag{font-size:14px;margin-top:5px}
+.dk .tag{color:rgba(255,255,255,.62)} .lt .tag{color:rgba(0,0,0,.60)}
+/* Option F: Spectral small caps, sized up so it reads at the wordmark's height */
+.badge{margin-left:auto;font-family:var(--serif);font-weight:600;font-size:49px;
+  font-variant-caps:all-small-caps;letter-spacing:.09em;line-height:1;white-space:nowrap}
+.dk .badge{color:#e9eff6} .lt .badge{color:#0c1a26}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.col{min-width:0}
+.row,.hdr{display:grid;grid-template-columns:30px 28px 1fr 48px 56px;
+  align-items:center;gap:9px}
+.hdr{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;padding:0 0 8px;border-bottom:1px solid}
+.dk .hdr{color:rgba(255,255,255,.52);border-color:rgba(233,239,246,.13)}
+.lt .hdr{color:rgba(0,0,0,.58);border-color:rgba(12,26,38,.14)}
+.row{padding:7px 0;border-bottom:1px solid}
+.dk .row{border-color:rgba(233,239,246,.08)}
+.lt .row{border-color:rgba(12,26,38,.08)}
+.row:last-child{border-bottom:none}
+.rk{font-family:var(--mono);font-size:13px;text-align:right}
+.dk .rk{color:rgba(255,255,255,.48)} .lt .rk{color:rgba(0,0,0,.52)}
+/* Fixed box so a missing logo leaves the name column aligned rather than
+   shifting that one row left. */
+.lgw{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.lg{width:26px;height:26px;object-fit:contain}
+.tm{min-width:0}
+.t1{font-weight:600;font-size:16px;line-height:1.2;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.t2{font-size:12px;line-height:1.3;margin-top:1px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.dk .t2{color:rgba(255,255,255,.50)} .lt .t2{color:rgba(0,0,0,.54)}
+.cf{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;
+  text-align:center;padding:2px 0;border-radius:3px;color:var(--t);
+  border:1px solid color-mix(in oklab, var(--t) 48%, transparent);
+  background:color-mix(in oklab, var(--t) 15%, transparent)}
+.fp{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:23px;
+  font-weight:600;text-align:right}
+.dk .fp{color:#7cb4e0} .lt .fp{color:#1f5f96}
+.hdr .fp,.hdr .rk,.hdr .cf{font-size:9.5px;font-weight:400;border:none;
+  background:none;color:inherit;padding:0}
+.hdr .cf{text-align:center} .hdr .fp{text-align:right}
+</style>
+
+<div class="page">
+  <h1>Week 5 · Top 25 card</h1>
+  <p class="lede">Not a public page — this exists to be screenshotted for the
+  weekly post. Logos and typefaces load here because the page is served from
+  the site.</p>
+
+  <div class="sw" role="group" aria-label="Ground">
+    <button id="b-dk" aria-pressed="true">Dark</button>
+    <button id="b-lt" aria-pressed="false">Light</button>
+  </div>
+
+  <div class="stage">
+<div class="card dk" id="card-dk">
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="badge">Week 5 · Top 25</div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="hdr"><div class="rk">#</div><div class="lgw"></div><div class="tm">Team</div><div class="cf">Conf</div><div class="fp">FPS</div></div>
+      <div class="row">
+        <div class="rk">1</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/87.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Notre Dame</div><div class="t2">Fighting Irish</div></div>
+        <div class="cf" style="--t:#cd5cab">IND</div>
+        <div class="fp">8.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">2</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Alabama</div><div class="t2">Crimson Tide</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">8.5</div>
+      </div>
+      <div class="row">
+        <div class="rk">3</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Ohio State</div><div class="t2">Buckeyes</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">8.1</div>
+      </div>
+      <div class="row">
+        <div class="rk">4</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Georgia</div><div class="t2">Bulldogs</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">8.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">5</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/84.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Indiana</div><div class="t2">Hoosiers</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">8.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">6</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/254.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Utah</div><div class="t2">Utes</div></div>
+        <div class="cf" style="--t:#dc5780">B12</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">7</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Miami</div><div class="t2">Hurricanes</div></div>
+        <div class="cf" style="--t:#da6600">ACC</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">8</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/99.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">LSU</div><div class="t2">Tigers</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">9</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/251.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas</div><div class="t2">Longhorns</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">7.8</div>
+      </div>
+      <div class="row">
+        <div class="rk">10</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/57.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Florida</div><div class="t2">Gators</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">7.2</div>
+      </div>
+      <div class="row">
+        <div class="rk">11</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2633.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Tennessee</div><div class="t2">Volunteers</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">7.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">12</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2483.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Oregon</div><div class="t2">Ducks</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">7.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">13</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas Tech</div><div class="t2">Red Raiders</div></div>
+        <div class="cf" style="--t:#dc5780">B12</div>
+        <div class="fp">7.0</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="hdr"><div class="rk">#</div><div class="lgw"></div><div class="tm">Team</div><div class="cf">Conf</div><div class="fp">FPS</div></div>
+      <div class="row">
+        <div class="rk">14</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/252.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">BYU</div><div class="t2">Cougars</div></div>
+        <div class="cf" style="--t:#dc5780">B12</div>
+        <div class="fp">6.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">15</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/344.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Mississippi State</div><div class="t2">Bulldogs</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">16</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/245.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas A&M</div><div class="t2">Aggies</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">17</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/213.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Penn State</div><div class="t2">Nittany Lions</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">18</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/26.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">UCLA</div><div class="t2">Bruins</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">19</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2294.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Iowa</div><div class="t2">Hawkeyes</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">20</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/221.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Pittsburgh</div><div class="t2">Panthers</div></div>
+        <div class="cf" style="--t:#da6600">ACC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">21</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/256.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">James Madison</div><div class="t2">Dukes</div></div>
+        <div class="cf" style="--t:#00ab7f">SBC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">22</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/145.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Ole Miss</div><div class="t2">Rebels</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">23</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/30.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">USC</div><div class="t2">Trojans</div></div>
+        <div class="cf" style="--t:#00a9ab">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">24</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/258.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Virginia</div><div class="t2">Cavaliers</div></div>
+        <div class="cf" style="--t:#da6600">ACC</div>
+        <div class="fp">6.4</div>
+      </div>
+      <div class="row">
+        <div class="rk">25</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos-dark/500/2.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Auburn</div><div class="t2">Tigers</div></div>
+        <div class="cf" style="--t:#759c00">SEC</div>
+        <div class="fp">6.4</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card lt" id="card-lt">
+  <div class="mast">
+    <div class="brand">
+      <div class="wm">Fathom<span class="scr">ratings</span></div>
+      <div class="tag">The numbers behind the number</div>
+    </div>
+    <div class="badge">Week 5 · Top 25</div>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="hdr"><div class="rk">#</div><div class="lgw"></div><div class="tm">Team</div><div class="cf">Conf</div><div class="fp">FPS</div></div>
+      <div class="row">
+        <div class="rk">1</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/87.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Notre Dame</div><div class="t2">Fighting Irish</div></div>
+        <div class="cf" style="--t:#a12981">IND</div>
+        <div class="fp">8.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">2</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/333.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Alabama</div><div class="t2">Crimson Tide</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">8.5</div>
+      </div>
+      <div class="row">
+        <div class="rk">3</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/194.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Ohio State</div><div class="t2">Buckeyes</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">8.1</div>
+      </div>
+      <div class="row">
+        <div class="rk">4</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/61.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Georgia</div><div class="t2">Bulldogs</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">8.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">5</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/84.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Indiana</div><div class="t2">Hoosiers</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">8.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">6</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/254.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Utah</div><div class="t2">Utes</div></div>
+        <div class="cf" style="--t:#af2057">B12</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">7</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2390.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Miami</div><div class="t2">Hurricanes</div></div>
+        <div class="cf" style="--t:#ad3500">ACC</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">8</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/99.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">LSU</div><div class="t2">Tigers</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">7.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">9</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/251.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas</div><div class="t2">Longhorns</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">7.8</div>
+      </div>
+      <div class="row">
+        <div class="rk">10</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/57.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Florida</div><div class="t2">Gators</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">7.2</div>
+      </div>
+      <div class="row">
+        <div class="rk">11</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2633.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Tennessee</div><div class="t2">Volunteers</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">7.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">12</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2483.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Oregon</div><div class="t2">Ducks</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">7.0</div>
+      </div>
+      <div class="row">
+        <div class="rk">13</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2641.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas Tech</div><div class="t2">Red Raiders</div></div>
+        <div class="cf" style="--t:#af2057">B12</div>
+        <div class="fp">7.0</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="hdr"><div class="rk">#</div><div class="lgw"></div><div class="tm">Team</div><div class="cf">Conf</div><div class="fp">FPS</div></div>
+      <div class="row">
+        <div class="rk">14</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/252.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">BYU</div><div class="t2">Cougars</div></div>
+        <div class="cf" style="--t:#af2057">B12</div>
+        <div class="fp">6.9</div>
+      </div>
+      <div class="row">
+        <div class="rk">15</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/344.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Mississippi State</div><div class="t2">Bulldogs</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">16</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/245.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Texas A&M</div><div class="t2">Aggies</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">17</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/213.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Penn State</div><div class="t2">Nittany Lions</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">6.7</div>
+      </div>
+      <div class="row">
+        <div class="rk">18</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/26.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">UCLA</div><div class="t2">Bruins</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">19</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2294.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Iowa</div><div class="t2">Hawkeyes</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">20</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/221.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Pittsburgh</div><div class="t2">Panthers</div></div>
+        <div class="cf" style="--t:#ad3500">ACC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">21</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/256.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">James Madison</div><div class="t2">Dukes</div></div>
+        <div class="cf" style="--t:#00976a">SBC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">22</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/145.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Ole Miss</div><div class="t2">Rebels</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">23</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/30.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">USC</div><div class="t2">Trojans</div></div>
+        <div class="cf" style="--t:#009497">B10</div>
+        <div class="fp">6.6</div>
+      </div>
+      <div class="row">
+        <div class="rk">24</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/258.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Virginia</div><div class="t2">Cavaliers</div></div>
+        <div class="cf" style="--t:#ad3500">ACC</div>
+        <div class="fp">6.4</div>
+      </div>
+      <div class="row">
+        <div class="rk">25</div>
+        <div class="lgw"><img class="lg" src="https://cdn.collegefootballdata.com/logos/500/2.png" alt="" onerror="this.style.visibility='hidden'"></div>
+        <div class="tm"><div class="t1">Auburn</div><div class="t2">Tigers</div></div>
+        <div class="cf" style="--t:#4d7200">SEC</div>
+        <div class="fp">6.4</div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <p class="help"><b>To capture:</b> press <code>Cmd&nbsp;+&nbsp;Shift&nbsp;+&nbsp;4</code>
+  and drag across the card. On a Retina display that gives a 2000px-wide image,
+  which is what X wants. Take the card only — leave this page's background out.</p>
+</div>
+
+<script>
+const dk=document.getElementById('card-dk'), lt=document.getElementById('card-lt');
+const bdk=document.getElementById('b-dk'), blt=document.getElementById('b-lt');
+function show(d){
+  dk.hidden=!d; lt.hidden=d;
+  bdk.setAttribute('aria-pressed',String(d));
+  blt.setAttribute('aria-pressed',String(!d));
+}
+bdk.addEventListener('click',()=>show(true));
+blt.addEventListener('click',()=>show(false));
+show(true);
+</script>
