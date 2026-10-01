@@ -265,13 +265,20 @@ th[aria-sort]{color:var(--ink)}
 .gc.dim{cursor:default}
 .gc.open{border-color:var(--depth)}
 .wp{border-top:1px solid var(--rule);margin-top:10px;padding-top:12px}
-.wprow{display:flex;gap:26px;justify-content:center}
-.wpr{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
-.wpr svg{display:block}
-.wpn{position:absolute;top:26px;font-family:"IBM Plex Mono",monospace;
-  font-size:21px;font-weight:600;color:var(--data);line-height:1}
-.wpn .pc{font-size:11px;font-weight:500;color:var(--head);margin-left:1px}
-.wpl{font-size:12px;color:var(--ink2);text-align:center;max-width:110px;line-height:1.3}
+.srtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.srl,.srr{display:flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;color:var(--muted)}
+.srl b,.srr b{font-family:"IBM Plex Mono",monospace;font-size:19px;color:var(--data);font-weight:600}
+.srl b.dim,.srr b.dim{color:var(--muted);font-size:15px}
+.sw{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none}
+.srw{position:relative;width:132px;height:132px;margin:0 auto}
+.srw svg{display:block}
+.wdiv{position:absolute;top:34px;bottom:34px;left:50%;width:1px;background:var(--rule)}
+.wl{position:absolute;top:50px;width:32px;height:32px;object-fit:contain}
+.wl.wlL{left:22px} .wl.wlR{right:22px}
+.wab{position:absolute;top:56px;font-family:"IBM Plex Mono",monospace;font-size:13px;
+  font-weight:600;color:var(--ink2)}
+.wab.wlL,.wab.wabL{left:16px} .wab.wlR,.wab.wabR{right:16px}
 .wpnote{font-size:11.5px;color:var(--muted);line-height:1.5;margin:11px 0 0;text-align:center}
 
 .view{display:none}
@@ -682,6 +689,7 @@ function card(g) {
 // bias was also tried and made calibration WORSE (ECE 0.0296), so it is left
 // out. See the methodology note on the page.
 const SIGMA = 15.68;
+const LOGOBASE = 'https://cdn.collegefootballdata.com/logos/500/';
 
 function normCdf(z) {
   // Abramowitz & Stegun 7.1.26, accurate to ~1.5e-7 -- far finer than a
@@ -693,29 +701,73 @@ function normCdf(z) {
   return 0.5 * (1 + s * y);
 }
 
-function ring(pct, lab, fav) {
-  const R = 32, C = 2 * Math.PI * R, on = (pct / 100) * C;
-  return '<div class="wpr">' +
-    '<svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">' +
-      '<circle cx="42" cy="42" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="7"></circle>' +
-      '<circle cx="42" cy="42" r="' + R + '" fill="none" stroke="' +
-        (fav ? 'var(--depth)' : 'var(--muted)') + '" stroke-width="7" stroke-linecap="round" ' +
-        'stroke-dasharray="' + on.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
-        'transform="rotate(-90 42 42)"></circle>' +
-    '</svg>' +
-    '<span class="wpn">' + pct.toFixed(0) + '<span class="pc">%</span></span>' +
-    '<span class="wpl">' + lab + '</span></div>';
+function logoFail(el) {
+  el.style.display = 'none';
+  if (el.previousElementSibling) el.previousElementSibling.style.display = 'block';
 }
 
-function winPanel(g) {
-  if (!g || g.u || g.pm == null) return '';
-  const ph = normCdf(g.pm / SIGMA) * 100, pa = 100 - ph;
+function abbr(n) {
+  const w = n.split(' ');
+  return (w.length === 1 ? w[0].slice(0, 4)
+          : w.slice(0, 3).map(function (x) { return x[0]; }).join('')).toUpperCase();
+}
+
+// One ring split between the two teams, rather than a meter each.
+//
+// The two numbers are one quantity -- they always sum to 100 -- and two
+// separate meters present them as two independent facts. A single divided
+// circle says the same thing in the shape, and at a coin flip it reads as an
+// even break instead of two identical half-rings that look like a bug.
+//
+// Colour tracks the FAVOURITE, not home or away: steel is whoever is more
+// likely to win. Keying it to side instead drew a 71% away favourite in the
+// weaker tone. Each team's arc also sweeps toward its own label -- the away
+// side counter-clockwise from the top, the home side clockwise -- so the arc
+// and the name it belongs to are never on opposite sides.
+function splitRing(g, pa, ph) {
+  const R = 50, SW = 12, C = 2 * Math.PI * R, GAP = 4;
+  const aFav = pa >= ph;
+  const aCol = aFav ? 'var(--depth)' : 'var(--muted)';
+  const hCol = aFav ? 'var(--muted)' : 'var(--depth)';
+  const aLen = Math.max(pa / 100 * C - GAP, 0), hLen = Math.max(ph / 100 * C - GAP, 0);
+  // The fallback initials are always rendered and hidden; a failed logo just
+  // reveals them. Written this way to keep every quote out of the inline
+  // handler -- an earlier version escaped quotes inside an attribute inside a
+  // JS string inside a Python f-string and produced a syntax error on the page.
+  const lg = function (id, side, name) {
+    const ab = '<span class="wab ' + side + '" style="display:none">' + abbr(name) + '</span>';
+    if (!id) return ab.replace('display:none', 'display:block');
+    return ab + '<img class="wl ' + side + '" src="' + LOGOBASE + id + '.png" alt="" ' +
+      'referrerpolicy="no-referrer" onerror="logoFail(this)">';
+  };
   return '<div class="wp">' +
-    '<div class="wprow">' + ring(pa, g.a, pa >= ph) + ring(ph, g.h, ph > pa) + '</div>' +
+    '<div class="srtop">' +
+      '<span class="srl"><b class="' + (aFav ? '' : 'dim') + '">' + pa.toFixed(0) + '%</b>' +
+        '<i class="sw" style="background:' + aCol + '"></i>' + abbr(g.a) + '</span>' +
+      '<span class="srr">' + abbr(g.h) +
+        '<i class="sw" style="background:' + hCol + '"></i>' +
+        '<b class="' + (aFav ? 'dim' : '') + '">' + ph.toFixed(0) + '%</b></span>' +
+    '</div>' +
+    '<div class="srw"><svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">' +
+      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="' + SW + '"></circle>' +
+      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="' + aCol + '" stroke-width="' + SW + '" ' +
+        'stroke-linecap="round" stroke-dasharray="' + aLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+        'transform="rotate(' + (-90 - 360 * pa / 100 + GAP / C * 360).toFixed(2) + ' 66 66)"></circle>' +
+      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="' + hCol + '" stroke-width="' + SW + '" ' +
+        'stroke-linecap="round" stroke-dasharray="' + hLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+        'transform="rotate(-90 66 66)"></circle>' +
+    '</svg><span class="wdiv"></span>' +
+    lg(g.ai, 'wlL', g.a) + lg(g.hi, 'wlR', g.h) + '</div>' +
     '<p class="wpnote">Chance of winning outright, from the projected margin of ' +
       Math.abs(g.pm).toFixed(1) + ' and the spread of this model’s own past ' +
       'errors (15.7 points). Checked against 1,659 held-out games: when it says ' +
       '70%, the team has won about 70% of the time.</p></div>';
+}
+
+function winPanel(g) {
+  if (!g || g.u || g.pm == null) return '';
+  const ph = normCdf(g.pm / SIGMA) * 100;
+  return splitRing(g, 100 - ph, ph);
 }
 
 // Grouped under a day heading, in kickoff order -- fifty-nine cards in one
