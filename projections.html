@@ -251,6 +251,29 @@ th[aria-sort]{color:var(--ink)}
 .brand{display:flex;align-items:center;gap:13px}
 @media(max-width:620px){ .mark{width:34px;height:34px} }
 
+/* filters: the three summary cards are buttons now */
+.scard.f{text-align:left;font:inherit;cursor:pointer;width:100%;
+  transition:border-color .12s,background .12s}
+.scard.f:hover{border-left-color:var(--ink)}
+.scard.f.on{background:var(--hair);border-color:var(--depth)}
+.scard.f:focus-visible{outline:2px solid var(--depth);outline-offset:2px}
+.fcount{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 12px}
+.empty{color:var(--muted);font-size:14px;padding:26px 0}
+/* expanding a game */
+.gc{cursor:pointer}
+.gc.dim{cursor:default}
+.gc.open{border-color:var(--depth)}
+.wp{border-top:1px solid var(--rule);margin-top:10px;padding-top:12px}
+.wprow{display:flex;gap:26px;justify-content:center}
+.wpr{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.wpr svg{display:block}
+.wpn{position:absolute;top:26px;font-family:"IBM Plex Mono",monospace;
+  font-size:21px;font-weight:600;color:var(--data);line-height:1}
+.wpn .pc{font-size:11px;font-weight:500;color:var(--head);margin-left:1px}
+.wpl{font-size:12px;color:var(--ink2);text-align:center;max-width:110px;line-height:1.3}
+.wpnote{font-size:11.5px;color:var(--muted);line-height:1.5;margin:11px 0 0;text-align:center}
+
 .view{display:none}
 .view.on{display:block}
 .vswitch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
@@ -461,17 +484,18 @@ tr.dim{opacity:.55}
     <div class="subhead">Week 5 — projected scores, against the market</div>
 
     <div class="strip">
-      <div class="scard"><h3>Rated games</h3><div class="big">56 of 59</div>
+      <button class="scard f on" type="button" data-f="all" aria-pressed="true"><h3>Rated games</h3><div class="big">56 of 59</div>
         <p>Ratings rebuilt after last week's results. The 3 unrated
-        games have an FCS opponent the model holds no rating for.</p></div>
-      <div class="scard"><h3>Close games</h3><div class="big">10</div>
+        games have an FCS opponent the model holds no rating for.</p></button>
+      <button class="scard f" type="button" data-f="close" aria-pressed="false"><h3>Close games</h3><div class="big">10</div>
         <p>Projected inside a field goal — where the forecast is least confident
-        and the game is most worth watching.</p></div>
-      <div class="scard warn"><h3>Lines that moved</h3><div class="big">13</div>
+        and the game is most worth watching.</p></button>
+      <button class="scard warn f" type="button" data-f="moved" aria-pressed="false"><h3>Lines that moved</h3><div class="big">13</div>
         <p>Moved 3+ points since opening. A move that size is the market pricing in
-        news — an injury, a suspension — that the ratings cannot see.</p></div>
+        news — an injury, a suspension — that the ratings cannot see.</p></button>
     </div>
 
+    <div class="fcount" id="fcount"></div>
     <div id="cards"></div>
 
     <p class="caveat" style="margin-top:18px"><b>The bar on each card is the projected
@@ -643,21 +667,120 @@ function card(g) {
       fi('Edge', e == null ? '—' : fmt(e), e != null && Math.abs(e) >= 7 ? 'big' : 'mut') +
     '</div></article>';
 }
+
+// ---- win probability ------------------------------------------------------
+// P(home wins) = P(actual margin > 0) given a projection, which is the normal
+// CDF of (projection / sigma). SIGMA is the standard deviation of the model's
+// own held-out error -- 15.68 points across 1,659 walk-forward games, both
+// teams FBS, weeks 5+. It is NOT a guess: that error distribution is almost
+// exactly normal (skew 0.03, kurtosis -0.01), which is what makes the normal
+// CDF the right transform rather than a convenient one.
+//
+// Calibration was checked before this shipped, walk-forward, fitting sigma only
+// on earlier folds: expected calibration error 2.2%, Brier 0.182 against 0.250
+// for a coin flip, worst decile off by 6.5 points. Correcting the -1.05 home
+// bias was also tried and made calibration WORSE (ECE 0.0296), so it is left
+// out. See the methodology note on the page.
+const SIGMA = 15.68;
+
+function normCdf(z) {
+  // Abramowitz & Stegun 7.1.26, accurate to ~1.5e-7 -- far finer than a
+  // percentage rounded to the nearest whole number needs.
+  const s = z < 0 ? -1 : 1, x = Math.abs(z) / Math.SQRT2;
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t
+            - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return 0.5 * (1 + s * y);
+}
+
+function ring(pct, lab, fav) {
+  const R = 32, C = 2 * Math.PI * R, on = (pct / 100) * C;
+  return '<div class="wpr">' +
+    '<svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">' +
+      '<circle cx="42" cy="42" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="7"></circle>' +
+      '<circle cx="42" cy="42" r="' + R + '" fill="none" stroke="' +
+        (fav ? 'var(--depth)' : 'var(--muted)') + '" stroke-width="7" stroke-linecap="round" ' +
+        'stroke-dasharray="' + on.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+        'transform="rotate(-90 42 42)"></circle>' +
+    '</svg>' +
+    '<span class="wpn">' + pct.toFixed(0) + '<span class="pc">%</span></span>' +
+    '<span class="wpl">' + lab + '</span></div>';
+}
+
+function winPanel(g) {
+  if (!g || g.u || g.pm == null) return '';
+  const ph = normCdf(g.pm / SIGMA) * 100, pa = 100 - ph;
+  return '<div class="wp">' +
+    '<div class="wprow">' + ring(pa, g.a, pa >= ph) + ring(ph, g.h, ph > pa) + '</div>' +
+    '<p class="wpnote">Chance of winning outright, from the projected margin of ' +
+      Math.abs(g.pm).toFixed(1) + ' and the spread of this model’s own past ' +
+      'errors (15.7 points). Checked against 1,659 held-out games: when it says ' +
+      '70%, the team has won about 70% of the time.</p></div>';
+}
+
 // Grouped under a day heading, in kickoff order -- fifty-nine cards in one
 // undivided grid is a wall.
-(function () {
-  let out = '', day = null, open = false;
+//
+// This is a function rather than the one-shot IIFE it started as, because the
+// three summary cards above are now filters and the grid has to be rebuilt.
+let FILTER = 'all';
+
+function matches(g) {
+  if (FILTER === 'close') return !g.u && g.pm != null && Math.abs(g.pm) < 3;
+  if (FILTER === 'moved') return g.mv != null && Math.abs(g.mv) >= 3;
+  return true;                                   // 'all'
+}
+
+function renderCards() {
+  let out = '', day = null, open = false, n = 0;
   GAMES.forEach(function (g) {
+    if (!matches(g)) return;
     if (g.d !== day) {
       if (open) out += '</div>';
       out += '<div class="dayhead">' + g.d + '</div><div class="grid">';
       day = g.d; open = true;
     }
-    out += card(g);
+    out += card(g).replace('<article class="gc', '<article data-i="' + GAMES.indexOf(g) + '" class="gc');
+    n++;
   });
   if (open) out += '</div>';
+  if (!n) out = '<p class="empty">No games match that filter this week.</p>';
   document.getElementById('cards').innerHTML = out;
-})();
+  const lbl = {all: 'all games', close: 'close games only',
+               moved: 'lines that moved 3+ only'}[FILTER];
+  document.getElementById('fcount').textContent = n + ' of ' + GAMES.length +
+    ' games — ' + lbl;
+}
+
+document.querySelectorAll('.scard.f').forEach(function (b) {
+  b.addEventListener('click', function () {
+    // One filter at a time; clicking the active one clears back to all.
+    FILTER = (b.dataset.f === FILTER || b.dataset.f === 'all') ? 'all' : b.dataset.f;
+    document.querySelectorAll('.scard.f').forEach(function (x) {
+      const on = x.dataset.f === FILTER;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderCards();
+  });
+});
+
+// Expanding a card: one open at a time, so the grid does not jump around.
+document.addEventListener('click', function (e) {
+  const c = e.target.closest('.gc');
+  if (!c || c.classList.contains('dim')) return;
+  if (e.target.closest('[data-team]')) return;
+  const wasOpen = c.classList.contains('open');
+  document.querySelectorAll('.gc.open').forEach(function (x) {
+    x.classList.remove('open');
+    const d = x.querySelector('.wp'); if (d) d.remove();
+  });
+  if (wasOpen) return;
+  c.classList.add('open');
+  c.insertAdjacentHTML('beforeend', winPanel(GAMES[+c.dataset.i]));
+});
+
+renderCards();
 
 function setView(v) {
   if (v !== 'week5' && v !== 'accuracy') v = 'week5';
