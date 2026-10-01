@@ -271,7 +271,7 @@ th[aria-sort]{color:var(--ink)}
    side columns at ~69px, which a 38px numeral overflows straight off the
    card edge. Stacked, each figure is directly beneath its own arc and the
    row is capped to the ring's width, so both read near the centre. */
-.srlegend{display:flex;justify-content:center;max-width:232px;margin:12px auto 0}
+.srlegend{display:flex;justify-content:center;max-width:var(--ring);margin:12px auto 0}
 .srside{flex:1 1 0;min-width:0;text-align:center}
 .srpct{font-family:"IBM Plex Mono",monospace;font-size:36px;line-height:1;
   font-weight:600;color:var(--data);letter-spacing:-.03em}
@@ -280,22 +280,31 @@ th[aria-sort]{color:var(--ink)}
 .srteam{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
   text-transform:uppercase;color:var(--ink2);margin-top:7px;line-height:1.35;
   overflow-wrap:anywhere}
-.srw{position:relative;width:184px;height:184px;margin:0 auto;flex:none}
-.srw svg{display:block}
-/* Geometry inside the ring: R=70, SW=14, so the clear inner radius is 63px
-   about the centre at (92,92). A 40px logo at left:42px spans x 42-82 and
-   y 72-112; its far corner is 53.9px from the centre, comfortably inside. */
-.wdiv{position:absolute;top:40px;bottom:40px;left:50%;width:1px;background:var(--rule)}
-.wl,.wab{position:absolute;top:72px;width:40px;height:40px}
+/* ONE KNOB. The ring diameter lives here and everything inside it is sized
+   as a percentage of that, so changing --ring rescales the arcs, the logos,
+   the divider and the legend together. The previous version pinned the logos
+   in the SVG's own pixel units, which meant any size change walked them out
+   of place -- that is why this is proportional now.
+     usable card width: 448px at desktop, 358px at 820px viewport,
+     328px at 390px, 258px at 320px. min() lets the ring take the card when
+     the card is the smaller of the two, so no media query is needed. */
+.wp{--ring:min(236px,100%)}
+.srw{position:relative;width:var(--ring);height:var(--ring);margin:0 auto;flex:none}
+.srw svg{display:block;width:100%;height:100%}
+/* Percentages of the ring box. The viewBox is 184 units across with R=70 and
+   SW=14, so the clear inner radius is 63/184 = 34.2% of the diameter. A badge
+   22% wide, inset 23% from the edge and centred vertically puts its far
+   corner at 29.3% of the diameter from the centre -- inside 34.2% with room
+   to spare, and that stays true at any --ring because it is all relative. */
+.wdiv{position:absolute;top:22%;bottom:22%;left:50%;width:1px;background:var(--rule)}
+.wl,.wab{position:absolute;top:39%;width:22%;height:22%}
 .wl{object-fit:contain}
-.wab{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;
-  color:var(--ink2);text-align:center;line-height:40px}
-.wl.wlL,.wab.wlL,.wab.wabL{left:42px}
-.wl.wlR,.wab.wlR,.wab.wabR{right:42px}
-/* No shrink rule for the ring: the logos inside are positioned in the SVG's
-   own pixel units, so scaling the box alone would walk them out of place.
-   184px clears the card gutters down to a 320px viewport. */
-.wpnote{font-size:11.5px;color:var(--muted);line-height:1.5;margin:11px 0 0;text-align:center}
+.wab{display:none;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;
+  color:var(--ink2);text-align:center;line-height:1.1}
+.wab.on{display:flex}
+.wl.wlL,.wab.wlL,.wab.wabL{left:23%}
+.wl.wlR,.wab.wlR,.wab.wabR{right:23%}
 
 .view{display:none}
 .view.on{display:block}
@@ -717,9 +726,13 @@ function normCdf(z) {
   return 0.5 * (1 + s * y);
 }
 
+// Toggles a CLASS rather than an inline display value. The fallback initials
+// are centred with flex, and an inline `display:block` would have overridden
+// that -- which matters now that the badge is sized in percentages of the
+// ring rather than in fixed pixels.
 function logoFail(el) {
   el.style.display = 'none';
-  if (el.previousElementSibling) el.previousElementSibling.style.display = 'block';
+  if (el.previousElementSibling) el.previousElementSibling.classList.add('on');
 }
 
 function abbr(n) {
@@ -751,13 +764,13 @@ function splitRing(g, pa, ph) {
   // handler -- an earlier version escaped quotes inside an attribute inside a
   // JS string inside a Python f-string and produced a syntax error on the page.
   const lg = function (id, side, name) {
-    const ab = '<span class="wab ' + side + '" style="display:none">' + abbr(name) + '</span>';
-    if (!id) return ab.replace('display:none', 'display:block');
+    const ab = '<span class="wab ' + side + '">' + abbr(name) + '</span>';
+    if (!id) return ab.replace('class="wab ', 'class="wab on ');
     return ab + '<img class="wl ' + side + '" src="' + LOGOBASE + id + '.png" alt="" ' +
       'referrerpolicy="no-referrer" onerror="logoFail(this)">';
   };
   return '<div class="wp">' +
-      '<div class="srw"><svg width="184" height="184" viewBox="0 0 184 184" aria-hidden="true">' +
+      '<div class="srw"><svg viewBox="0 0 184 184" aria-hidden="true">' +
         '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="' + SW + '"></circle>' +
         '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="' + aCol + '" stroke-width="' + SW + '" ' +
           'stroke-linecap="round" stroke-dasharray="' + aLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
@@ -774,11 +787,12 @@ function splitRing(g, pa, ph) {
       '<div class="srside"><div class="srpct ' + (aFav ? 'dim' : '') + '">' +
         ph.toFixed(0) + '<span class="pc">%</span></div>' +
         '<div class="srteam">' + g.h + '</div></div>' +
-    '</div>' +
-    '<p class="wpnote">Chance of winning outright, from the projected margin of ' +
-      Math.abs(g.pm).toFixed(1) + ' and the spread of this model’s own past ' +
-      'errors (15.7 points). Checked against 1,659 held-out games: when it says ' +
-      '70%, the team has won about 70% of the time.</p></div>';
+    '</div></div>';
+  // No explanatory note under the ring. The percentages carry themselves, and
+  // the derivation -- normal CDF on the projected margin, sigma 15.68, and the
+  // calibration check over 1,659 held-out games -- is stated on the
+  // methodology page, which is where someone looking for it goes. It is not
+  // lost by being dropped from every card.
 }
 
 function winPanel(g) {
