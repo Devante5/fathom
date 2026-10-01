@@ -265,20 +265,36 @@ th[aria-sort]{color:var(--ink)}
 .gc.dim{cursor:default}
 .gc.open{border-color:var(--depth)}
 .wp{border-top:1px solid var(--rule);margin-top:10px;padding-top:12px}
-.srtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.srl,.srr{display:flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;
-  font-size:10.5px;color:var(--muted)}
-.srl b,.srr b{font-family:"IBM Plex Mono",monospace;font-size:19px;color:var(--data);font-weight:600}
-.srl b.dim,.srr b.dim{color:var(--muted);font-size:15px}
-.sw{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none}
-.srw{position:relative;width:132px;height:132px;margin:0 auto}
+/* The figures sit UNDER the ring, not flanking it. A game card is about
+   350px wide even on a wide desktop -- the grid is auto-fit, so the viewport
+   buys more columns, not wider ones -- and flanking a 184px ring left the
+   side columns at ~69px, which a 38px numeral overflows straight off the
+   card edge. Stacked, each figure is directly beneath its own arc and the
+   row is capped to the ring's width, so both read near the centre. */
+.srlegend{display:flex;justify-content:center;max-width:232px;margin:12px auto 0}
+.srside{flex:1 1 0;min-width:0;text-align:center}
+.srpct{font-family:"IBM Plex Mono",monospace;font-size:36px;line-height:1;
+  font-weight:600;color:var(--data);letter-spacing:-.03em}
+.srpct.dim{color:var(--muted)}
+.srpct .pc{font-size:16px;font-weight:500;margin-left:1px;opacity:.7}
+.srteam{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink2);margin-top:7px;line-height:1.35;
+  overflow-wrap:anywhere}
+.srw{position:relative;width:184px;height:184px;margin:0 auto;flex:none}
 .srw svg{display:block}
-.wdiv{position:absolute;top:34px;bottom:34px;left:50%;width:1px;background:var(--rule)}
-.wl{position:absolute;top:50px;width:32px;height:32px;object-fit:contain}
-.wl.wlL{left:22px} .wl.wlR{right:22px}
-.wab{position:absolute;top:56px;font-family:"IBM Plex Mono",monospace;font-size:13px;
-  font-weight:600;color:var(--ink2)}
-.wab.wlL,.wab.wabL{left:16px} .wab.wlR,.wab.wabR{right:16px}
+/* Geometry inside the ring: R=70, SW=14, so the clear inner radius is 63px
+   about the centre at (92,92). A 40px logo at left:42px spans x 42-82 and
+   y 72-112; its far corner is 53.9px from the centre, comfortably inside. */
+.wdiv{position:absolute;top:40px;bottom:40px;left:50%;width:1px;background:var(--rule)}
+.wl,.wab{position:absolute;top:72px;width:40px;height:40px}
+.wl{object-fit:contain}
+.wab{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;
+  color:var(--ink2);text-align:center;line-height:40px}
+.wl.wlL,.wab.wlL,.wab.wabL{left:42px}
+.wl.wlR,.wab.wlR,.wab.wabR{right:42px}
+/* No shrink rule for the ring: the logos inside are positioned in the SVG's
+   own pixel units, so scaling the box alone would walk them out of place.
+   184px clears the card gutters down to a 320px viewport. */
 .wpnote{font-size:11.5px;color:var(--muted);line-height:1.5;margin:11px 0 0;text-align:center}
 
 .view{display:none}
@@ -725,7 +741,7 @@ function abbr(n) {
 // side counter-clockwise from the top, the home side clockwise -- so the arc
 // and the name it belongs to are never on opposite sides.
 function splitRing(g, pa, ph) {
-  const R = 50, SW = 12, C = 2 * Math.PI * R, GAP = 4;
+  const R = 70, SW = 14, C = 2 * Math.PI * R, GAP = 5;
   const aFav = pa >= ph;
   const aCol = aFav ? 'var(--depth)' : 'var(--muted)';
   const hCol = aFav ? 'var(--muted)' : 'var(--depth)';
@@ -741,23 +757,24 @@ function splitRing(g, pa, ph) {
       'referrerpolicy="no-referrer" onerror="logoFail(this)">';
   };
   return '<div class="wp">' +
-    '<div class="srtop">' +
-      '<span class="srl"><b class="' + (aFav ? '' : 'dim') + '">' + pa.toFixed(0) + '%</b>' +
-        '<i class="sw" style="background:' + aCol + '"></i>' + abbr(g.a) + '</span>' +
-      '<span class="srr">' + abbr(g.h) +
-        '<i class="sw" style="background:' + hCol + '"></i>' +
-        '<b class="' + (aFav ? 'dim' : '') + '">' + ph.toFixed(0) + '%</b></span>' +
+      '<div class="srw"><svg width="184" height="184" viewBox="0 0 184 184" aria-hidden="true">' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="' + SW + '"></circle>' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="' + aCol + '" stroke-width="' + SW + '" ' +
+          'stroke-linecap="round" stroke-dasharray="' + aLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+          'transform="rotate(' + (-90 - 360 * pa / 100 + GAP / C * 360).toFixed(2) + ' 92 92)"></circle>' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="' + hCol + '" stroke-width="' + SW + '" ' +
+          'stroke-linecap="round" stroke-dasharray="' + hLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+          'transform="rotate(-90 92 92)"></circle>' +
+      '</svg><span class="wdiv"></span>' +
+      lg(g.ai, 'wlL', g.a) + lg(g.hi, 'wlR', g.h) + '</div>' +
+    '<div class="srlegend">' +
+      '<div class="srside"><div class="srpct ' + (aFav ? '' : 'dim') + '">' +
+        pa.toFixed(0) + '<span class="pc">%</span></div>' +
+        '<div class="srteam">' + g.a + '</div></div>' +
+      '<div class="srside"><div class="srpct ' + (aFav ? 'dim' : '') + '">' +
+        ph.toFixed(0) + '<span class="pc">%</span></div>' +
+        '<div class="srteam">' + g.h + '</div></div>' +
     '</div>' +
-    '<div class="srw"><svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">' +
-      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="' + SW + '"></circle>' +
-      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="' + aCol + '" stroke-width="' + SW + '" ' +
-        'stroke-linecap="round" stroke-dasharray="' + aLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
-        'transform="rotate(' + (-90 - 360 * pa / 100 + GAP / C * 360).toFixed(2) + ' 66 66)"></circle>' +
-      '<circle cx="66" cy="66" r="' + R + '" fill="none" stroke="' + hCol + '" stroke-width="' + SW + '" ' +
-        'stroke-linecap="round" stroke-dasharray="' + hLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
-        'transform="rotate(-90 66 66)"></circle>' +
-    '</svg><span class="wdiv"></span>' +
-    lg(g.ai, 'wlL', g.a) + lg(g.hi, 'wlR', g.h) + '</div>' +
     '<p class="wpnote">Chance of winning outright, from the projected margin of ' +
       Math.abs(g.pm).toFixed(1) + ' and the spread of this model’s own past ' +
       'errors (15.7 points). Checked against 1,659 held-out games: when it says ' +
