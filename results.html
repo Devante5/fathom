@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fathom Ratings &middot; Previous weeks</title>
+<meta name="description" content="Opponent-adjusted college football game forecasts — projected scores, the market number beside each, and how accurate the model has been.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z' fill='%23c3d3e0'/%3E%3Cg transform='rotate(-26 32 17)'%3E%3Cellipse cx='32' cy='17' rx='21' ry='9.5' fill='none' stroke='%237cb4e0' stroke-width='3.4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Italianno&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>/* ============================================================================
+   Fathom — steel. Dark is the DEFAULT.
+
+   Cool gunmetal ground, steel blue as the single accent, amber as its only
+   counterweight. No purple anywhere.
+
+   The diverging pair is measured, not picked. With purple dropped, the
+   negative side of the scale needed a new hue, and steel-blue-against-amber
+   is the strongest pair available for colour vision deficiency: CVD ΔE 20.6
+   at the worst adjacent step, against 10.3 for the cyan/magenta it replaces
+   and 10.2 (falling to 6.0) for the jade/magenta rejected before that. It
+   also happens to be the oldest pair in instrument design, for the same
+   reason — warm against cool reads at a glance and survives being printed,
+   dimmed or looked at sideways.
+
+   Every text token has WCAG contrast against both paper and card; the
+   lowest anywhere is 5.66:1.
+   ============================================================================ */
+:root{
+  color-scheme: dark;
+  --paper:#0d1620; --card:#16222e; --ink:#e9eff6;
+  --ink2:rgba(255,255,255,.78); --muted:rgba(255,255,255,.52);
+  --rule:#2a3f52; --hair:#1c2b39;
+  --depth:#7cb4e0; --depth-soft:#16293a;
+  --above:#7cb4e0; --below:#e0a458;
+  --shoal:#f2c14e;
+  --head:rgba(255,255,255,.52); --data:#ffffff;
+  /* brushed metal rather than a rainbow: one hue, three depths */
+  --sheen:linear-gradient(100deg,#2d6da6 0%,#7cb4e0 38%,#bcd9f0 62%,#4a8cc2 100%);
+  /* The nav wears the same sweep as the wordmark, but compressed to its
+     BRIGHT half. The full sheen bottoms out at #2d6da6 = 3.34:1 on the page
+     ground, so the leftmost tab would have failed AA at 10px. Every stop
+     below clears 8:1. */
+  --sheen-nav:linear-gradient(100deg,#7cb4e0 0%,#a3cced 42%,#bcd9f0 66%,#8ec2ea 100%);
+  --glow:0 0 24px rgba(124,180,224,.28);
+  --haze-a:rgba(124,180,224,.10); --haze-b:rgba(70,120,170,.10);
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme: light;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
+}}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
+}
+/* Two cool pools bleeding from the top. Fixed, behind everything, never
+   under text -- atmosphere without the bloom that would blur figures. */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(70ch 44ch at 12% -6%, var(--haze-a), transparent 70%),
+    radial-gradient(60ch 40ch at 92% 2%, var(--haze-b), transparent 70%);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:36px 72px}
+
+/* masthead */
+.mast{border-bottom:2px solid transparent;border-image:var(--sheen) 1;padding-bottom:14px;margin-bottom:8px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-family:Spectral,Georgia,serif;font-weight:600;font-size:clamp(34px,7vw,52px);
+  margin:0;letter-spacing:-.015em;line-height:1}
+.brand .tag{font-size:13px;color:var(--ink2);margin-top:6px;letter-spacing:.01em}
+.mast .issue{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+  text-align:right;letter-spacing:.06em;text-transform:uppercase;line-height:1.7}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);
+  padding-bottom:10px;margin-bottom:22px}
+
+/* depth key */
+.key{background:var(--card);border:1px solid var(--rule);border-radius:3px;
+  padding:14px 16px;margin-bottom:22px}
+.key h2{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.scale{display:flex;align-items:flex-end;gap:0;height:34px}
+.scale .tick{flex:1;text-align:center;border-left:1px solid var(--hair);
+  font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);padding-top:18px;position:relative}
+.scale .tick:first-child{border-left:none}
+.scale .tick b{display:block;color:var(--ink2);font-weight:500;font-size:11px}
+.scale .tick.mid b{color:var(--depth)}
+.keynote{font-size:12.5px;color:var(--ink2);margin:10px 0 0}
+
+/* controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input[type=search],select{font-family:inherit;font-size:14px;padding:7px 11px;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);color:var(--ink)}
+input[type=search]{flex:1;min-width:170px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+.count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);align-self:center}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--head);font-weight:500;text-align:left;padding:10px 12px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--card)}
+td{padding:8px 12px;border-bottom:1px solid var(--hair);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--depth-soft)}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rk{color:var(--muted);font-size:13px;width:46px}
+.tm{font-weight:600}
+.cf{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
+.sc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:19px;font-weight:600;width:64px;text-shadow:var(--glow)}
+.pts{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;color:var(--data);width:72px}
+.rec{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--data);width:56px}
+
+/* sounding bar */
+.bar{position:relative;height:16px;min-width:130px;width:100%}
+.bar .axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule)}
+.bar i{position:absolute;top:4px;height:8px;border-radius:1px}
+.bar i.up{left:50%;background:var(--above)}
+.bar i.dn{right:50%;background:var(--below)}
+
+footer{margin-top:28px;border-top:1px solid var(--rule);padding-top:18px;
+  font-size:13px;color:var(--ink2);max-width:74ch}
+footer h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+footer p{margin:0 0 10px}
+footer .fine{font-size:12px;color:var(--muted)}
+@media(max-width:620px){ .hide-sm{display:none} }
+.nav{display:flex;gap:2px;margin:0 0 20px;border-bottom:1px solid var(--rule);
+  overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;text-decoration:none;padding:9px 14px;
+  /* same gradient-clipped treatment as the wordmark's "ratings" */
+  color:#7cb4e0;background-image:var(--sheen-nav);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;
+  margin-bottom:-1px;white-space:nowrap}
+.nav a:hover{background-color:var(--card)}
+.nav a[aria-current]{background-color:var(--card);
+  border-color:var(--rule);border-bottom-color:var(--card);
+  /* the selected tab drops out of the gradient into plain ink, so "selected"
+     is carried by weight and background rather than by a colour shift alone */
+  background-image:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
+.nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
+
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink2)}
+th .car{display:inline-block;width:9px;margin-left:4px;color:var(--rule)}
+th[aria-sort] .car{color:var(--depth)}
+th[aria-sort]{color:var(--ink)}
+.asof{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);
+  letter-spacing:.06em;margin:-8px 0 16px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.subtabs button{font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);
+  color:var(--muted)}
+.subtabs button[aria-pressed="true"]{background:var(--depth);border-color:var(--depth);
+  color:#fff}
+.subtabs button:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+
+.brand h1 .script{font-family:Italianno,cursive;font-weight:400;
+  font-size:.62em;margin-left:.12em;letter-spacing:0;
+  vertical-align:baseline;text-transform:none;
+  background:var(--sheen);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--depth)}
+/* the active tab sits under its own slice of the same sweep */
+.nav a[aria-current]{position:relative}
+.nav a[aria-current]::before{content:"";position:absolute;inset:-1px -1px auto -1px;
+  height:2px;background:var(--sheen);border-radius:3px 3px 0 0}
+
+/* Logos are hotlinked from ESPN's CDN, keyed on the team id already in the
+   games file (CFBD's team ids ARE ESPN's). Nothing is downloaded or stored.
+   Every <img> carries an onerror that removes it, so a team without a logo
+   renders as a plain name rather than a broken-image icon. */
+.tcell{display:flex;align-items:center;gap:9px;min-width:0}
+.logo{width:22px;height:22px;object-fit:contain;flex:none}
+.tmeta{min-width:0}
+.badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.06em;padding:2px 6px;border-radius:3px;
+  border:1px solid var(--cf-line,var(--rule));
+  color:var(--cf-ink,var(--ink2));background:var(--cf-fill,var(--paper));white-space:nowrap}
+.confcol{width:1%;white-space:nowrap}
+.badge.c-SEC{--cf-ink:#759c00;--cf-fill:#759c002e;--cf-line:#759c0066}
+.badge.c-B10{--cf-ink:#00a9ab;--cf-fill:#00a9ab2e;--cf-line:#00a9ab66}
+.badge.c-ACC{--cf-ink:#da6600;--cf-fill:#da66002e;--cf-line:#da660066}
+.badge.c-B12{--cf-ink:#dc5780;--cf-fill:#dc57802e;--cf-line:#dc578066}
+.badge.c-AAC{--cf-ink:#26a74b;--cf-fill:#26a74b2e;--cf-line:#26a74b66}
+.badge.c-SBC{--cf-ink:#00ab7f;--cf-fill:#00ab7f2e;--cf-line:#00ab7f66}
+.badge.c-MAC{--cf-ink:#e15a50;--cf-fill:#e15a502e;--cf-line:#e15a5066}
+.badge.c-MW{--cf-ink:#6782f2;--cf-fill:#6782f22e;--cf-line:#6782f266}
+.badge.c-CUSA{--cf-ink:#9473e7;--cf-fill:#9473e72e;--cf-line:#9473e766}
+.badge.c-PAC{--cf-ink:#b566cf;--cf-fill:#b566cf2e;--cf-line:#b566cf66}
+.badge.c-IND{--cf-ink:#cd5cab;--cf-fill:#cd5cab2e;--cf-line:#cd5cab66}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]) .badge.c-SEC{--cf-ink:#4d7200;--cf-fill:#4d72002e;--cf-line:#4d720066}
+  :root:not([data-theme="dark"]) .badge.c-B10{--cf-ink:#009497;--cf-fill:#0094972e;--cf-line:#00949766}
+  :root:not([data-theme="dark"]) .badge.c-ACC{--cf-ink:#ad3500;--cf-fill:#ad35002e;--cf-line:#ad350066}
+  :root:not([data-theme="dark"]) .badge.c-B12{--cf-ink:#af2057;--cf-fill:#af20572e;--cf-line:#af205766}
+  :root:not([data-theme="dark"]) .badge.c-AAC{--cf-ink:#007c16;--cf-fill:#007c162e;--cf-line:#007c1666}
+  :root:not([data-theme="dark"]) .badge.c-SBC{--cf-ink:#00976a;--cf-fill:#00976a2e;--cf-line:#00976a66}
+  :root:not([data-theme="dark"]) .badge.c-MAC{--cf-ink:#b32321;--cf-fill:#b323212e;--cf-line:#b3232166}
+  :root:not([data-theme="dark"]) .badge.c-MW{--cf-ink:#4054c8;--cf-fill:#4054c82e;--cf-line:#4054c866}
+  :root:not([data-theme="dark"]) .badge.c-CUSA{--cf-ink:#6d45bd;--cf-fill:#6d45bd2e;--cf-line:#6d45bd66}
+  :root:not([data-theme="dark"]) .badge.c-PAC{--cf-ink:#8b36a4;--cf-fill:#8b36a42e;--cf-line:#8b36a466}
+  :root:not([data-theme="dark"]) .badge.c-IND{--cf-ink:#a12981;--cf-fill:#a129812e;--cf-line:#a1298166}
+}
+:root[data-theme="light"] .badge.c-SEC{--cf-ink:#4d7200;--cf-fill:#4d72002e;--cf-line:#4d720066}
+:root[data-theme="light"] .badge.c-B10{--cf-ink:#009497;--cf-fill:#0094972e;--cf-line:#00949766}
+:root[data-theme="light"] .badge.c-ACC{--cf-ink:#ad3500;--cf-fill:#ad35002e;--cf-line:#ad350066}
+:root[data-theme="light"] .badge.c-B12{--cf-ink:#af2057;--cf-fill:#af20572e;--cf-line:#af205766}
+:root[data-theme="light"] .badge.c-AAC{--cf-ink:#007c16;--cf-fill:#007c162e;--cf-line:#007c1666}
+:root[data-theme="light"] .badge.c-SBC{--cf-ink:#00976a;--cf-fill:#00976a2e;--cf-line:#00976a66}
+:root[data-theme="light"] .badge.c-MAC{--cf-ink:#b32321;--cf-fill:#b323212e;--cf-line:#b3232166}
+:root[data-theme="light"] .badge.c-MW{--cf-ink:#4054c8;--cf-fill:#4054c82e;--cf-line:#4054c866}
+:root[data-theme="light"] .badge.c-CUSA{--cf-ink:#6d45bd;--cf-fill:#6d45bd2e;--cf-line:#6d45bd66}
+:root[data-theme="light"] .badge.c-PAC{--cf-ink:#8b36a4;--cf-fill:#8b36a42e;--cf-line:#8b36a466}
+:root[data-theme="light"] .badge.c-IND{--cf-ink:#a12981;--cf-fill:#a129812e;--cf-line:#a1298166}
+
+.confcol{width:1%;white-space:nowrap}
+
+.mark{width:42px;height:42px;flex:none}
+.mark .bd{fill:url(#fb-d)} .mark .rg{stroke:url(#fr-d)}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .mark .bd{fill:url(#fb-l)}
+  :root:not([data-theme="dark"]) .mark .rg{stroke:url(#fr-l)} }
+:root[data-theme="light"] .mark .bd{fill:url(#fb-l)}
+:root[data-theme="light"] .mark .rg{stroke:url(#fr-l)}
+.brand{display:flex;align-items:center;gap:13px}
+@media(max-width:620px){ .mark{width:34px;height:34px} }
+
+/* filters: the three summary cards are buttons now */
+.scard.f{text-align:left;font:inherit;cursor:pointer;width:100%;
+  transition:border-color .12s,background .12s}
+.scard.f:hover{border-left-color:var(--ink)}
+.scard.f.on{background:var(--hair);border-color:var(--depth)}
+.scard.f:focus-visible{outline:2px solid var(--depth);outline-offset:2px}
+.fcount{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 12px}
+.empty{color:var(--muted);font-size:14px;padding:26px 0}
+/* expanding a game */
+.gc{cursor:pointer}
+.gc.dim{cursor:default}
+.gc.open{border-color:var(--depth)}
+.wp{border-top:1px solid var(--rule);margin-top:10px;padding-top:12px}
+/* The figures sit UNDER the ring, not flanking it. A game card is about
+   350px wide even on a wide desktop -- the grid is auto-fit, so the viewport
+   buys more columns, not wider ones -- and flanking a 184px ring left the
+   side columns at ~69px, which a 38px numeral overflows straight off the
+   card edge. Stacked, each figure is directly beneath its own arc and the
+   row is capped to the ring's width, so both read near the centre. */
+.srlegend{display:flex;justify-content:center;max-width:var(--ring);margin:12px auto 0}
+.srside{flex:1 1 0;min-width:0;text-align:center}
+.srpct{font-family:"IBM Plex Mono",monospace;font-size:36px;line-height:1;
+  font-weight:600;color:var(--data);letter-spacing:-.03em}
+.srpct.dim{color:var(--muted)}
+.srpct .pc{font-size:16px;font-weight:500;margin-left:1px;opacity:.7}
+.srteam{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink2);margin-top:7px;line-height:1.35;
+  overflow-wrap:anywhere}
+/* ONE KNOB. The ring diameter lives here and everything inside it is sized
+   as a percentage of that, so changing --ring rescales the arcs, the logos,
+   the divider and the legend together. The previous version pinned the logos
+   in the SVG's own pixel units, which meant any size change walked them out
+   of place -- that is why this is proportional now.
+     usable card width: 448px at desktop, 358px at 820px viewport,
+     328px at 390px, 258px at 320px. min() lets the ring take the card when
+     the card is the smaller of the two, so no media query is needed. */
+.wp{--ring:min(236px,100%)}
+.srw{position:relative;width:var(--ring);height:var(--ring);margin:0 auto;flex:none}
+.srw svg{display:block;width:100%;height:100%}
+/* Percentages of the ring box. The viewBox is 184 units across with R=70 and
+   SW=14, so the clear inner radius is 63/184 = 34.2% of the diameter. A badge
+   22% wide, inset 23% from the edge and centred vertically puts its far
+   corner at 29.3% of the diameter from the centre -- inside 34.2% with room
+   to spare, and that stays true at any --ring because it is all relative. */
+.wdiv{position:absolute;top:22%;bottom:22%;left:50%;width:1px;background:var(--rule)}
+.wl,.wab{position:absolute;top:39%;width:22%;height:22%}
+.wl{object-fit:contain}
+.wab{display:none;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;
+  color:var(--ink2);text-align:center;line-height:1.1}
+.wab.on{display:flex}
+.wl.wlL,.wab.wlL,.wab.wabL{left:23%}
+.wl.wlR,.wab.wlR,.wab.wabR{right:23%}
+
+.view{display:none}
+.view.on{display:block}
+.vswitch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.vswitch a{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;text-decoration:none;color:var(--ink2);background:var(--card);
+  border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
+.vswitch a.on{background:var(--depth-soft);border-color:var(--depth);color:var(--depth)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0 0 20px}
+.scard{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--depth);
+  border-radius:3px;padding:13px 15px}
+.scard.warn{border-left-color:var(--data)}
+.scard h3{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--head);margin:0 0 6px;font-weight:500}
+.scard .big{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;
+  color:var(--data);line-height:1.1;margin-bottom:5px}
+.scard p{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5}
+.kick{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+.mu{display:flex;flex-direction:column;gap:3px;min-width:180px}
+.mu .side{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.mu .side img.logo{width:17px;height:17px;object-fit:contain;flex:none}
+.mu .side .rk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data);
+  width:22px;flex:none;text-align:right}
+.mu .side .nmx{color:var(--ink2)}
+.mu .side.win .nmx{color:var(--data);font-weight:600}
+.mu .side .rec{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+.pscore{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:16px;font-weight:600;white-space:nowrap;color:var(--data)}
+.pscore .lo{color:var(--muted);font-weight:400}
+.pm{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
+.pm.close{color:var(--data)}
+.edgev{font-family:"IBM Plex Mono",monospace;color:var(--muted)}
+.edgev.big{color:var(--data);font-weight:600}
+.movef{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
+.fcs{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:1px 5px}
+tr.dim{opacity:.55}
+.dash{color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:8px;margin:10px 0 0}
+.bar{display:grid;grid-template-columns:230px 1fr 66px;align-items:center;gap:12px;font-size:12.5px}
+.bar .lab{color:var(--ink2)}
+.bar.model .lab{color:var(--data);font-weight:600}
+.bar .track{display:block;height:11px;background:var(--depth-soft);border:1px solid var(--hair);
+  border-radius:2px;overflow:hidden}
+.bar .fill{display:block;height:100%}
+.bar.model .fill{background:var(--depth)}
+.bar.mkt .fill{background:var(--above)}
+.bar.ctrl .fill{background:var(--below)}
+.bar.ref .fill{background:var(--muted)}
+.bar .val{font-family:"IBM Plex Mono",monospace;text-align:right;color:var(--data)}
+@media(max-width:620px){.bar{grid-template-columns:128px 1fr 56px;gap:8px;font-size:11.5px}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:800px){.pair{grid-template-columns:1fr}}
+.pair h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 4px;font-weight:500}
+.pair .note{font-size:12.5px;color:var(--ink2);margin:10px 0 0;line-height:1.55}
+
+/* ---------------------------------------------------------------- game cards
+   One card per game instead of one table row. A row makes fifty-nine games a
+   ledger to scan down; a card makes each game a thing you look at. The grid
+   collapses to a single column on a phone without a media query -- auto-fit
+   plus a min track does it, and minmax(0,1fr) lets a card shrink below its
+   content rather than forcing a horizontal scroll. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(298px,100%),1fr));
+  gap:13px;margin:0 0 6px}
+.dayhead{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--head);font-weight:500;
+  border-bottom:1px solid var(--rule);padding:0 0 7px;margin:22px 0 13px}
+.dayhead:first-child{margin-top:0}
+
+.gc{background:var(--card);border:1px solid var(--rule);border-radius:6px;
+  padding:12px 14px 11px;min-width:0}
+
+.gc.dim{opacity:.6}
+.gch{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 10px}
+.gch .ghl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+.gch .neu{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:0 4px}
+
+.gs{display:flex;align-items:center;gap:6px;padding:3px 0;min-width:0}
+.gs img.logo{width:19px;height:19px;object-fit:contain;flex:none}
+/* crk / cnm / crec / csc, not rk / nm / rec / sc: the shared stylesheet sets
+   .rk{width:46px}, .rec{width:56px} and .sc{width:64px} for the ratings
+   tables. Those fixed widths applied here too and squeezed the team name to
+   75px, ellipsing half the card grid. Card-local names cannot collide. */
+.gs .crk{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--data);
+  flex:none;min-width:17px;width:auto;text-align:right}
+/* 14.5px, not 16: at three columns a card is ~314px and the long names --
+   North Dakota State, Mississippi State, Western Kentucky -- were ellipsing.
+   A truncated team name on a card about that team is not a tradeoff worth
+   making for two points of type size. */
+/* Wraps rather than ellipses. At three columns a card is ~314px and the four
+   longest names -- North Dakota State, Washington State, Central Michigan,
+   Coastal Carolina -- do not fit on one line. Hiding the win-loss record to
+   make room took it off nearly every card; truncating puts an ellipsis in a
+   team's own name. A second line costs a few pixels of height on four cards
+   and loses nothing. */
+.gs .cnm{font-size:14.5px;font-weight:600;color:var(--muted);letter-spacing:0;
+  min-width:0;line-height:1.25;overflow-wrap:anywhere}
+.gs .cat{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);font-weight:400;margin-right:4px}
+.gs .crec{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--muted);
+  flex:none;width:auto}
+.gs .csc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:20px;font-weight:600;color:var(--muted);margin-left:auto;flex:none;
+  line-height:1.2;padding-left:6px;width:auto;text-shadow:none}
+.gs.win .cnm{color:var(--shoal)}
+.gs.win .csc{color:var(--shoal)}
+
+/* The bar is the projected SCORE SPLIT, not a win probability. We publish no
+   win probability and inventing one for a visual would be publishing a number
+   that has never been validated. The key under the grid says so in words. */
+.split{display:flex;height:4px;border-radius:2px;overflow:hidden;margin:9px 0 0;
+  background:var(--depth-soft)}
+.split span{display:block;height:100%}
+/* The filled side is the projected winner, so it carries the winner's gold.
+   Leaving it blue would have the bar and the name disagree about which colour
+   means "ahead". */
+.split .fa{background:var(--muted)}
+.split .fh{background:var(--shoal)}
+.split.awin .fa{background:var(--shoal)}
+.split.awin .fh{background:var(--muted)}
+
+.gcf{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  border-top:1px solid var(--hair);margin:10px 0 0;padding:9px 0 0}
+.gcf .fi{display:flex;align-items:baseline;gap:5px;min-width:0}
+.gcf .lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted)}
+/* Model, Market and Edge all carry the same weight and the same extreme
+   white. No colour-coded emphasis: a "big edge" highlight drew the eye to
+   arm 3, the one arm measured as having no edge over the market. */
+.gcf .v{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;
+  color:var(--data);white-space:nowrap}
+.gcf .v.mut{color:var(--data);font-weight:600}
+.gcf .v.close{color:var(--data)}
+.gcf .v.big{color:var(--data)}
+.gcf .mv{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px}
+table.rt{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+table.rt th{text-align:left;font-family:var(--mono);font-size:11px;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--head);
+  font-weight:500;padding:0 10px 8px;border-bottom:1px solid var(--rule)}
+table.rt td{padding:8px 10px;border-bottom:1px solid var(--hair)}
+table.rt td.n,table.rt th.n{text-align:right;font-family:var(--mono);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+table.rt td.m,table.rt th.m{text-align:center;width:38px}
+table.rt td.wk{font-family:var(--mono);color:var(--muted);width:30px}
+table.rt td.tm{color:var(--ink)}
+table.rt td.tm span{color:var(--muted);font-size:12.5px}
+table.rt td.m.y{color:var(--above)}
+table.rt td.m.n{color:var(--below)}
+table.rt td.m.p{color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Fathom">
+  <defs>
+    <linearGradient id="fb-d" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#f6fafd"/><stop offset=".38" stop-color="#9dafbf"/>
+      <stop offset=".64" stop-color="#74879a"/><stop offset=".84" stop-color="#eaf1f7"/>
+      <stop offset="1" stop-color="#8396a8"/>
+    </linearGradient>
+    <linearGradient id="fr-d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bcd9f0"/><stop offset=".5" stop-color="#7cb4e0"/>
+      <stop offset="1" stop-color="#2d6da6"/>
+    </linearGradient>
+    <linearGradient id="fb-l" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#b9c6d3"/><stop offset=".4" stop-color="#6b7e90"/>
+      <stop offset=".7" stop-color="#93a6b8"/><stop offset="1" stop-color="#5d7183"/>
+    </linearGradient>
+    <linearGradient id="fr-l" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a8cc2"/><stop offset=".5" stop-color="#1f5f96"/>
+      <stop offset="1" stop-color="#14476f"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 1 37 8.2" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+    <path class="rg" d="M45 11.5 A 21 9.5 0 0 1 53 17" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+  </g>
+  <path class="bd" d="M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z"/>
+  <path d="M32 3 Q23 25 23 44 L14 59 L27 51 L32 48 Z" fill="#ffffff" opacity=".26"/>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 0 53 17" fill="none" stroke-width="2.8"
+          stroke-linecap="round"/>
+    <ellipse class="rg" cx="32" cy="17" rx="26" ry="12" fill="none" stroke-width="1.3"
+             opacity=".22"/>
+  </g>
+</svg>
+      <div>
+      <h1>Fathom<span class="script">ratings</span></h1>
+      <div class="tag">The numbers behind the number</div>
+      </div>
+    </div>
+    <div class="issue">
+      2026 Season · Through week 5<br>
+      Previous weeks<br>
+      114 games graded</div>
+  </header>
+
+  <nav class="nav">
+    <a href="./" data-tab="teams">Team Ratings</a>
+    <a href="stats.html#advanced" data-tab="advanced">Advanced</a>
+    <a href="stats.html#efficiency" data-tab="efficiency">Efficiency</a>
+    <a href="stats.html#talent" data-tab="talent">Talent</a>
+    <a href="projections.html" data-tab="projections">Projections</a>
+    <a href="results.html" data-tab="results" aria-current="page">Previous weeks</a>
+    <a href="players.html" data-tab="players">Players</a>
+    <a href="methodology.html" data-tab="methodology">Methodology</a>
+  </nav>
+<p class="caveat" style="margin:16px 0 0"><b>Every number on this page was logged before kickoff and has not been edited since.</b> Two weeks is 114 games. A spread edge needs on the order of 54,000 games to demonstrate, so nothing here is evidence of one &mdash; these are the records, with their confidence intervals and the market's number beside them, published whether they flatter the model or not.</p><div class="vswitch"><a href="#week5" data-v="week5">Week 5</a><a href="#week4" data-v="week4">Week 4</a><a href="#combined" data-v="combined">Combined</a></div><section class="view" id="view-week5"><div class="subhead">Week 5 &middot; 56 games</div>
+    <div class="strip">
+      <div class="scard"><h3>Against the spread</h3><div class="big">30&ndash;26</div>
+        <p>53.6%, 95% confidence interval 41%&ndash;66%.
+        +1.27 units at &minus;110. Break-even is 52.4%.</p></div>
+      <div class="scard"><h3>Straight-up winner</h3><div class="big">44&ndash;12</div>
+        <p>78.6%. Picking every market favourite on the same games
+        would have returned 69.6%.</p></div>
+      <div class="scard"><h3>Average margin miss</h3><div class="big">13.89</div>
+        <p>points per game, against the market's 13.35 on the same
+        games. Difference +0.55, p&nbsp;=&nbsp;0.34.</p></div>
+    </div>
+    <div class="pair">
+      <div>
+        <h3>How far off the final margin was</h3>
+        <div class="bar mkt"><span class="lab">Market spread</span><span class="track"><span class="fill" style="width:85.8%"></span></span><span class="val">13.35</span></div>
+        <div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:89.3%"></span></span><span class="val">13.89</span></div>
+        <p class="note">Mean absolute error in points, same games, lower is better.
+        A paired t-test on these two columns gives p&nbsp;=&nbsp;0.34
+        &mdash; not a distinguishable difference.</p>
+      </div>
+      <div>
+        <h3>Share of games inside a given margin</h3>
+        <div class="bar model"><span class="lab">Model within 14 points</span><span class="track"><span class="fill" style="width:58.9%"></span></span><span class="val">59%</span></div>
+        <div class="bar mkt"><span class="lab">Market within 14 points</span><span class="track"><span class="fill" style="width:66.1%"></span></span><span class="val">66%</span></div>
+        <div class="bar ref"><span class="lab">Model within 7 points</span><span class="track"><span class="fill" style="width:37.5%"></span></span><span class="val">38%</span></div>
+        <div class="bar ref"><span class="lab">Model within 3 points</span><span class="track"><span class="fill" style="width:17.9%"></span></span><span class="val">18%</span></div>
+        <p class="note">Model bias was -1.61 points
+        &mdash; a lean against the home side.</p>
+      </div>
+    </div>
+    <p class="caveat" style="margin-top:18px"><b>The model and the market named
+    different winners in 7 of 56 games, and the model was
+    right in 6.</b> That handful of games is the entire straight-up
+    difference between the two &mdash; on the other 49 they
+    agreed, so both were graded identically. A sign test on those
+    7 gives p&nbsp;=&nbsp;0.06.</p>
+    <div class="subhead" style="margin-top:26px">Every game, worst miss first</div>
+    <div class="tw"><table class="rt">
+      <thead><tr><th>Wk</th><th>Game</th><th class="n">Projected</th>
+        <th class="n">Market</th><th class="n">Final</th><th class="n">Miss</th>
+        <th class="m">SU</th><th class="m">ATS</th></tr></thead>
+      <tbody><tr><td class="wk">5</td><td class="tm">Baylor <span>at</span> Arizona State</td><td class="n">23.8&ndash;28.2</td><td class="n">+3.5</td><td class="n">55&ndash;19</td><td class="n">40.5</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Stanford <span>at</span> Wake Forest</td><td class="n">18.4&ndash;33.5</td><td class="n">+12.5</td><td class="n">3&ndash;57</td><td class="n">39.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Virginia <span>at</span> Florida State</td><td class="n">29.1&ndash;23.8</td><td class="n">-2.5</td><td class="n">7&ndash;38</td><td class="n">36.3</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Eastern Michigan <span>at</span> Massachusetts</td><td class="n">18.6&ndash;29.0</td><td class="n">+5.5</td><td class="n">38&ndash;14</td><td class="n">34.3</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Florida <span>at</span> Missouri</td><td class="n">35.3&ndash;29.3</td><td class="n">-4.0</td><td class="n">17&ndash;45</td><td class="n">34.0</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Middle Tennessee <span>at</span> Kansas</td><td class="n">14.4&ndash;36.3</td><td class="n">+20.5</td><td class="n">0&ndash;55</td><td class="n">33.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Memphis <span>at</span> Charlotte</td><td class="n">40.3&ndash;18.6</td><td class="n">-21.0</td><td class="n">59&ndash;8</td><td class="n">29.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Oregon State <span>at</span> Colorado State</td><td class="n">34.5&ndash;32.5</td><td class="n">-4.0</td><td class="n">56&ndash;26</td><td class="n">28.0</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Bowling Green <span>at</span> Miami (OH)</td><td class="n">11.2&ndash;34.8</td><td class="n">+14.5</td><td class="n">24&ndash;20</td><td class="n">27.6</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Old Dominion <span>at</span> Georgia State</td><td class="n">27.6&ndash;32.1</td><td class="n">-1.5</td><td class="n">10&ndash;42</td><td class="n">27.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Cincinnati <span>at</span> Arizona</td><td class="n">30.4&ndash;30.9</td><td class="n">+7.0</td><td class="n">7&ndash;34</td><td class="n">26.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Penn State <span>at</span> Northwestern</td><td class="n">25.7&ndash;21.7</td><td class="n">-3.0</td><td class="n">13&ndash;34</td><td class="n">25.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Alabama <span>at</span> Mississippi State</td><td class="n">41.7&ndash;33.0</td><td class="n">-6.0</td><td class="n">56&ndash;23</td><td class="n">24.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Michigan State <span>at</span> Wisconsin</td><td class="n">17.6&ndash;22.9</td><td class="n">+10.0</td><td class="n">3&ndash;31</td><td class="n">22.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">UTEP <span>at</span> New Mexico</td><td class="n">14.1&ndash;46.6</td><td class="n">+22.5</td><td class="n">7&ndash;61</td><td class="n">21.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Purdue <span>at</span> Illinois</td><td class="n">27.7&ndash;41.7</td><td class="n">+10.0</td><td class="n">24&ndash;17</td><td class="n">21.0</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Fresno State <span>at</span> Washington State</td><td class="n">20.0&ndash;19.9</td><td class="n">-1.5</td><td class="n">26&ndash;6</td><td class="n">19.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Notre Dame <span>at</span> North Carolina</td><td class="n">36.9&ndash;6.4</td><td class="n">-21.5</td><td class="n">37&ndash;26</td><td class="n">19.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Western Kentucky <span>at</span> New Mexico State</td><td class="n">29.0&ndash;31.4</td><td class="n">+1.5</td><td class="n">13&ndash;34</td><td class="n">18.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Akron <span>at</span> Central Michigan</td><td class="n">19.3&ndash;25.0</td><td class="n">+6.0</td><td class="n">17&ndash;41</td><td class="n">18.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Temple <span>at</span> South Florida</td><td class="n">24.0&ndash;36.1</td><td class="n">+6.0</td><td class="n">17&ndash;13</td><td class="n">16.2</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Western Michigan <span>at</span> Buffalo</td><td class="n">32.1&ndash;14.8</td><td class="n">-15.5</td><td class="n">20&ndash;17</td><td class="n">14.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Toledo <span>at</span> Ball State</td><td class="n">46.9&ndash;17.8</td><td class="n">-19.5</td><td class="n">39&ndash;24</td><td class="n">14.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Liberty <span>at</span> Delaware</td><td class="n">26.7&ndash;24.3</td><td class="n">-7.0</td><td class="n">30&ndash;14</td><td class="n">13.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Maryland <span>at</span> Nebraska</td><td class="n">21.6&ndash;34.7</td><td class="n">+13.5</td><td class="n">23&ndash;48</td><td class="n">11.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">UTSA <span>at</span> Rice</td><td class="n">35.6&ndash;22.9</td><td class="n">-10.5</td><td class="n">16&ndash;14</td><td class="n">10.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">North Texas <span>at</span> Tulsa</td><td class="n">35.5&ndash;24.0</td><td class="n">+2.5</td><td class="n">45&ndash;44</td><td class="n">10.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Marshall <span>at</span> James Madison</td><td class="n">12.7&ndash;50.4</td><td class="n">+16.5</td><td class="n">17&ndash;45</td><td class="n">9.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Michigan <span>at</span> Minnesota</td><td class="n">25.6&ndash;22.0</td><td class="n">-6.5</td><td class="n">14&ndash;20</td><td class="n">9.6</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Washington <span>at</span> USC</td><td class="n">25.0&ndash;37.8</td><td class="n">+9.5</td><td class="n">21&ndash;25</td><td class="n">8.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Boston College <span>at</span> SMU</td><td class="n">15.8&ndash;33.1</td><td class="n">+20.5</td><td class="n">16&ndash;25</td><td class="n">8.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Ohio <span>at</span> Kent State</td><td class="n">35.4&ndash;24.1</td><td class="n">-5.5</td><td class="n">13&ndash;10</td><td class="n">8.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">San José State <span>at</span> Hawai'i</td><td class="n">23.6&ndash;27.8</td><td class="n">+3.0</td><td class="n">20&ndash;16</td><td class="n">8.2</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Arkansas <span>at</span> Texas A&M</td><td class="n">20.0&ndash;38.7</td><td class="n">+14.5</td><td class="n">7&ndash;34</td><td class="n">8.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">West Virginia <span>at</span> Iowa State</td><td class="n">22.6&ndash;33.7</td><td class="n">+1.5</td><td class="n">42&ndash;45</td><td class="n">8.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Miami <span>at</span> Clemson</td><td class="n">38.5&ndash;17.1</td><td class="n">-17.5</td><td class="n">41&ndash;13</td><td class="n">6.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Ohio State <span>at</span> Iowa</td><td class="n">28.4&ndash;17.5</td><td class="n">-13.5</td><td class="n">31&ndash;14</td><td class="n">6.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Georgia Southern <span>at</span> Coastal Carolina</td><td class="n">25.2&ndash;24.3</td><td class="n">-1.5</td><td class="n">31&ndash;24</td><td class="n">6.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">California <span>at</span> UNLV</td><td class="n">22.2&ndash;24.2</td><td class="n">+2.5</td><td class="n">31&ndash;39</td><td class="n">6.0</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">UCF <span>at</span> Houston</td><td class="n">27.2&ndash;31.1</td><td class="n">+11.5</td><td class="n">17&ndash;27</td><td class="n">6.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Kentucky <span>at</span> South Carolina</td><td class="n">24.5&ndash;29.3</td><td class="n">+3.5</td><td class="n">35&ndash;34</td><td class="n">5.7</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Indiana <span>at</span> Rutgers</td><td class="n">44.5&ndash;17.0</td><td class="n">-23.5</td><td class="n">47&ndash;15</td><td class="n">4.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">UL Monroe <span>at</span> South Alabama</td><td class="n">21.5&ndash;42.7</td><td class="n">+14.5</td><td class="n">35&ndash;52</td><td class="n">4.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Pittsburgh <span>at</span> Virginia Tech</td><td class="n">32.6&ndash;26.4</td><td class="n">+4.5</td><td class="n">35&ndash;33</td><td class="n">4.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Texas Tech <span>at</span> Colorado</td><td class="n">34.2&ndash;15.7</td><td class="n">-14.5</td><td class="n">29&ndash;7</td><td class="n">3.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Wyoming <span>at</span> North Dakota State</td><td class="n">4.1&ndash;29.0</td><td class="n">+20.5</td><td class="n">0&ndash;28</td><td class="n">3.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Arkansas State <span>at</span> Louisiana</td><td class="n">21.2&ndash;27.0</td><td class="n">+6.5</td><td class="n">20&ndash;23</td><td class="n">2.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Syracuse <span>at</span> UConn</td><td class="n">27.3&ndash;28.8</td><td class="n">-5.5</td><td class="n">42&ndash;41</td><td class="n">2.5</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Auburn <span>at</span> Tennessee</td><td class="n">25.7&ndash;33.5</td><td class="n">+7.5</td><td class="n">14&ndash;24</td><td class="n">2.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Army <span>at</span> Louisiana Tech</td><td class="n">25.5&ndash;29.5</td><td class="n">-3.5</td><td class="n">29&ndash;31</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Navy <span>at</span> Air Force</td><td class="n">29.0&ndash;32.6</td><td class="n">+2.5</td><td class="n">9&ndash;14</td><td class="n">1.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Louisville <span>at</span> NC State</td><td class="n">34.6&ndash;36.4</td><td class="n">-6.0</td><td class="n">28&ndash;31</td><td class="n">1.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Vanderbilt <span>at</span> Georgia</td><td class="n">19.2&ndash;44.2</td><td class="n">+25.5</td><td class="n">14&ndash;38</td><td class="n">1.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Utah State <span>at</span> Boise State</td><td class="n">11.9&ndash;31.6</td><td class="n">+21.0</td><td class="n">18&ndash;37</td><td class="n">0.8</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Texas State <span>at</span> San Diego State</td><td class="n">28.6&ndash;30.2</td><td class="n">-4.0</td><td class="n">29&ndash;31</td><td class="n">0.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">BYU <span>at</span> TCU</td><td class="n">28.7&ndash;21.8</td><td class="n">-6.5</td><td class="n">17&ndash;10</td><td class="n">0.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr></tbody></table></div></section><section class="view" id="view-week4"><div class="subhead">Week 4 &middot; 58 games</div>
+    <div class="strip">
+      <div class="scard"><h3>Against the spread</h3><div class="big">28&ndash;29&ndash;1</div>
+        <p>49.1%, 95% confidence interval 37%&ndash;62%.
+        -3.55 units at &minus;110. Break-even is 52.4%.</p></div>
+      <div class="scard"><h3>Straight-up winner</h3><div class="big">47&ndash;11</div>
+        <p>81.0%. Picking every market favourite on the same games
+        would have returned 82.8%.</p></div>
+      <div class="scard"><h3>Average margin miss</h3><div class="big">11.61</div>
+        <p>points per game, against the market's 11.44 on the same
+        games. Difference +0.18, p&nbsp;=&nbsp;0.35.</p></div>
+    </div>
+    <div class="pair">
+      <div>
+        <h3>How far off the final margin was</h3>
+        <div class="bar mkt"><span class="lab">Market spread</span><span class="track"><span class="fill" style="width:87.9%"></span></span><span class="val">11.44</span></div>
+        <div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:89.3%"></span></span><span class="val">11.61</span></div>
+        <p class="note">Mean absolute error in points, same games, lower is better.
+        A paired t-test on these two columns gives p&nbsp;=&nbsp;0.35
+        &mdash; not a distinguishable difference.</p>
+      </div>
+      <div>
+        <h3>Share of games inside a given margin</h3>
+        <div class="bar model"><span class="lab">Model within 14 points</span><span class="track"><span class="fill" style="width:62.1%"></span></span><span class="val">62%</span></div>
+        <div class="bar mkt"><span class="lab">Market within 14 points</span><span class="track"><span class="fill" style="width:62.1%"></span></span><span class="val">62%</span></div>
+        <div class="bar ref"><span class="lab">Model within 7 points</span><span class="track"><span class="fill" style="width:36.2%"></span></span><span class="val">36%</span></div>
+        <div class="bar ref"><span class="lab">Model within 3 points</span><span class="track"><span class="fill" style="width:22.4%"></span></span><span class="val">22%</span></div>
+        <p class="note">Model bias was +2.35 points
+        &mdash; a lean toward the home side.</p>
+      </div>
+    </div>
+    <p class="caveat" style="margin-top:18px"><b>The model and the market named
+    different winners in 1 of 58 games, and the model was
+    right in 0.</b> That handful of games is the entire straight-up
+    difference between the two &mdash; on the other 57 they
+    agreed, so both were graded identically. A sign test on those
+    1 gives p&nbsp;=&nbsp;1.00.</p>
+    <div class="subhead" style="margin-top:26px">Every game, worst miss first</div>
+    <div class="tw"><table class="rt">
+      <thead><tr><th>Wk</th><th>Game</th><th class="n">Projected</th>
+        <th class="n">Market</th><th class="n">Final</th><th class="n">Miss</th>
+        <th class="m">SU</th><th class="m">ATS</th></tr></thead>
+      <tbody><tr><td class="wk">4</td><td class="tm">UCLA <span>at</span> Maryland</td><td class="n">-2.4</td><td class="n">-1.8</td><td class="n">54&ndash;3</td><td class="n">48.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Massachusetts <span>at</span> Sacramento State</td><td class="n">-4.1</td><td class="n">-4.5</td><td class="n">35&ndash;6</td><td class="n">24.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Missouri State <span>at</span> SMU</td><td class="n">+34.4</td><td class="n">+34.8</td><td class="n">24&ndash;34</td><td class="n">24.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">James Madison <span>at</span> Old Dominion</td><td class="n">-3.6</td><td class="n">-6.0</td><td class="n">46&ndash;20</td><td class="n">22.4</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Delaware <span>at</span> Virginia</td><td class="n">+18.1</td><td class="n">+19.5</td><td class="n">3&ndash;42</td><td class="n">20.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Ole Miss <span>at</span> Florida</td><td class="n">+3.3</td><td class="n">+3.5</td><td class="n">28&ndash;52</td><td class="n">20.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Tulsa <span>at</span> Arkansas</td><td class="n">+7.7</td><td class="n">+6.8</td><td class="n">6&ndash;34</td><td class="n">20.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Texas A&M <span>at</span> LSU</td><td class="n">+9.3</td><td class="n">+9.8</td><td class="n">6&ndash;35</td><td class="n">19.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Oklahoma State <span>at</span> West Virginia</td><td class="n">+2.6</td><td class="n">+2.5</td><td class="n">41&ndash;24</td><td class="n">19.6</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">San Diego State <span>at</span> Toledo</td><td class="n">+5.8</td><td class="n">+3.0</td><td class="n">16&ndash;41</td><td class="n">19.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Hawai'i <span>at</span> Wyoming</td><td class="n">-1.7</td><td class="n">-3.0</td><td class="n">10&ndash;27</td><td class="n">18.7</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Oregon State <span>at</span> UTEP</td><td class="n">-7.4</td><td class="n">-10.2</td><td class="n">33&ndash;7</td><td class="n">18.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Louisiana <span>at</span> Charlotte</td><td class="n">-8.8</td><td class="n">-10.0</td><td class="n">34&ndash;7</td><td class="n">18.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">South Carolina <span>at</span> Alabama</td><td class="n">+12.8</td><td class="n">+13.5</td><td class="n">18&ndash;49</td><td class="n">18.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">UNLV <span>at</span> Akron</td><td class="n">-10.9</td><td class="n">-13.5</td><td class="n">38&ndash;10</td><td class="n">17.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Boise State <span>at</span> Western Michigan</td><td class="n">-8.0</td><td class="n">-7.0</td><td class="n">32&ndash;7</td><td class="n">17.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Oklahoma <span>at</span> Georgia</td><td class="n">+11.4</td><td class="n">+13.8</td><td class="n">13&ndash;41</td><td class="n">16.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Florida Atlantic <span>at</span> UL Monroe</td><td class="n">-11.6</td><td class="n">-13.5</td><td class="n">45&ndash;17</td><td class="n">16.4</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Clemson <span>at</span> California</td><td class="n">+2.1</td><td class="n">-1.2</td><td class="n">24&ndash;10</td><td class="n">16.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Southern Miss <span>at</span> Tulane</td><td class="n">+18.0</td><td class="n">+18.5</td><td class="n">21&ndash;24</td><td class="n">15.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Wake Forest <span>at</span> Louisville</td><td class="n">+11.9</td><td class="n">+12.5</td><td class="n">30&ndash;27</td><td class="n">14.9</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Liberty <span>at</span> Coastal Carolina</td><td class="n">-2.2</td><td class="n">-2.5</td><td class="n">34&ndash;17</td><td class="n">14.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Northwestern <span>at</span> Indiana</td><td class="n">+19.8</td><td class="n">+20.8</td><td class="n">23&ndash;29</td><td class="n">13.8</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Wisconsin <span>at</span> Penn State</td><td class="n">+8.8</td><td class="n">+9.8</td><td class="n">24&ndash;20</td><td class="n">12.8</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Notre Dame <span>at</span> Purdue</td><td class="n">-26.2</td><td class="n">-27.8</td><td class="n">49&ndash;10</td><td class="n">12.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Nebraska <span>at</span> Michigan State</td><td class="n">-5.2</td><td class="n">-5.5</td><td class="n">31&ndash;13</td><td class="n">12.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">New Mexico <span>at</span> New Mexico State</td><td class="n">-11.5</td><td class="n">-12.8</td><td class="n">42&ndash;18</td><td class="n">12.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Minnesota <span>at</span> Washington</td><td class="n">+9.4</td><td class="n">+10.0</td><td class="n">27&ndash;24</td><td class="n">12.4</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Kansas State <span>at</span> Cincinnati</td><td class="n">-7.1</td><td class="n">-6.2</td><td class="n">26&ndash;31</td><td class="n">12.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Navy <span>at</span> UAB</td><td class="n">-7.7</td><td class="n">-7.0</td><td class="n">20&ndash;24</td><td class="n">11.7</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Northern Illinois <span>at</span> Georgia State</td><td class="n">+10.3</td><td class="n">+10.0</td><td class="n">14&ndash;35</td><td class="n">10.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">TCU <span>at</span> UCF</td><td class="n">-2.6</td><td class="n">-3.2</td><td class="n">13&ndash;21</td><td class="n">10.6</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Georgia Tech <span>at</span> Stanford</td><td class="n">-3.5</td><td class="n">-3.5</td><td class="n">27&ndash;34</td><td class="n">10.5</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Central Michigan <span>at</span> Miami</td><td class="n">+38.9</td><td class="n">+41.2</td><td class="n">3&ndash;52</td><td class="n">10.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Oregon <span>at</span> USC</td><td class="n">-4.1</td><td class="n">-3.0</td><td class="n">41&ndash;27</td><td class="n">9.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">South Florida <span>at</span> Bowling Green</td><td class="n">-17.0</td><td class="n">-17.5</td><td class="n">14&ndash;6</td><td class="n">9.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Utah <span>at</span> Iowa State</td><td class="n">-6.5</td><td class="n">-7.8</td><td class="n">31&ndash;17</td><td class="n">7.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Ball State <span>at</span> Kent State</td><td class="n">+6.0</td><td class="n">+3.0</td><td class="n">13&ndash;26</td><td class="n">7.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Iowa <span>at</span> Michigan</td><td class="n">+5.8</td><td class="n">+5.5</td><td class="n">20&ndash;19</td><td class="n">6.8</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Virginia Tech <span>at</span> Boston College</td><td class="n">-12.9</td><td class="n">-14.0</td><td class="n">21&ndash;14</td><td class="n">5.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Troy <span>at</span> Utah State</td><td class="n">+6.1</td><td class="n">+3.0</td><td class="n">10&ndash;21</td><td class="n">4.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">South Alabama <span>at</span> Kentucky</td><td class="n">+19.4</td><td class="n">+20.5</td><td class="n">21&ndash;45</td><td class="n">4.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Houston <span>at</span> Georgia Southern</td><td class="n">-18.5</td><td class="n">-18.8</td><td class="n">42&ndash;28</td><td class="n">4.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Vanderbilt <span>at</span> Auburn</td><td class="n">+10.2</td><td class="n">+9.5</td><td class="n">15&ndash;21</td><td class="n">4.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Kennesaw State <span>at</span> Arkansas State</td><td class="n">+6.3</td><td class="n">+5.8</td><td class="n">14&ndash;17</td><td class="n">3.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">App State <span>at</span> NC State</td><td class="n">+12.9</td><td class="n">+14.0</td><td class="n">31&ndash;41</td><td class="n">2.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Air Force <span>at</span> Nevada</td><td class="n">-5.8</td><td class="n">-5.5</td><td class="n">36&ndash;33</td><td class="n">2.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Texas <span>at</span> Tennessee</td><td class="n">-5.5</td><td class="n">-5.8</td><td class="n">20&ndash;17</td><td class="n">2.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Colorado State <span>at</span> UTSA</td><td class="n">+11.7</td><td class="n">+12.5</td><td class="n">45&ndash;59</td><td class="n">2.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Middle Tennessee <span>at</span> Jacksonville State</td><td class="n">+8.0</td><td class="n">+7.0</td><td class="n">13&ndash;23</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Colorado <span>at</span> Baylor</td><td class="n">+12.0</td><td class="n">+9.8</td><td class="n">13&ndash;23</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Sam Houston <span>at</span> Texas Tech</td><td class="n">+33.1</td><td class="n">+34.8</td><td class="n">14&ndash;49</td><td class="n">1.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">UConn <span>at</span> Miami (OH)</td><td class="n">+4.1</td><td class="n">+3.5</td><td class="n">21&ndash;24</td><td class="n">1.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Illinois <span>at</span> Ohio State</td><td class="n">+24.0</td><td class="n">+27.2</td><td class="n">19&ndash;42</td><td class="n">1.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Army <span>at</span> Temple</td><td class="n">-4.7</td><td class="n">-3.0</td><td class="n">21&ndash;17</td><td class="n">0.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Arizona <span>at</span> Washington State</td><td class="n">-9.4</td><td class="n">-10.0</td><td class="n">34&ndash;24</td><td class="n">0.6</td><td class="m y">&check;</td><td class="m p">&ndash;</td></tr><tr><td class="wk">4</td><td class="tm">Rice <span>at</span> Fresno State</td><td class="n">+14.6</td><td class="n">+13.5</td><td class="n">24&ndash;38</td><td class="n">0.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Missouri <span>at</span> Mississippi State</td><td class="n">+6.6</td><td class="n">+6.5</td><td class="n">24&ndash;31</td><td class="n">0.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr></tbody></table></div></section><section class="view" id="view-combined"><div class="subhead">Weeks 4-5 &middot; 114 games pooled</div>
+    <div class="strip">
+      <div class="scard"><h3>Against the spread</h3><div class="big">58&ndash;55&ndash;1</div>
+        <p>51.3%, 95% confidence interval 42%&ndash;60%.
+        -2.27 units at &minus;110. Break-even is 52.4%.</p></div>
+      <div class="scard"><h3>Straight-up winner</h3><div class="big">91&ndash;23</div>
+        <p>79.8%. Picking every market favourite on the same games
+        would have returned 76.3%.</p></div>
+      <div class="scard"><h3>Average margin miss</h3><div class="big">12.73</div>
+        <p>points per game, against the market's 12.38 on the same
+        games. Difference +0.36, p&nbsp;=&nbsp;0.22.</p></div>
+    </div>
+    <div class="pair">
+      <div>
+        <h3>How far off the final margin was</h3>
+        <div class="bar mkt"><span class="lab">Market spread</span><span class="track"><span class="fill" style="width:86.8%"></span></span><span class="val">12.38</span></div>
+        <div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:89.3%"></span></span><span class="val">12.73</span></div>
+        <p class="note">Mean absolute error in points, same games, lower is better.
+        A paired t-test on these two columns gives p&nbsp;=&nbsp;0.22
+        &mdash; not a distinguishable difference.</p>
+      </div>
+      <div>
+        <h3>Share of games inside a given margin</h3>
+        <div class="bar model"><span class="lab">Model within 14 points</span><span class="track"><span class="fill" style="width:60.5%"></span></span><span class="val">61%</span></div>
+        <div class="bar mkt"><span class="lab">Market within 14 points</span><span class="track"><span class="fill" style="width:64.0%"></span></span><span class="val">64%</span></div>
+        <div class="bar ref"><span class="lab">Model within 7 points</span><span class="track"><span class="fill" style="width:36.8%"></span></span><span class="val">37%</span></div>
+        <div class="bar ref"><span class="lab">Model within 3 points</span><span class="track"><span class="fill" style="width:20.2%"></span></span><span class="val">20%</span></div>
+        <p class="note">Model bias was +0.41 points
+        &mdash; a lean toward the home side.</p>
+      </div>
+    </div>
+    <p class="caveat" style="margin-top:18px"><b>The model and the market named
+    different winners in 8 of 114 games, and the model was
+    right in 6.</b> That handful of games is the entire straight-up
+    difference between the two &mdash; on the other 106 they
+    agreed, so both were graded identically. A sign test on those
+    8 gives p&nbsp;=&nbsp;0.14.</p>
+    <div class="subhead" style="margin-top:26px">Every game, worst miss first</div>
+    <div class="tw"><table class="rt">
+      <thead><tr><th>Wk</th><th>Game</th><th class="n">Projected</th>
+        <th class="n">Market</th><th class="n">Final</th><th class="n">Miss</th>
+        <th class="m">SU</th><th class="m">ATS</th></tr></thead>
+      <tbody><tr><td class="wk">4</td><td class="tm">UCLA <span>at</span> Maryland</td><td class="n">-2.4</td><td class="n">-1.8</td><td class="n">54&ndash;3</td><td class="n">48.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Baylor <span>at</span> Arizona State</td><td class="n">23.8&ndash;28.2</td><td class="n">+3.5</td><td class="n">55&ndash;19</td><td class="n">40.5</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Stanford <span>at</span> Wake Forest</td><td class="n">18.4&ndash;33.5</td><td class="n">+12.5</td><td class="n">3&ndash;57</td><td class="n">39.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Virginia <span>at</span> Florida State</td><td class="n">29.1&ndash;23.8</td><td class="n">-2.5</td><td class="n">7&ndash;38</td><td class="n">36.3</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Eastern Michigan <span>at</span> Massachusetts</td><td class="n">18.6&ndash;29.0</td><td class="n">+5.5</td><td class="n">38&ndash;14</td><td class="n">34.3</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Florida <span>at</span> Missouri</td><td class="n">35.3&ndash;29.3</td><td class="n">-4.0</td><td class="n">17&ndash;45</td><td class="n">34.0</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Middle Tennessee <span>at</span> Kansas</td><td class="n">14.4&ndash;36.3</td><td class="n">+20.5</td><td class="n">0&ndash;55</td><td class="n">33.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Memphis <span>at</span> Charlotte</td><td class="n">40.3&ndash;18.6</td><td class="n">-21.0</td><td class="n">59&ndash;8</td><td class="n">29.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Oregon State <span>at</span> Colorado State</td><td class="n">34.5&ndash;32.5</td><td class="n">-4.0</td><td class="n">56&ndash;26</td><td class="n">28.0</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Bowling Green <span>at</span> Miami (OH)</td><td class="n">11.2&ndash;34.8</td><td class="n">+14.5</td><td class="n">24&ndash;20</td><td class="n">27.6</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Old Dominion <span>at</span> Georgia State</td><td class="n">27.6&ndash;32.1</td><td class="n">-1.5</td><td class="n">10&ndash;42</td><td class="n">27.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Cincinnati <span>at</span> Arizona</td><td class="n">30.4&ndash;30.9</td><td class="n">+7.0</td><td class="n">7&ndash;34</td><td class="n">26.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Penn State <span>at</span> Northwestern</td><td class="n">25.7&ndash;21.7</td><td class="n">-3.0</td><td class="n">13&ndash;34</td><td class="n">25.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Massachusetts <span>at</span> Sacramento State</td><td class="n">-4.1</td><td class="n">-4.5</td><td class="n">35&ndash;6</td><td class="n">24.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Missouri State <span>at</span> SMU</td><td class="n">+34.4</td><td class="n">+34.8</td><td class="n">24&ndash;34</td><td class="n">24.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Alabama <span>at</span> Mississippi State</td><td class="n">41.7&ndash;33.0</td><td class="n">-6.0</td><td class="n">56&ndash;23</td><td class="n">24.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Michigan State <span>at</span> Wisconsin</td><td class="n">17.6&ndash;22.9</td><td class="n">+10.0</td><td class="n">3&ndash;31</td><td class="n">22.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">James Madison <span>at</span> Old Dominion</td><td class="n">-3.6</td><td class="n">-6.0</td><td class="n">46&ndash;20</td><td class="n">22.4</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">UTEP <span>at</span> New Mexico</td><td class="n">14.1&ndash;46.6</td><td class="n">+22.5</td><td class="n">7&ndash;61</td><td class="n">21.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Purdue <span>at</span> Illinois</td><td class="n">27.7&ndash;41.7</td><td class="n">+10.0</td><td class="n">24&ndash;17</td><td class="n">21.0</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Delaware <span>at</span> Virginia</td><td class="n">+18.1</td><td class="n">+19.5</td><td class="n">3&ndash;42</td><td class="n">20.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Ole Miss <span>at</span> Florida</td><td class="n">+3.3</td><td class="n">+3.5</td><td class="n">28&ndash;52</td><td class="n">20.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Tulsa <span>at</span> Arkansas</td><td class="n">+7.7</td><td class="n">+6.8</td><td class="n">6&ndash;34</td><td class="n">20.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Fresno State <span>at</span> Washington State</td><td class="n">20.0&ndash;19.9</td><td class="n">-1.5</td><td class="n">26&ndash;6</td><td class="n">19.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Texas A&M <span>at</span> LSU</td><td class="n">+9.3</td><td class="n">+9.8</td><td class="n">6&ndash;35</td><td class="n">19.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Oklahoma State <span>at</span> West Virginia</td><td class="n">+2.6</td><td class="n">+2.5</td><td class="n">41&ndash;24</td><td class="n">19.6</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Notre Dame <span>at</span> North Carolina</td><td class="n">36.9&ndash;6.4</td><td class="n">-21.5</td><td class="n">37&ndash;26</td><td class="n">19.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">San Diego State <span>at</span> Toledo</td><td class="n">+5.8</td><td class="n">+3.0</td><td class="n">16&ndash;41</td><td class="n">19.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Hawai'i <span>at</span> Wyoming</td><td class="n">-1.7</td><td class="n">-3.0</td><td class="n">10&ndash;27</td><td class="n">18.7</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Oregon State <span>at</span> UTEP</td><td class="n">-7.4</td><td class="n">-10.2</td><td class="n">33&ndash;7</td><td class="n">18.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Western Kentucky <span>at</span> New Mexico State</td><td class="n">29.0&ndash;31.4</td><td class="n">+1.5</td><td class="n">13&ndash;34</td><td class="n">18.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Akron <span>at</span> Central Michigan</td><td class="n">19.3&ndash;25.0</td><td class="n">+6.0</td><td class="n">17&ndash;41</td><td class="n">18.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Louisiana <span>at</span> Charlotte</td><td class="n">-8.8</td><td class="n">-10.0</td><td class="n">34&ndash;7</td><td class="n">18.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">South Carolina <span>at</span> Alabama</td><td class="n">+12.8</td><td class="n">+13.5</td><td class="n">18&ndash;49</td><td class="n">18.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">UNLV <span>at</span> Akron</td><td class="n">-10.9</td><td class="n">-13.5</td><td class="n">38&ndash;10</td><td class="n">17.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Boise State <span>at</span> Western Michigan</td><td class="n">-8.0</td><td class="n">-7.0</td><td class="n">32&ndash;7</td><td class="n">17.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Oklahoma <span>at</span> Georgia</td><td class="n">+11.4</td><td class="n">+13.8</td><td class="n">13&ndash;41</td><td class="n">16.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Florida Atlantic <span>at</span> UL Monroe</td><td class="n">-11.6</td><td class="n">-13.5</td><td class="n">45&ndash;17</td><td class="n">16.4</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Temple <span>at</span> South Florida</td><td class="n">24.0&ndash;36.1</td><td class="n">+6.0</td><td class="n">17&ndash;13</td><td class="n">16.2</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Clemson <span>at</span> California</td><td class="n">+2.1</td><td class="n">-1.2</td><td class="n">24&ndash;10</td><td class="n">16.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Southern Miss <span>at</span> Tulane</td><td class="n">+18.0</td><td class="n">+18.5</td><td class="n">21&ndash;24</td><td class="n">15.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Wake Forest <span>at</span> Louisville</td><td class="n">+11.9</td><td class="n">+12.5</td><td class="n">30&ndash;27</td><td class="n">14.9</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Liberty <span>at</span> Coastal Carolina</td><td class="n">-2.2</td><td class="n">-2.5</td><td class="n">34&ndash;17</td><td class="n">14.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Western Michigan <span>at</span> Buffalo</td><td class="n">32.1&ndash;14.8</td><td class="n">-15.5</td><td class="n">20&ndash;17</td><td class="n">14.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Toledo <span>at</span> Ball State</td><td class="n">46.9&ndash;17.8</td><td class="n">-19.5</td><td class="n">39&ndash;24</td><td class="n">14.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Northwestern <span>at</span> Indiana</td><td class="n">+19.8</td><td class="n">+20.8</td><td class="n">23&ndash;29</td><td class="n">13.8</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Liberty <span>at</span> Delaware</td><td class="n">26.7&ndash;24.3</td><td class="n">-7.0</td><td class="n">30&ndash;14</td><td class="n">13.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Wisconsin <span>at</span> Penn State</td><td class="n">+8.8</td><td class="n">+9.8</td><td class="n">24&ndash;20</td><td class="n">12.8</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Notre Dame <span>at</span> Purdue</td><td class="n">-26.2</td><td class="n">-27.8</td><td class="n">49&ndash;10</td><td class="n">12.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Nebraska <span>at</span> Michigan State</td><td class="n">-5.2</td><td class="n">-5.5</td><td class="n">31&ndash;13</td><td class="n">12.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">New Mexico <span>at</span> New Mexico State</td><td class="n">-11.5</td><td class="n">-12.8</td><td class="n">42&ndash;18</td><td class="n">12.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Minnesota <span>at</span> Washington</td><td class="n">+9.4</td><td class="n">+10.0</td><td class="n">27&ndash;24</td><td class="n">12.4</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Kansas State <span>at</span> Cincinnati</td><td class="n">-7.1</td><td class="n">-6.2</td><td class="n">26&ndash;31</td><td class="n">12.1</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Maryland <span>at</span> Nebraska</td><td class="n">21.6&ndash;34.7</td><td class="n">+13.5</td><td class="n">23&ndash;48</td><td class="n">11.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Navy <span>at</span> UAB</td><td class="n">-7.7</td><td class="n">-7.0</td><td class="n">20&ndash;24</td><td class="n">11.7</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Northern Illinois <span>at</span> Georgia State</td><td class="n">+10.3</td><td class="n">+10.0</td><td class="n">14&ndash;35</td><td class="n">10.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">UTSA <span>at</span> Rice</td><td class="n">35.6&ndash;22.9</td><td class="n">-10.5</td><td class="n">16&ndash;14</td><td class="n">10.7</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">TCU <span>at</span> UCF</td><td class="n">-2.6</td><td class="n">-3.2</td><td class="n">13&ndash;21</td><td class="n">10.6</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">North Texas <span>at</span> Tulsa</td><td class="n">35.5&ndash;24.0</td><td class="n">+2.5</td><td class="n">45&ndash;44</td><td class="n">10.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Georgia Tech <span>at</span> Stanford</td><td class="n">-3.5</td><td class="n">-3.5</td><td class="n">27&ndash;34</td><td class="n">10.5</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Central Michigan <span>at</span> Miami</td><td class="n">+38.9</td><td class="n">+41.2</td><td class="n">3&ndash;52</td><td class="n">10.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Oregon <span>at</span> USC</td><td class="n">-4.1</td><td class="n">-3.0</td><td class="n">41&ndash;27</td><td class="n">9.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Marshall <span>at</span> James Madison</td><td class="n">12.7&ndash;50.4</td><td class="n">+16.5</td><td class="n">17&ndash;45</td><td class="n">9.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Michigan <span>at</span> Minnesota</td><td class="n">25.6&ndash;22.0</td><td class="n">-6.5</td><td class="n">14&ndash;20</td><td class="n">9.6</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">South Florida <span>at</span> Bowling Green</td><td class="n">-17.0</td><td class="n">-17.5</td><td class="n">14&ndash;6</td><td class="n">9.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Washington <span>at</span> USC</td><td class="n">25.0&ndash;37.8</td><td class="n">+9.5</td><td class="n">21&ndash;25</td><td class="n">8.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Boston College <span>at</span> SMU</td><td class="n">15.8&ndash;33.1</td><td class="n">+20.5</td><td class="n">16&ndash;25</td><td class="n">8.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Ohio <span>at</span> Kent State</td><td class="n">35.4&ndash;24.1</td><td class="n">-5.5</td><td class="n">13&ndash;10</td><td class="n">8.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">San José State <span>at</span> Hawai'i</td><td class="n">23.6&ndash;27.8</td><td class="n">+3.0</td><td class="n">20&ndash;16</td><td class="n">8.2</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Arkansas <span>at</span> Texas A&M</td><td class="n">20.0&ndash;38.7</td><td class="n">+14.5</td><td class="n">7&ndash;34</td><td class="n">8.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">West Virginia <span>at</span> Iowa State</td><td class="n">22.6&ndash;33.7</td><td class="n">+1.5</td><td class="n">42&ndash;45</td><td class="n">8.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Utah <span>at</span> Iowa State</td><td class="n">-6.5</td><td class="n">-7.8</td><td class="n">31&ndash;17</td><td class="n">7.5</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Ball State <span>at</span> Kent State</td><td class="n">+6.0</td><td class="n">+3.0</td><td class="n">13&ndash;26</td><td class="n">7.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Iowa <span>at</span> Michigan</td><td class="n">+5.8</td><td class="n">+5.5</td><td class="n">20&ndash;19</td><td class="n">6.8</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Miami <span>at</span> Clemson</td><td class="n">38.5&ndash;17.1</td><td class="n">-17.5</td><td class="n">41&ndash;13</td><td class="n">6.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Ohio State <span>at</span> Iowa</td><td class="n">28.4&ndash;17.5</td><td class="n">-13.5</td><td class="n">31&ndash;14</td><td class="n">6.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Georgia Southern <span>at</span> Coastal Carolina</td><td class="n">25.2&ndash;24.3</td><td class="n">-1.5</td><td class="n">31&ndash;24</td><td class="n">6.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">UCF <span>at</span> Houston</td><td class="n">27.2&ndash;31.1</td><td class="n">+11.5</td><td class="n">17&ndash;27</td><td class="n">6.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">California <span>at</span> UNLV</td><td class="n">22.2&ndash;24.2</td><td class="n">+2.5</td><td class="n">31&ndash;39</td><td class="n">6.0</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Virginia Tech <span>at</span> Boston College</td><td class="n">-12.9</td><td class="n">-14.0</td><td class="n">21&ndash;14</td><td class="n">5.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Kentucky <span>at</span> South Carolina</td><td class="n">24.5&ndash;29.3</td><td class="n">+3.5</td><td class="n">35&ndash;34</td><td class="n">5.7</td><td class="m n">&times;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Troy <span>at</span> Utah State</td><td class="n">+6.1</td><td class="n">+3.0</td><td class="n">10&ndash;21</td><td class="n">4.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">South Alabama <span>at</span> Kentucky</td><td class="n">+19.4</td><td class="n">+20.5</td><td class="n">21&ndash;45</td><td class="n">4.6</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Houston <span>at</span> Georgia Southern</td><td class="n">-18.5</td><td class="n">-18.8</td><td class="n">42&ndash;28</td><td class="n">4.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Indiana <span>at</span> Rutgers</td><td class="n">44.5&ndash;17.0</td><td class="n">-23.5</td><td class="n">47&ndash;15</td><td class="n">4.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">UL Monroe <span>at</span> South Alabama</td><td class="n">21.5&ndash;42.7</td><td class="n">+14.5</td><td class="n">35&ndash;52</td><td class="n">4.3</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Vanderbilt <span>at</span> Auburn</td><td class="n">+10.2</td><td class="n">+9.5</td><td class="n">15&ndash;21</td><td class="n">4.2</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Pittsburgh <span>at</span> Virginia Tech</td><td class="n">32.6&ndash;26.4</td><td class="n">+4.5</td><td class="n">35&ndash;33</td><td class="n">4.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Texas Tech <span>at</span> Colorado</td><td class="n">34.2&ndash;15.7</td><td class="n">-14.5</td><td class="n">29&ndash;7</td><td class="n">3.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Kennesaw State <span>at</span> Arkansas State</td><td class="n">+6.3</td><td class="n">+5.8</td><td class="n">14&ndash;17</td><td class="n">3.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Wyoming <span>at</span> North Dakota State</td><td class="n">4.1&ndash;29.0</td><td class="n">+20.5</td><td class="n">0&ndash;28</td><td class="n">3.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">App State <span>at</span> NC State</td><td class="n">+12.9</td><td class="n">+14.0</td><td class="n">31&ndash;41</td><td class="n">2.9</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Air Force <span>at</span> Nevada</td><td class="n">-5.8</td><td class="n">-5.5</td><td class="n">36&ndash;33</td><td class="n">2.8</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Arkansas State <span>at</span> Louisiana</td><td class="n">21.2&ndash;27.0</td><td class="n">+6.5</td><td class="n">20&ndash;23</td><td class="n">2.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Texas <span>at</span> Tennessee</td><td class="n">-5.5</td><td class="n">-5.8</td><td class="n">20&ndash;17</td><td class="n">2.5</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Syracuse <span>at</span> UConn</td><td class="n">27.3&ndash;28.8</td><td class="n">-5.5</td><td class="n">42&ndash;41</td><td class="n">2.5</td><td class="m n">&times;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Colorado State <span>at</span> UTSA</td><td class="n">+11.7</td><td class="n">+12.5</td><td class="n">45&ndash;59</td><td class="n">2.3</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Auburn <span>at</span> Tennessee</td><td class="n">25.7&ndash;33.5</td><td class="n">+7.5</td><td class="n">14&ndash;24</td><td class="n">2.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Middle Tennessee <span>at</span> Jacksonville State</td><td class="n">+8.0</td><td class="n">+7.0</td><td class="n">13&ndash;23</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Colorado <span>at</span> Baylor</td><td class="n">+12.0</td><td class="n">+9.8</td><td class="n">13&ndash;23</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Army <span>at</span> Louisiana Tech</td><td class="n">25.5&ndash;29.5</td><td class="n">-3.5</td><td class="n">29&ndash;31</td><td class="n">2.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Sam Houston <span>at</span> Texas Tech</td><td class="n">+33.1</td><td class="n">+34.8</td><td class="n">14&ndash;49</td><td class="n">1.9</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">5</td><td class="tm">Navy <span>at</span> Air Force</td><td class="n">29.0&ndash;32.6</td><td class="n">+2.5</td><td class="n">9&ndash;14</td><td class="n">1.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Louisville <span>at</span> NC State</td><td class="n">34.6&ndash;36.4</td><td class="n">-6.0</td><td class="n">28&ndash;31</td><td class="n">1.2</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Vanderbilt <span>at</span> Georgia</td><td class="n">19.2&ndash;44.2</td><td class="n">+25.5</td><td class="n">14&ndash;38</td><td class="n">1.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">UConn <span>at</span> Miami (OH)</td><td class="n">+4.1</td><td class="n">+3.5</td><td class="n">21&ndash;24</td><td class="n">1.1</td><td class="m y">&check;</td><td class="m n">&times;</td></tr><tr><td class="wk">4</td><td class="tm">Illinois <span>at</span> Ohio State</td><td class="n">+24.0</td><td class="n">+27.2</td><td class="n">19&ndash;42</td><td class="n">1.0</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Utah State <span>at</span> Boise State</td><td class="n">11.9&ndash;31.6</td><td class="n">+21.0</td><td class="n">18&ndash;37</td><td class="n">0.8</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Army <span>at</span> Temple</td><td class="n">-4.7</td><td class="n">-3.0</td><td class="n">21&ndash;17</td><td class="n">0.7</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Arizona <span>at</span> Washington State</td><td class="n">-9.4</td><td class="n">-10.0</td><td class="n">34&ndash;24</td><td class="n">0.6</td><td class="m y">&check;</td><td class="m p">&ndash;</td></tr><tr><td class="wk">4</td><td class="tm">Rice <span>at</span> Fresno State</td><td class="n">+14.6</td><td class="n">+13.5</td><td class="n">24&ndash;38</td><td class="n">0.6</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">4</td><td class="tm">Missouri <span>at</span> Mississippi State</td><td class="n">+6.6</td><td class="n">+6.5</td><td class="n">24&ndash;31</td><td class="n">0.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">Texas State <span>at</span> San Diego State</td><td class="n">28.6&ndash;30.2</td><td class="n">-4.0</td><td class="n">29&ndash;31</td><td class="n">0.4</td><td class="m y">&check;</td><td class="m y">&check;</td></tr><tr><td class="wk">5</td><td class="tm">BYU <span>at</span> TCU</td><td class="n">28.7&ndash;21.8</td><td class="n">-6.5</td><td class="n">17&ndash;10</td><td class="n">0.1</td><td class="m y">&check;</td><td class="m y">&check;</td></tr></tbody></table></div></section>
+  <footer>
+    <h3>How these are graded</h3>
+    <p>A projection is logged before kickoff and compared afterwards against the
+    closing market number on the same game. Against the spread counts whether the
+    model landed on the correct side of that number; straight up counts only
+    whether it named the winner, which is the easier question and is shown next to
+    what picking every market favourite would have returned.</p>
+    <p>Week 4 logged a projected margin; projected scores begin in week 5, so
+    total-points accuracy is reported from week 5 onward.</p>
+    <p class="fine">Records at this sample size are mostly noise, and the page
+    prints each one's confidence interval so that is visible rather than implied.
+    The column worth following is the average margin miss against the market's on
+    identical games. This is a description of how the model has performed, not
+    betting advice.</p>
+  </footer>
+</div>
+<script>
+/* The projections page's 25KB renderer came with the cloned shell and targets
+   a #cards element this page does not have, so it is stripped and replaced by
+   the only behaviour this page needs: the three tabs. Same .on convention the
+   rest of the site uses (.view{display:none} / .view.on{display:block}). */
+(function(){
+  var views = ['week5','week4','combined'];
+  function show(v){
+    if (views.indexOf(v) < 0) v = views[0];
+    document.querySelectorAll('.view').forEach(function(s){
+      s.classList.toggle('on', s.id === 'view-' + v);
+    });
+    document.querySelectorAll('.vswitch a').forEach(function(a){
+      a.classList.toggle('on', a.dataset.v === v);
+    });
+  }
+  function fromHash(){ show((location.hash || '').replace('#','') || views[0]); }
+  document.querySelectorAll('.vswitch a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      history.replaceState(null, '', '#' + a.dataset.v);
+      show(a.dataset.v);
+    });
+  });
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
