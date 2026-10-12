@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fathom Projections</title>
+<meta name="description" content="Opponent-adjusted college football game forecasts — projected scores, the market number beside each, and how accurate the model has been.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z' fill='%23c3d3e0'/%3E%3Cg transform='rotate(-26 32 17)'%3E%3Cellipse cx='32' cy='17' rx='21' ry='9.5' fill='none' stroke='%237cb4e0' stroke-width='3.4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Italianno&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>/* ============================================================================
+   Fathom — steel. Dark is the DEFAULT.
+
+   Cool gunmetal ground, steel blue as the single accent, amber as its only
+   counterweight. No purple anywhere.
+
+   The diverging pair is measured, not picked. With purple dropped, the
+   negative side of the scale needed a new hue, and steel-blue-against-amber
+   is the strongest pair available for colour vision deficiency: CVD ΔE 20.6
+   at the worst adjacent step, against 10.3 for the cyan/magenta it replaces
+   and 10.2 (falling to 6.0) for the jade/magenta rejected before that. It
+   also happens to be the oldest pair in instrument design, for the same
+   reason — warm against cool reads at a glance and survives being printed,
+   dimmed or looked at sideways.
+
+   Every text token has WCAG contrast against both paper and card; the
+   lowest anywhere is 5.66:1.
+   ============================================================================ */
+:root{
+  color-scheme: dark;
+  --paper:#0d1620; --card:#16222e; --ink:#e9eff6;
+  --ink2:rgba(255,255,255,.78); --muted:rgba(255,255,255,.52);
+  --rule:#2a3f52; --hair:#1c2b39;
+  --depth:#7cb4e0; --depth-soft:#16293a;
+  --above:#7cb4e0; --below:#e0a458;
+  --shoal:#f2c14e;
+  --head:rgba(255,255,255,.52); --data:#ffffff;
+  /* brushed metal rather than a rainbow: one hue, three depths */
+  --sheen:linear-gradient(100deg,#2d6da6 0%,#7cb4e0 38%,#bcd9f0 62%,#4a8cc2 100%);
+  /* The nav wears the same sweep as the wordmark, but compressed to its
+     BRIGHT half. The full sheen bottoms out at #2d6da6 = 3.34:1 on the page
+     ground, so the leftmost tab would have failed AA at 10px. Every stop
+     below clears 8:1. */
+  --sheen-nav:linear-gradient(100deg,#7cb4e0 0%,#a3cced 42%,#bcd9f0 66%,#8ec2ea 100%);
+  --glow:0 0 24px rgba(124,180,224,.28);
+  --haze-a:rgba(124,180,224,.10); --haze-b:rgba(70,120,170,.10);
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme: light;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
+}}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --paper:#eef2f6; --card:#f9fbfd; --ink:#0c1a26;
+  --ink2:rgba(0,0,0,.72); --muted:rgba(0,0,0,.62);
+  --rule:#ccd8e3; --hair:#e2e9f0;
+  --depth:#1f5f96; --depth-soft:#e4eef7;
+  --above:#1f5f96; --below:#8a5212;
+  --shoal:#7a5200;
+  --head:rgba(0,0,0,.62); --data:rgba(0,0,0,.88);
+  --sheen:linear-gradient(100deg,#14476f 0%,#1f5f96 38%,#4a8cc2 62%,#1b5488 100%);
+  --sheen-nav:linear-gradient(100deg,#1f5f96 0%,#17517f 42%,#124569 66%,#1b5488 100%);
+  --glow:none; --haze-a:transparent; --haze-b:transparent;
+}
+/* Two cool pools bleeding from the top. Fixed, behind everything, never
+   under text -- atmosphere without the bloom that would blur figures. */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(70ch 44ch at 12% -6%, var(--haze-a), transparent 70%),
+    radial-gradient(60ch 40ch at 92% 2%, var(--haze-b), transparent 70%);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:36px 72px}
+
+/* masthead */
+.mast{border-bottom:2px solid transparent;border-image:var(--sheen) 1;padding-bottom:14px;margin-bottom:8px;
+  display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-family:Spectral,Georgia,serif;font-weight:600;font-size:clamp(34px,7vw,52px);
+  margin:0;letter-spacing:-.015em;line-height:1}
+.brand .tag{font-size:13px;color:var(--ink2);margin-top:6px;letter-spacing:.01em}
+.mast .issue{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+  text-align:right;letter-spacing:.06em;text-transform:uppercase;line-height:1.7}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);
+  padding-bottom:10px;margin-bottom:22px}
+
+/* depth key */
+.key{background:var(--card);border:1px solid var(--rule);border-radius:3px;
+  padding:14px 16px;margin-bottom:22px}
+.key h2{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.scale{display:flex;align-items:flex-end;gap:0;height:34px}
+.scale .tick{flex:1;text-align:center;border-left:1px solid var(--hair);
+  font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);padding-top:18px;position:relative}
+.scale .tick:first-child{border-left:none}
+.scale .tick b{display:block;color:var(--ink2);font-weight:500;font-size:11px}
+.scale .tick.mid b{color:var(--depth)}
+.keynote{font-size:12.5px;color:var(--ink2);margin:10px 0 0}
+
+/* controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input[type=search],select{font-family:inherit;font-size:14px;padding:7px 11px;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);color:var(--ink)}
+input[type=search]{flex:1;min-width:170px}
+input:focus-visible,select:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+.count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);align-self:center}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--head);font-weight:500;text-align:left;padding:10px 12px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--card)}
+td{padding:8px 12px;border-bottom:1px solid var(--hair);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--depth-soft)}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rk{color:var(--muted);font-size:13px;width:46px}
+.tm{font-weight:600}
+.cf{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
+.sc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:19px;font-weight:600;width:64px;text-shadow:var(--glow)}
+.pts{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;color:var(--data);width:72px}
+.rec{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--data);width:56px}
+
+/* sounding bar */
+.bar{position:relative;height:16px;min-width:130px;width:100%}
+.bar .axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule)}
+.bar i{position:absolute;top:4px;height:8px;border-radius:1px}
+.bar i.up{left:50%;background:var(--above)}
+.bar i.dn{right:50%;background:var(--below)}
+
+footer{margin-top:28px;border-top:1px solid var(--rule);padding-top:18px;
+  font-size:13px;color:var(--ink2);max-width:74ch}
+footer h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+footer p{margin:0 0 10px}
+footer .fine{font-size:12px;color:var(--muted)}
+@media(max-width:620px){ .hide-sm{display:none} }
+.nav{display:flex;gap:2px;margin:0 0 20px;border-bottom:1px solid var(--rule);
+  overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;text-decoration:none;padding:9px 14px;
+  /* same gradient-clipped treatment as the wordmark's "ratings" */
+  color:#7cb4e0;background-image:var(--sheen-nav);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;
+  margin-bottom:-1px;white-space:nowrap}
+.nav a:hover{background-color:var(--card)}
+.nav a[aria-current]{background-color:var(--card);
+  border-color:var(--rule);border-bottom-color:var(--card);
+  /* the selected tab drops out of the gradient into plain ink, so "selected"
+     is carried by weight and background rather than by a colour shift alone */
+  background-image:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
+.nav a:focus-visible{outline:2px solid var(--depth);outline-offset:-2px}
+
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink2)}
+th .car{display:inline-block;width:9px;margin-left:4px;color:var(--rule)}
+th[aria-sort] .car{color:var(--depth)}
+th[aria-sort]{color:var(--ink)}
+.asof{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);
+  letter-spacing:.06em;margin:-8px 0 16px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.subtabs button{font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;
+  border:1px solid var(--rule);border-radius:3px;background:var(--card);
+  color:var(--muted)}
+.subtabs button[aria-pressed="true"]{background:var(--depth);border-color:var(--depth);
+  color:#fff}
+.subtabs button:focus-visible{outline:2px solid var(--depth);outline-offset:1px}
+
+.brand h1 .script{font-family:Italianno,cursive;font-weight:400;
+  font-size:.62em;margin-left:.12em;letter-spacing:0;
+  vertical-align:baseline;text-transform:none;
+  background:var(--sheen);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--depth)}
+/* the active tab sits under its own slice of the same sweep */
+.nav a[aria-current]{position:relative}
+.nav a[aria-current]::before{content:"";position:absolute;inset:-1px -1px auto -1px;
+  height:2px;background:var(--sheen);border-radius:3px 3px 0 0}
+
+/* Logos are hotlinked from ESPN's CDN, keyed on the team id already in the
+   games file (CFBD's team ids ARE ESPN's). Nothing is downloaded or stored.
+   Every <img> carries an onerror that removes it, so a team without a logo
+   renders as a plain name rather than a broken-image icon. */
+.tcell{display:flex;align-items:center;gap:9px;min-width:0}
+.logo{width:22px;height:22px;object-fit:contain;flex:none}
+.tmeta{min-width:0}
+.badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+  letter-spacing:.06em;padding:2px 6px;border-radius:3px;
+  border:1px solid var(--cf-line,var(--rule));
+  color:var(--cf-ink,var(--ink2));background:var(--cf-fill,var(--paper));white-space:nowrap}
+.confcol{width:1%;white-space:nowrap}
+.badge.c-SEC{--cf-ink:#759c00;--cf-fill:#759c002e;--cf-line:#759c0066}
+.badge.c-B10{--cf-ink:#00a9ab;--cf-fill:#00a9ab2e;--cf-line:#00a9ab66}
+.badge.c-ACC{--cf-ink:#da6600;--cf-fill:#da66002e;--cf-line:#da660066}
+.badge.c-B12{--cf-ink:#dc5780;--cf-fill:#dc57802e;--cf-line:#dc578066}
+.badge.c-AAC{--cf-ink:#26a74b;--cf-fill:#26a74b2e;--cf-line:#26a74b66}
+.badge.c-SBC{--cf-ink:#00ab7f;--cf-fill:#00ab7f2e;--cf-line:#00ab7f66}
+.badge.c-MAC{--cf-ink:#e15a50;--cf-fill:#e15a502e;--cf-line:#e15a5066}
+.badge.c-MW{--cf-ink:#6782f2;--cf-fill:#6782f22e;--cf-line:#6782f266}
+.badge.c-CUSA{--cf-ink:#9473e7;--cf-fill:#9473e72e;--cf-line:#9473e766}
+.badge.c-PAC{--cf-ink:#b566cf;--cf-fill:#b566cf2e;--cf-line:#b566cf66}
+.badge.c-IND{--cf-ink:#cd5cab;--cf-fill:#cd5cab2e;--cf-line:#cd5cab66}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]) .badge.c-SEC{--cf-ink:#4d7200;--cf-fill:#4d72002e;--cf-line:#4d720066}
+  :root:not([data-theme="dark"]) .badge.c-B10{--cf-ink:#009497;--cf-fill:#0094972e;--cf-line:#00949766}
+  :root:not([data-theme="dark"]) .badge.c-ACC{--cf-ink:#ad3500;--cf-fill:#ad35002e;--cf-line:#ad350066}
+  :root:not([data-theme="dark"]) .badge.c-B12{--cf-ink:#af2057;--cf-fill:#af20572e;--cf-line:#af205766}
+  :root:not([data-theme="dark"]) .badge.c-AAC{--cf-ink:#007c16;--cf-fill:#007c162e;--cf-line:#007c1666}
+  :root:not([data-theme="dark"]) .badge.c-SBC{--cf-ink:#00976a;--cf-fill:#00976a2e;--cf-line:#00976a66}
+  :root:not([data-theme="dark"]) .badge.c-MAC{--cf-ink:#b32321;--cf-fill:#b323212e;--cf-line:#b3232166}
+  :root:not([data-theme="dark"]) .badge.c-MW{--cf-ink:#4054c8;--cf-fill:#4054c82e;--cf-line:#4054c866}
+  :root:not([data-theme="dark"]) .badge.c-CUSA{--cf-ink:#6d45bd;--cf-fill:#6d45bd2e;--cf-line:#6d45bd66}
+  :root:not([data-theme="dark"]) .badge.c-PAC{--cf-ink:#8b36a4;--cf-fill:#8b36a42e;--cf-line:#8b36a466}
+  :root:not([data-theme="dark"]) .badge.c-IND{--cf-ink:#a12981;--cf-fill:#a129812e;--cf-line:#a1298166}
+}
+:root[data-theme="light"] .badge.c-SEC{--cf-ink:#4d7200;--cf-fill:#4d72002e;--cf-line:#4d720066}
+:root[data-theme="light"] .badge.c-B10{--cf-ink:#009497;--cf-fill:#0094972e;--cf-line:#00949766}
+:root[data-theme="light"] .badge.c-ACC{--cf-ink:#ad3500;--cf-fill:#ad35002e;--cf-line:#ad350066}
+:root[data-theme="light"] .badge.c-B12{--cf-ink:#af2057;--cf-fill:#af20572e;--cf-line:#af205766}
+:root[data-theme="light"] .badge.c-AAC{--cf-ink:#007c16;--cf-fill:#007c162e;--cf-line:#007c1666}
+:root[data-theme="light"] .badge.c-SBC{--cf-ink:#00976a;--cf-fill:#00976a2e;--cf-line:#00976a66}
+:root[data-theme="light"] .badge.c-MAC{--cf-ink:#b32321;--cf-fill:#b323212e;--cf-line:#b3232166}
+:root[data-theme="light"] .badge.c-MW{--cf-ink:#4054c8;--cf-fill:#4054c82e;--cf-line:#4054c866}
+:root[data-theme="light"] .badge.c-CUSA{--cf-ink:#6d45bd;--cf-fill:#6d45bd2e;--cf-line:#6d45bd66}
+:root[data-theme="light"] .badge.c-PAC{--cf-ink:#8b36a4;--cf-fill:#8b36a42e;--cf-line:#8b36a466}
+:root[data-theme="light"] .badge.c-IND{--cf-ink:#a12981;--cf-fill:#a129812e;--cf-line:#a1298166}
+
+.confcol{width:1%;white-space:nowrap}
+
+.mark{width:42px;height:42px;flex:none}
+.mark .bd{fill:url(#fb-d)} .mark .rg{stroke:url(#fr-d)}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .mark .bd{fill:url(#fb-l)}
+  :root:not([data-theme="dark"]) .mark .rg{stroke:url(#fr-l)} }
+:root[data-theme="light"] .mark .bd{fill:url(#fb-l)}
+:root[data-theme="light"] .mark .rg{stroke:url(#fr-l)}
+.brand{display:flex;align-items:center;gap:13px}
+@media(max-width:620px){ .mark{width:34px;height:34px} }
+
+/* filters: the three summary cards are buttons now */
+.scard.f{text-align:left;font:inherit;cursor:pointer;width:100%;
+  transition:border-color .12s,background .12s}
+.scard.f:hover{border-left-color:var(--ink)}
+.scard.f.on{background:var(--hair);border-color:var(--depth)}
+.scard.f:focus-visible{outline:2px solid var(--depth);outline-offset:2px}
+.fcount{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 12px}
+.empty{color:var(--muted);font-size:14px;padding:26px 0}
+/* expanding a game */
+.gc{cursor:pointer}
+.gc.dim{cursor:default}
+.gc.open{border-color:var(--depth)}
+.wp{border-top:1px solid var(--rule);margin-top:10px;padding-top:12px}
+/* The figures sit UNDER the ring, not flanking it. A game card is about
+   350px wide even on a wide desktop -- the grid is auto-fit, so the viewport
+   buys more columns, not wider ones -- and flanking a 184px ring left the
+   side columns at ~69px, which a 38px numeral overflows straight off the
+   card edge. Stacked, each figure is directly beneath its own arc and the
+   row is capped to the ring's width, so both read near the centre. */
+.srlegend{display:flex;justify-content:center;max-width:var(--ring);margin:12px auto 0}
+.srside{flex:1 1 0;min-width:0;text-align:center}
+.srpct{font-family:"IBM Plex Mono",monospace;font-size:36px;line-height:1;
+  font-weight:600;color:var(--data);letter-spacing:-.03em}
+.srpct.dim{color:var(--muted)}
+.srpct .pc{font-size:16px;font-weight:500;margin-left:1px;opacity:.7}
+.srteam{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink2);margin-top:7px;line-height:1.35;
+  overflow-wrap:anywhere}
+/* ONE KNOB. The ring diameter lives here and everything inside it is sized
+   as a percentage of that, so changing --ring rescales the arcs, the logos,
+   the divider and the legend together. The previous version pinned the logos
+   in the SVG's own pixel units, which meant any size change walked them out
+   of place -- that is why this is proportional now.
+     usable card width: 448px at desktop, 358px at 820px viewport,
+     328px at 390px, 258px at 320px. min() lets the ring take the card when
+     the card is the smaller of the two, so no media query is needed. */
+.wp{--ring:min(236px,100%)}
+.srw{position:relative;width:var(--ring);height:var(--ring);margin:0 auto;flex:none}
+.srw svg{display:block;width:100%;height:100%}
+/* Percentages of the ring box. The viewBox is 184 units across with R=70 and
+   SW=14, so the clear inner radius is 63/184 = 34.2% of the diameter. A badge
+   22% wide, inset 23% from the edge and centred vertically puts its far
+   corner at 29.3% of the diameter from the centre -- inside 34.2% with room
+   to spare, and that stays true at any --ring because it is all relative. */
+.wdiv{position:absolute;top:22%;bottom:22%;left:50%;width:1px;background:var(--rule)}
+.wl,.wab{position:absolute;top:39%;width:22%;height:22%}
+.wl{object-fit:contain}
+.wab{display:none;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;
+  color:var(--ink2);text-align:center;line-height:1.1}
+.wab.on{display:flex}
+.wl.wlL,.wab.wlL,.wab.wabL{left:23%}
+.wl.wlR,.wab.wlR,.wab.wabR{right:23%}
+
+.view{display:none}
+.view.on{display:block}
+.vswitch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.vswitch a{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;text-decoration:none;color:var(--ink2);background:var(--card);
+  border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
+.vswitch a.on{background:var(--depth-soft);border-color:var(--depth);color:var(--depth)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0 0 20px}
+.scard{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--depth);
+  border-radius:3px;padding:13px 15px}
+.scard.warn{border-left-color:var(--data)}
+.scard h3{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--head);margin:0 0 6px;font-weight:500}
+.scard .big{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;
+  color:var(--data);line-height:1.1;margin-bottom:5px}
+.scard p{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5}
+.kick{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+.mu{display:flex;flex-direction:column;gap:3px;min-width:180px}
+.mu .side{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.mu .side img.logo{width:17px;height:17px;object-fit:contain;flex:none}
+.mu .side .rk{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data);
+  width:22px;flex:none;text-align:right}
+.mu .side .nmx{color:var(--ink2)}
+.mu .side.win .nmx{color:var(--data);font-weight:600}
+.mu .side .rec{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+.pscore{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:16px;font-weight:600;white-space:nowrap;color:var(--data)}
+.pscore .lo{color:var(--muted);font-weight:400}
+.pm{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--data)}
+.pm.close{color:var(--data)}
+.edgev{font-family:"IBM Plex Mono",monospace;color:var(--muted)}
+.edgev.big{color:var(--data);font-weight:600}
+.movef{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
+.fcs{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:1px 5px}
+tr.dim{opacity:.55}
+.dash{color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:8px;margin:10px 0 0}
+.bar{display:grid;grid-template-columns:230px 1fr 66px;align-items:center;gap:12px;font-size:12.5px}
+.bar .lab{color:var(--ink2)}
+.bar.model .lab{color:var(--data);font-weight:600}
+.bar .track{display:block;height:11px;background:var(--depth-soft);border:1px solid var(--hair);
+  border-radius:2px;overflow:hidden}
+.bar .fill{display:block;height:100%}
+.bar.model .fill{background:var(--depth)}
+.bar.mkt .fill{background:var(--above)}
+.bar.ctrl .fill{background:var(--below)}
+.bar.ref .fill{background:var(--muted)}
+.bar .val{font-family:"IBM Plex Mono",monospace;text-align:right;color:var(--data)}
+@media(max-width:620px){.bar{grid-template-columns:128px 1fr 56px;gap:8px;font-size:11.5px}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:800px){.pair{grid-template-columns:1fr}}
+.pair h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--head);margin:0 0 4px;font-weight:500}
+.pair .note{font-size:12.5px;color:var(--ink2);margin:10px 0 0;line-height:1.55}
+
+/* ---------------------------------------------------------------- game cards
+   One card per game instead of one table row. A row makes fifty-nine games a
+   ledger to scan down; a card makes each game a thing you look at. The grid
+   collapses to a single column on a phone without a media query -- auto-fit
+   plus a min track does it, and minmax(0,1fr) lets a card shrink below its
+   content rather than forcing a horizontal scroll. */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(298px,100%),1fr));
+  gap:13px;margin:0 0 6px}
+.dayhead{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--head);font-weight:500;
+  border-bottom:1px solid var(--rule);padding:0 0 7px;margin:22px 0 13px}
+.dayhead:first-child{margin-top:0}
+
+.gc{background:var(--card);border:1px solid var(--rule);border-radius:6px;
+  padding:12px 14px 11px;min-width:0}
+
+.gc.dim{opacity:.6}
+.gch{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 10px}
+.gch .ghl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+.gch .neu{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--data);border:1px solid var(--data);border-radius:2px;padding:0 4px}
+
+.gs{display:flex;align-items:center;gap:6px;padding:3px 0;min-width:0}
+.gs img.logo{width:19px;height:19px;object-fit:contain;flex:none}
+/* crk / cnm / crec / csc, not rk / nm / rec / sc: the shared stylesheet sets
+   .rk{width:46px}, .rec{width:56px} and .sc{width:64px} for the ratings
+   tables. Those fixed widths applied here too and squeezed the team name to
+   75px, ellipsing half the card grid. Card-local names cannot collide. */
+.gs .crk{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--data);
+  flex:none;min-width:17px;width:auto;text-align:right}
+/* 14.5px, not 16: at three columns a card is ~314px and the long names --
+   North Dakota State, Mississippi State, Western Kentucky -- were ellipsing.
+   A truncated team name on a card about that team is not a tradeoff worth
+   making for two points of type size. */
+/* Wraps rather than ellipses. At three columns a card is ~314px and the four
+   longest names -- North Dakota State, Washington State, Central Michigan,
+   Coastal Carolina -- do not fit on one line. Hiding the win-loss record to
+   make room took it off nearly every card; truncating puts an ellipsis in a
+   team's own name. A second line costs a few pixels of height on four cards
+   and loses nothing. */
+.gs .cnm{font-size:14.5px;font-weight:600;color:var(--muted);letter-spacing:0;
+  min-width:0;line-height:1.25;overflow-wrap:anywhere}
+.gs .cat{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);font-weight:400;margin-right:4px}
+.gs .crec{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--muted);
+  flex:none;width:auto}
+.gs .csc{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:20px;font-weight:600;color:var(--muted);margin-left:auto;flex:none;
+  line-height:1.2;padding-left:6px;width:auto;text-shadow:none}
+.gs.win .cnm{color:var(--shoal)}
+.gs.win .csc{color:var(--shoal)}
+
+/* The bar is the projected SCORE SPLIT, not a win probability. We publish no
+   win probability and inventing one for a visual would be publishing a number
+   that has never been validated. The key under the grid says so in words. */
+.split{display:flex;height:4px;border-radius:2px;overflow:hidden;margin:9px 0 0;
+  background:var(--depth-soft)}
+.split span{display:block;height:100%}
+/* The filled side is the projected winner, so it carries the winner's gold.
+   Leaving it blue would have the bar and the name disagree about which colour
+   means "ahead". */
+.split .fa{background:var(--muted)}
+.split .fh{background:var(--shoal)}
+.split.awin .fa{background:var(--shoal)}
+.split.awin .fh{background:var(--muted)}
+
+.gcf{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  border-top:1px solid var(--hair);margin:10px 0 0;padding:9px 0 0}
+.gcf .fi{display:flex;align-items:baseline;gap:5px;min-width:0}
+.gcf .lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted)}
+/* Model, Market and Edge all carry the same weight and the same extreme
+   white. No colour-coded emphasis: a "big edge" highlight drew the eye to
+   arm 3, the one arm measured as having no edge over the market. */
+.gcf .v{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;
+  color:var(--data);white-space:nowrap}
+.gcf .v.mut{color:var(--data);font-weight:600}
+.gcf .v.close{color:var(--data)}
+.gcf .v.big{color:var(--data)}
+.gcf .mv{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--data)}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="Fathom">
+  <defs>
+    <linearGradient id="fb-d" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#f6fafd"/><stop offset=".38" stop-color="#9dafbf"/>
+      <stop offset=".64" stop-color="#74879a"/><stop offset=".84" stop-color="#eaf1f7"/>
+      <stop offset="1" stop-color="#8396a8"/>
+    </linearGradient>
+    <linearGradient id="fr-d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bcd9f0"/><stop offset=".5" stop-color="#7cb4e0"/>
+      <stop offset="1" stop-color="#2d6da6"/>
+    </linearGradient>
+    <linearGradient id="fb-l" x1=".08" y1="0" x2="1" y2=".92">
+      <stop offset="0" stop-color="#b9c6d3"/><stop offset=".4" stop-color="#6b7e90"/>
+      <stop offset=".7" stop-color="#93a6b8"/><stop offset="1" stop-color="#5d7183"/>
+    </linearGradient>
+    <linearGradient id="fr-l" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a8cc2"/><stop offset=".5" stop-color="#1f5f96"/>
+      <stop offset="1" stop-color="#14476f"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 1 37 8.2" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+    <path class="rg" d="M45 11.5 A 21 9.5 0 0 1 53 17" fill="none" stroke-width="2.8"
+          opacity=".34" stroke-linecap="round"/>
+  </g>
+  <path class="bd" d="M32 3 Q41 25 41 44 L50 59 L37 51 Q32 46.5 27 51 L14 59 L23 44 Q23 25 32 3 Z"/>
+  <path d="M32 3 Q23 25 23 44 L14 59 L27 51 L32 48 Z" fill="#ffffff" opacity=".26"/>
+  <g transform="rotate(-26 32 17)">
+    <path class="rg" d="M11 17 A 21 9.5 0 0 0 53 17" fill="none" stroke-width="2.8"
+          stroke-linecap="round"/>
+    <ellipse class="rg" cx="32" cy="17" rx="26" ry="12" fill="none" stroke-width="1.3"
+             opacity=".22"/>
+  </g>
+</svg>
+      <div>
+      <h1>Fathom<span class="script">ratings</span></h1>
+      <div class="tag">The numbers behind the number</div>
+      </div>
+    </div>
+    <div class="issue">
+      2026 Season · Week 7<br>
+      Projections<br>
+      59 rated games
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="./" data-tab="teams">Team Ratings</a>
+    <a href="stats.html#advanced" data-tab="advanced">Advanced</a>
+    <a href="stats.html#efficiency" data-tab="efficiency">Efficiency</a>
+    <a href="stats.html#talent" data-tab="talent">Talent</a>
+    <a href="projections.html" data-tab="projections" aria-current="page">Projections</a>
+    <a href="results.html" data-tab="results">Previous weeks</a>
+    <a href="players.html" data-tab="players">Players</a>
+    <a href="methodology.html" data-tab="methodology">Methodology</a>
+  </nav>
+
+
+  <div class="vswitch">
+    <a href="#week5" data-v="week5">Week 7 forecast</a>
+    <a href="#accuracy" data-v="accuracy">How accurate is this</a>
+  </div>
+
+  <section class="view" id="view-week5">
+    <div class="subhead">Week 7 — projected scores, against the market</div>
+
+    <div class="strip">
+      <button class="scard f on" type="button" data-f="all" aria-pressed="true"><h3>Rated games</h3><div class="big">59 of 62</div>
+        <p>Ratings rebuilt after last week's results. The 3 unrated
+        games have an FCS opponent the model holds no rating for.</p></button>
+      <button class="scard f" type="button" data-f="close" aria-pressed="false"><h3>Close games</h3><div class="big">11</div>
+        <p>Projected inside a field goal — where the forecast is least confident
+        and the game is most worth watching.</p></button>
+      <button class="scard warn f" type="button" data-f="moved" aria-pressed="false"><h3>Lines that moved</h3><div class="big">4</div>
+        <p>Moved 3+ points since opening. A move that size is the market pricing in
+        news — an injury, a suspension — that the ratings cannot see.</p></button>
+    </div>
+
+    <div class="fcount" id="fcount"></div>
+    <div id="cards"></div>
+
+    <p class="caveat" style="margin-top:18px"><b>The bar on each card is the projected
+    score split, not a win probability.</b> Fathom publishes no win probability, and
+    drawing one purely to fill a bar would put a number on the page that has never been
+    measured. The bar simply shows how the projected points divide between the two
+    teams.</p>
+
+    <p class="caveat" style="margin-top:10px"><b>No projected totals.</b> The margin
+    between the two numbers is validated; their sum is not. Fathom's projected total
+    measures worse than simply assuming each team scores its season average, so it is
+    left off rather than published as though it carried the same weight.
+    Market is the median posted spread, shown as an implied margin so it reads in the
+    same direction as ours. 59 of 62 games are priced.</p>
+  </section>
+
+  <section class="view" id="view-accuracy">
+    <div class="subhead">How accurate these forecasts have been</div>
+    <p class="asof">Walk-forward on 1,659 held-out games, 2023–2025, weeks 5+,
+    both teams FBS. Every game is predicted using only what was known before it.</p>
+
+    <div class="pair">
+      <div>
+        <h3>Margin error — mean absolute error in points, lower is better</h3>
+<div class="bar mkt"><span class="lab">Market spread</span><span class="track"><span class="fill" style="width:77.4%"></span></span><span class="val">12.02</span></div>
+<div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:80.8%"></span></span><span class="val">12.54</span></div>
+<div class="bar ctrl"><span class="lab">Season avg point differential</span><span class="track"><span class="fill" style="width:89.4%"></span></span><span class="val">13.88</span></div>
+<div class="bar ref"><span class="lab">Home team by home-field edge</span><span class="track"><span class="fill" style="width:98.4%"></span></span><span class="val">15.27</span></div>
+<div class="bar ref"><span class="lab">Every game a tie</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="val">15.52</span></div>
+        <p class="note">Better than the best rule available for free by
+        <b>1.34 points</b>, and within <b>0.52</b> of the closing line — a number set
+        by a market with real money behind it.</p>
+      </div>
+      <div>
+        <h3>Picking the winner — accuracy, higher is better</h3>
+<div class="bar model"><span class="lab">Fathom projection</span><span class="track"><span class="fill" style="width:72.0%"></span></span><span class="val">72.0%</span></div>
+<div class="bar ctrl"><span class="lab">Season avg point differential</span><span class="track"><span class="fill" style="width:69.3%"></span></span><span class="val">69.3%</span></div>
+<div class="bar ref"><span class="lab">Better win percentage</span><span class="track"><span class="fill" style="width:67.6%"></span></span><span class="val">67.6%</span></div>
+<div class="bar ref"><span class="lab">Home team always</span><span class="track"><span class="fill" style="width:57.2%"></span></span><span class="val">57.2%</span></div>
+        <p class="note">1,194–465. Ahead of season point differential by 2.7 points,
+        the better record by 4.3, and always taking the home team by 14.8 — all
+        statistically significant, none of them close calls.</p>
+      </div>
+    </div>
+
+    <section class="key" style="margin-top:22px">
+      <h2>Why the comparison is to those rules and not to a rival model</h2>
+      <p class="keynote">A forecast is only worth something if it beats what you could
+      do without it. Backing the home team costs nothing. Ranking teams by their average
+      point differential costs nothing. A model that cannot clear those is decoration.
+      Every number above is measured against them on the same held-out games, and the
+      comparison is reported whether it flatters the model or not — which is why
+      projected totals are missing from the other tab.</p>
+    </section>
+  </section>
+
+  <footer>
+    <h3>Method</h3>
+    <p>One rating per team explains margin. Splitting that same fixed point in two —
+    an offence rating and a defence rating solved against points scored — produces a
+    projected score directly. Each team is anchored to its own prior-season rating
+    with the anchor fading as games accumulate, so an early-season number is not built
+    on two games pretending to be a season.</p>
+    <p class="fine">No betting lines are used anywhere in the projections themselves;
+    the market column is shown for comparison only, after the fact. This is a
+    description of what the model expects, not betting advice, and a 0.52-point gap to
+    the closing line is nowhere near an edge over it.</p>
+  </footer>
+</div>
+
+<script>
+const GAMES = [{"t":"Tue 6:00p","d":"Tuesday, October 13","a":"Delaware","h":"Middle Tennessee","ai":48,"hi":2393,"ar":116,"hr":131,"arec":"2-3","hrec":"2-3","ps":[26.8,23.7],"pm":-3.2,"mk":-1.5,"mv":null,"u":false,"nt":false},{"t":"Tue 7:00p","d":"Tuesday, October 13","a":"Florida International","h":"Jacksonville State","ai":2229,"hi":55,"ar":92,"hr":96,"arec":"3-2","hrec":"4-2","ps":[17.1,20.6],"pm":3.5,"mk":3.0,"mv":null,"u":false,"nt":false},{"t":"Wed 6:30p","d":"Wednesday, October 14","a":"Kennesaw State","h":"Missouri State","ai":338,"hi":2623,"ar":103,"hr":118,"arec":"1-4","hrec":"1-4","ps":[25.7,20.3],"pm":-5.4,"mk":-3.0,"mv":null,"u":false,"nt":false},{"t":"Wed 7:00p","d":"Wednesday, October 14","a":"Western Kentucky","h":"Sam Houston","ai":98,"hi":2534,"ar":115,"hr":130,"arec":"2-4","hrec":"1-4","ps":[27.5,30.1],"pm":2.6,"mk":-1.0,"mv":null,"u":false,"nt":false},{"t":"Thu 6:30p","d":"Thursday, October 15","a":"East Carolina","h":"UAB","ai":151,"hi":5,"ar":70,"hr":121,"arec":"3-2","hrec":"3-3","ps":[28.6,19.3],"pm":-9.3,"mk":-4.5,"mv":null,"u":false,"nt":false},{"t":"Thu 6:30p","d":"Thursday, October 15","a":"Georgia Southern","h":"Old Dominion","ai":290,"hi":295,"ar":91,"hr":106,"arec":"2-4","hrec":"2-4","ps":[22.3,22.8],"pm":0.4,"mk":-4.0,"mv":null,"u":false,"nt":false},{"t":"Thu 7:00p","d":"Thursday, October 15","a":"Colorado State","h":"Texas State","ai":36,"hi":326,"ar":111,"hr":72,"arec":"2-3","hrec":"2-3","ps":[36.1,48.0],"pm":11.9,"mk":14.0,"mv":null,"u":false,"nt":false},{"t":"Fri 6:30p","d":"Friday, October 16","a":"Memphis","h":"Tulane","ai":235,"hi":2655,"ar":47,"hr":84,"arec":"5-1","hrec":"2-3","ps":[24.4,21.9],"pm":-2.5,"mk":-7.0,"mv":null,"u":false,"nt":false},{"t":"Fri 7:00p","d":"Friday, October 16","a":"Washington","h":"Purdue","ai":264,"hi":2509,"ar":57,"hr":58,"arec":"3-3","hrec":"3-3","ps":[28.2,31.9],"pm":3.7,"mk":3.0,"mv":null,"u":false,"nt":false},{"t":"Fri 7:00p","d":"Friday, October 16","a":"App State","h":"Coastal Carolina","ai":2026,"hi":324,"ar":109,"hr":112,"arec":"3-2","hrec":"2-4","ps":[24.4,23.6],"pm":-0.8,"mk":-1.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Ohio State","h":"Indiana","ai":194,"hi":84,"ar":4,"hr":6,"arec":"5-1","hrec":"6-0","ps":[24.5,25.8],"pm":1.3,"mk":-3.5,"mv":-2.0,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Virginia","h":"SMU","ai":258,"hi":2567,"ar":51,"hr":46,"arec":"4-2","hrec":"4-1","ps":[25.7,27.9],"pm":2.2,"mk":9.0,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Northwestern","h":"Michigan State","ai":77,"hi":127,"ar":23,"hr":66,"arec":"4-1","hrec":"2-4","ps":[26.1,20.8],"pm":-5.2,"mk":-7.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Kansas","h":"Kansas State","ai":2305,"hi":2306,"ar":54,"hr":49,"arec":"2-3","hrec":"3-2","ps":[27.2,32.6],"pm":5.4,"mk":5.0,"mv":-2.5,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Cincinnati","h":"West Virginia","ai":2132,"hi":277,"ar":62,"hr":82,"arec":"4-1","hrec":"3-3","ps":[36.2,34.5],"pm":-1.7,"mk":1.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Ball State","h":"Bowling Green","ai":2050,"hi":189,"ar":133,"hr":126,"arec":"1-5","hrec":"2-4","ps":[20.2,27.8],"pm":7.6,"mk":6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Mississippi State","h":"LSU","ai":344,"hi":99,"ar":26,"hr":9,"arec":"4-1","hrec":"4-2","ps":[27.7,37.8],"pm":10.1,"mk":12.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Georgia State","h":"James Madison","ai":2247,"hi":256,"ar":75,"hr":28,"arec":"4-1","hrec":"6-0","ps":[23.6,41.9],"pm":18.3,"mk":12.0,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Charleston Southern","h":"Clemson","ai":null,"hi":228,"ar":null,"hr":55,"arec":null,"hrec":"3-2","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Pittsburgh","h":"Boston College","ai":221,"hi":103,"ar":34,"hr":107,"arec":"5-1","hrec":"2-3","ps":[30.7,12.3],"pm":-18.4,"mk":-6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Florida Atlantic","h":"Army","ai":2226,"hi":349,"ar":90,"hr":77,"arec":"4-1","hrec":"3-2","ps":[25.4,35.0],"pm":9.6,"mk":2.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:00a","d":"Saturday, October 17","a":"Florida","h":"Texas","ai":57,"hi":251,"ar":32,"hr":8,"arec":"4-2","hrec":"4-1","ps":[21.5,35.6],"pm":14.1,"mk":10.5,"mv":null,"u":false,"nt":false},{"t":"Sat 11:30a","d":"Saturday, October 17","a":"Rutgers","h":"Maryland","ai":164,"hi":120,"ar":101,"hr":83,"arec":"1-4","hrec":"2-4","ps":[29.2,38.2],"pm":9.0,"mk":6.0,"mv":null,"u":false,"nt":false},{"t":"Sat 12:00p","d":"Saturday, October 17","a":"Massachusetts","h":"Buffalo","ai":113,"hi":2084,"ar":122,"hr":123,"arec":"4-2","hrec":"3-3","ps":[20.8,23.9],"pm":3.1,"mk":6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 12:00p","d":"Saturday, October 17","a":"Charlotte","h":"Temple","ai":2429,"hi":218,"ar":138,"hr":98,"arec":"0-6","hrec":"2-4","ps":[13.3,39.0],"pm":25.7,"mk":21.0,"mv":null,"u":false,"nt":false},{"t":"Sat 12:00p","d":"Saturday, October 17","a":"The Citadel","h":"Texas A&M","ai":null,"hi":245,"ar":null,"hr":25,"arec":null,"hrec":"3-3","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 12:30p","d":"Saturday, October 17","a":"Western Michigan","h":"Central Michigan","ai":2711,"hi":2117,"ar":67,"hr":114,"arec":"4-2","hrec":"3-3","ps":[22.7,15.5],"pm":-7.2,"mk":-7.0,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"North Carolina","h":"Duke","ai":153,"hi":150,"ar":53,"hr":39,"arec":"3-2","hrec":"4-1","ps":[18.2,26.4],"pm":8.2,"mk":3.0,"mv":-1.5,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"UNLV","h":"Air Force","ai":2439,"hi":2005,"ar":68,"hr":81,"arec":"4-2","hrec":"4-1","ps":[24.9,24.8],"pm":-0.1,"mk":1.0,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Northern Illinois","h":"Wyoming","ai":2459,"hi":2751,"ar":136,"hr":127,"arec":"0-5","hrec":"3-3","ps":[9.9,18.8],"pm":9.0,"mk":7.5,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Penn State","h":"Michigan","ai":213,"hi":130,"ar":31,"hr":40,"arec":"3-3","hrec":"3-2","ps":[21.8,23.6],"pm":1.8,"mk":6.5,"mv":0.0,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Missouri","h":"Ole Miss","ai":142,"hi":145,"ar":11,"hr":14,"arec":"5-1","hrec":"4-1","ps":[29.5,31.7],"pm":2.2,"mk":6.0,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Alabama","h":"Tennessee","ai":333,"hi":2633,"ar":1,"hr":15,"arec":"5-1","hrec":"5-1","ps":[38.3,26.9],"pm":-11.4,"mk":-8.5,"mv":-7.0,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Georgia Tech","h":"Virginia Tech","ai":59,"hi":259,"ar":71,"hr":60,"arec":"2-3","hrec":"4-2","ps":[23.7,36.6],"pm":12.9,"mk":10.0,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Arizona State","h":"Texas Tech","ai":9,"hi":2641,"ar":80,"hr":10,"arec":"3-2","hrec":"5-0","ps":[18.2,37.7],"pm":19.5,"mk":15.0,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Auburn","h":"Georgia","ai":2,"hi":61,"ar":38,"hr":5,"arec":"3-2","hrec":"6-0","ps":[13.6,35.8],"pm":22.2,"mk":20.5,"mv":4.0,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Toledo","h":"Eastern Michigan","ai":2649,"hi":2199,"ar":76,"hr":120,"arec":"4-2","hrec":"4-3","ps":[34.7,24.2],"pm":-10.5,"mk":-6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 2:30p","d":"Saturday, October 17","a":"Akron","h":"Miami (OH)","ai":2006,"hi":193,"ar":132,"hr":102,"arec":"1-5","hrec":"3-3","ps":[20.1,34.5],"pm":14.5,"mk":10.0,"mv":null,"u":false,"nt":false},{"t":"Sat 3:30p","d":"Saturday, October 17","a":"Tulsa","h":"Rice","ai":202,"hi":242,"ar":94,"hr":110,"arec":"3-3","hrec":"1-5","ps":[23.4,19.4],"pm":-4.0,"mk":-4.0,"mv":null,"u":false,"nt":false},{"t":"Sat 4:00p","d":"Saturday, October 17","a":"Troy","h":"Louisiana","ai":2653,"hi":309,"ar":97,"hr":89,"arec":"3-2","hrec":"4-2","ps":[22.4,27.5],"pm":5.1,"mk":4.5,"mv":null,"u":false,"nt":false},{"t":"Sat 5:00p","d":"Saturday, October 17","a":"Washington State","h":"Oregon State","ai":265,"hi":204,"ar":95,"hr":43,"arec":"1-5","hrec":"4-2","ps":[16.3,31.9],"pm":15.6,"mk":17.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"Kent State","h":"South Florida","ai":2309,"hi":58,"ar":129,"hr":56,"arec":"2-4","hrec":"4-2","ps":[10.5,39.0],"pm":28.4,"mk":20.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"Nevada","h":"North Dakota State","ai":2440,"hi":2449,"ar":117,"hr":45,"arec":"2-3","hrec":"5-1","ps":[9.6,31.3],"pm":21.7,"mk":15.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"Florida State","h":"Miami","ai":52,"hi":2390,"ar":41,"hr":3,"arec":"3-3","hrec":"5-0","ps":[16.9,42.8],"pm":26.0,"mk":21.0,"mv":4.5,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"TCU","h":"Baylor","ai":2628,"hi":239,"ar":48,"hr":29,"arec":"2-3","hrec":"4-1","ps":[20.6,26.8],"pm":6.2,"mk":5.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"Arkansas","h":"Vanderbilt","ai":8,"hi":238,"ar":74,"hr":65,"arec":"2-4","hrec":"3-3","ps":[23.6,28.7],"pm":5.1,"mk":6.0,"mv":null,"u":false,"nt":false},{"t":"Sat 6:00p","d":"Saturday, October 17","a":"Arkansas State","h":"Southern Miss","ai":2032,"hi":2572,"ar":105,"hr":124,"arec":"2-4","hrec":"1-4","ps":[31.8,31.8],"pm":0.0,"mk":-7.0,"mv":null,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Louisville","h":"Syracuse","ai":97,"hi":183,"ar":27,"hr":79,"arec":"3-3","hrec":"2-3","ps":[34.7,28.8],"pm":-5.9,"mk":-14.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Kentucky","h":"Oklahoma","ai":96,"hi":201,"ar":33,"hr":19,"arec":"5-1","hrec":"3-2","ps":[17.3,28.2],"pm":11.0,"mk":6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Notre Dame","h":"BYU","ai":87,"hi":252,"ar":2,"hr":12,"arec":"6-0","hrec":"5-0","ps":[31.9,22.0],"pm":-9.9,"mk":-10.0,"mv":0.0,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Wisconsin","h":"UCLA","ai":275,"hi":26,"ar":37,"hr":16,"arec":"4-1","hrec":"5-0","ps":[17.8,29.0],"pm":11.2,"mk":2.5,"mv":null,"u":false,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Elon","h":"Stanford","ai":null,"hi":24,"ar":null,"hr":108,"arec":null,"hrec":"2-4","ps":null,"pm":null,"mk":null,"mv":null,"u":true,"nt":false},{"t":"Sat 6:30p","d":"Saturday, October 17","a":"Oklahoma State","h":"Houston","ai":197,"hi":248,"ar":59,"hr":17,"arec":"4-1","hrec":"5-1","ps":[21.9,36.3],"pm":14.4,"mk":4.5,"mv":null,"u":false,"nt":false},{"t":"Sat 7:00p","d":"Saturday, October 17","a":"Navy","h":"UTSA","ai":2426,"hi":2636,"ar":86,"hr":63,"arec":"2-3","hrec":"5-1","ps":[22.4,31.7],"pm":9.3,"mk":6.5,"mv":null,"u":false,"nt":false},{"t":"Sat 7:00p","d":"Saturday, October 17","a":"Louisiana Tech","h":"UL Monroe","ai":2348,"hi":2433,"ar":87,"hr":137,"arec":"3-2","hrec":"0-5","ps":[45.7,20.6],"pm":-25.1,"mk":-14.5,"mv":null,"u":false,"nt":false},{"t":"Sat 8:00p","d":"Saturday, October 17","a":"San José State","h":"UTEP","ai":23,"hi":2638,"ar":119,"hr":135,"arec":"3-3","hrec":"1-5","ps":[29.9,24.7],"pm":-5.1,"mk":-7.5,"mv":null,"u":false,"nt":false},{"t":"Sat 9:00p","d":"Saturday, October 17","a":"Ohio","h":"Sacramento State","ai":195,"hi":16,"ar":93,"hr":134,"arec":"4-2","hrec":"1-5","ps":[29.3,21.1],"pm":-8.2,"mk":-14.0,"mv":null,"u":false,"nt":false},{"t":"Sat 9:15p","d":"Saturday, October 17","a":"Utah","h":"Colorado","ai":254,"hi":38,"ar":7,"hr":88,"arec":"5-0","hrec":"2-3","ps":[38.7,14.3],"pm":-24.4,"mk":-15.5,"mv":null,"u":false,"nt":false},{"t":"Sat 9:30p","d":"Saturday, October 17","a":"Fresno State","h":"San Diego State","ai":278,"hi":21,"ar":61,"hr":99,"arec":"4-2","hrec":"2-4","ps":[27.3,20.6],"pm":-6.7,"mk":-7.5,"mv":null,"u":false,"nt":false},{"t":"Sat 9:30p","d":"Saturday, October 17","a":"Wake Forest","h":"California","ai":154,"hi":25,"ar":24,"hr":85,"arec":"5-1","hrec":"3-3","ps":[32.4,20.1],"pm":-12.3,"mk":-9.5,"mv":null,"u":false,"nt":false},{"t":"Sat 9:30p","d":"Saturday, October 17","a":"New Mexico","h":"Hawai'i","ai":167,"hi":62,"ar":36,"hr":125,"arec":"4-1","hrec":"1-5","ps":[37.6,13.8],"pm":-23.7,"mk":-14.0,"mv":null,"u":false,"nt":false},{"t":"Sat 10:00p","d":"Saturday, October 17","a":"Nebraska","h":"Oregon","ai":158,"hi":2483,"ar":18,"hr":13,"arec":"5-1","hrec":"3-2","ps":[25.0,37.2],"pm":12.2,"mk":7.5,"mv":-14.0,"u":false,"nt":false}];
+
+// Logos come from CFBD's own CDN, keyed on the team id already in the games
+// file, and there is a DARK variant for all 138 FBS teams.
+//
+// That matters on this palette: a team whose mark is navy or black --
+// Penn State, Iowa, Army -- disappears against a #0b0716 field. <picture>
+// with a prefers-color-scheme source swaps to the light-on-dark artwork and
+// fetches only the one the browser needs.
+//
+// The onerror uses parentNode rather than closest('picture') on purpose:
+// a quote inside this string is consumed by Python at parse time, so the
+// backslash never reaches the browser and the JS string terminates early.
+// parentNode needs no quotes and is the <picture> anyway.
+//
+// Earlier these were built against a.espncdn.com. The ids were verified
+// against CFBD with zero mismatches, but that check compared the ID INSIDE
+// the URL, never the host -- CFBD serves its own CDN, and that is the source
+// actually confirmed to exist. Corrected here.
+const LOGO='https://cdn.collegefootballdata.com/logos/500/';
+const LOGO_DARK='https://cdn.collegefootballdata.com/logos-dark/500/';
+function logoImg(id, cls){
+  if(!id) return '';
+  return '<picture>'+
+    '<source srcset="'+LOGO_DARK+id+'.png" media="(prefers-color-scheme: dark)">'+
+    '<img class="'+(cls||'logo')+'" src="'+LOGO+id+'.png" alt="" loading="lazy"'+
+    ' onerror="this.parentNode.remove()">'+
+  '</picture>';
+}
+function teamCell(name, sub, id){
+  return '<div class="tcell">'+logoImg(id)+'<div class="tmeta"><div class="tm">'+name+'</div>'+
+         (sub?'<div class="cf">'+sub+'</div>':'')+'</div></div>';
+}
+function confCell(b){
+  // The abbreviation is the identifier; the tint only helps the eye group rows.
+  // Eleven categories cannot all be mutually distinguishable, so the label is
+  // never optional -- see the CONF_TINT note in site_nav.py.
+  return '<td class="confcol">'+(b?'<span class="badge c-'+b+'">'+b+'</span>':'')+'</td>';
+}
+
+function side(nm, id, rec, rk, win) {
+  return '<div class="side' + (win ? ' win' : '') + '">' +
+    '<span class="crk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
+    '<span class="nmx">' + nm + '</span>' +
+    (rec ? '<span class="crec">' + rec + '</span>' : '') + '</div>';
+}
+// Same H/A wording in every margin column. A bare signed number beside
+// "A +2.4" reads as a different quantity when it is the same one.
+function fmt(v) { return (v > 0 ? 'H +' : 'A +') + Math.abs(v).toFixed(1); }
+function edge(g) {
+  if (g.u || g.mk == null || g.pm == null) return '<span class="dash">—</span>';
+  const e = g.pm - g.mk;
+  return '<span class="edgev' + (Math.abs(e) >= 7 ? ' big' : '') + '">' +
+         fmt(e) + '</span>';
+}
+// One card per game. `home` puts the "AT" prefix on the host side, so the
+// venue is legible without a separate column.
+function gside(nm, id, rec, rk, sc, win, home) {
+  return '<div class="gs' + (win ? ' win' : '') + '">' +
+    '<span class="crk">' + (rk ? '#' + rk : '') + '</span>' + logoImg(id) +
+    '<span class="cnm">' + (home ? '<span class="cat">at</span>' : '') + nm + '</span>' +
+    (rec ? '<span class="crec">' + rec + '</span>' : '') +
+    '<span class="csc">' + sc + '</span></div>';
+}
+function fi(lab, v, cls, extra) {
+  return '<span class="fi"><span class="lbl">' + lab + '</span><span class="v' +
+    (cls ? ' ' + cls : '') + '">' + v + (extra || '') + '</span></span>';
+}
+function card(g) {
+  const mv = (g.mv != null && Math.abs(g.mv) >= 3)
+    ? ' <span class="mv">moved ' + (g.mv > 0 ? '+' : '') + g.mv.toFixed(1) + '</span>' : '';
+  const head = '<div class="gch"><span class="kick">' + g.t + '</span>' +
+    (g.nt ? '<span class="neu">neutral</span>' : '') +
+    '<span class="ghl">' + (g.u ? 'Not rated' : 'Projected') + '</span></div>';
+
+  if (g.u) {
+    return '<article class="gc dim">' + head +
+      gside(g.a, g.ai, g.arec, g.ar, '—', false, false) +
+      gside(g.h, g.hi, g.hrec, g.hr, '—', false, true) +
+      '<div class="gcf">' + fi('Market',
+        g.mk == null ? '—' : fmt(g.mk), 'mut') +
+      fi('Note', 'FCS opponent — no rating', 'mut') + '</div></article>';
+  }
+
+  const homeWin = g.pm > 0;
+  const tot = g.ps[0] + g.ps[1];
+  const aw = tot > 0 ? (100 * g.ps[0] / tot) : 50;
+  const e = (g.mk == null) ? null : g.pm - g.mk;
+  return '<article class="gc">' + head +
+    gside(g.a, g.ai, g.arec, g.ar, g.ps[0].toFixed(1), !homeWin, false) +
+    gside(g.h, g.hi, g.hrec, g.hr, g.ps[1].toFixed(1), homeWin, true) +
+    '<div class="split' + (homeWin ? '' : ' awin') + '">' +
+      '<span class="fa" style="width:' + aw.toFixed(1) + '%"></span>' +
+      '<span class="fh" style="width:' + (100 - aw).toFixed(1) + '%"></span></div>' +
+    '<div class="gcf">' +
+      fi('Model', fmt(g.pm), Math.abs(g.pm) < 3 ? 'close' : '') +
+      fi('Market', g.mk == null ? '—' : fmt(g.mk), 'mut', mv) +
+      fi('Edge', e == null ? '—' : fmt(e), e != null && Math.abs(e) >= 7 ? 'big' : 'mut') +
+    '</div></article>';
+}
+
+// ---- win probability ------------------------------------------------------
+// P(home wins) = P(actual margin > 0) given a projection, which is the normal
+// CDF of (projection / sigma). SIGMA is the standard deviation of the model's
+// own held-out error -- 15.68 points across 1,659 walk-forward games, both
+// teams FBS, weeks 5+. It is NOT a guess: that error distribution is almost
+// exactly normal (skew 0.03, kurtosis -0.01), which is what makes the normal
+// CDF the right transform rather than a convenient one.
+//
+// Calibration was checked before this shipped, walk-forward, fitting sigma only
+// on earlier folds: expected calibration error 2.2%, Brier 0.182 against 0.250
+// for a coin flip, worst decile off by 6.5 points. Correcting the -1.05 home
+// bias was also tried and made calibration WORSE (ECE 0.0296), so it is left
+// out. See the methodology note on the page.
+const SIGMA = 15.68;
+const LOGOBASE = 'https://cdn.collegefootballdata.com/logos/500/';
+
+function normCdf(z) {
+  // Abramowitz & Stegun 7.1.26, accurate to ~1.5e-7 -- far finer than a
+  // percentage rounded to the nearest whole number needs.
+  const s = z < 0 ? -1 : 1, x = Math.abs(z) / Math.SQRT2;
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t
+            - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return 0.5 * (1 + s * y);
+}
+
+// Toggles a CLASS rather than an inline display value. The fallback initials
+// are centred with flex, and an inline `display:block` would have overridden
+// that -- which matters now that the badge is sized in percentages of the
+// ring rather than in fixed pixels.
+function logoFail(el) {
+  el.style.display = 'none';
+  if (el.previousElementSibling) el.previousElementSibling.classList.add('on');
+}
+
+function abbr(n) {
+  const w = n.split(' ');
+  return (w.length === 1 ? w[0].slice(0, 4)
+          : w.slice(0, 3).map(function (x) { return x[0]; }).join('')).toUpperCase();
+}
+
+// One ring split between the two teams, rather than a meter each.
+//
+// The two numbers are one quantity -- they always sum to 100 -- and two
+// separate meters present them as two independent facts. A single divided
+// circle says the same thing in the shape, and at a coin flip it reads as an
+// even break instead of two identical half-rings that look like a bug.
+//
+// Colour tracks the FAVOURITE, not home or away: steel is whoever is more
+// likely to win. Keying it to side instead drew a 71% away favourite in the
+// weaker tone. Each team's arc also sweeps toward its own label -- the away
+// side counter-clockwise from the top, the home side clockwise -- so the arc
+// and the name it belongs to are never on opposite sides.
+function splitRing(g, pa, ph) {
+  const R = 70, SW = 14, C = 2 * Math.PI * R, GAP = 5;
+  const aFav = pa >= ph;
+  const aCol = aFav ? 'var(--depth)' : 'var(--muted)';
+  const hCol = aFav ? 'var(--muted)' : 'var(--depth)';
+  const aLen = Math.max(pa / 100 * C - GAP, 0), hLen = Math.max(ph / 100 * C - GAP, 0);
+  // The fallback initials are always rendered and hidden; a failed logo just
+  // reveals them. Written this way to keep every quote out of the inline
+  // handler -- an earlier version escaped quotes inside an attribute inside a
+  // JS string inside a Python f-string and produced a syntax error on the page.
+  const lg = function (id, side, name) {
+    const ab = '<span class="wab ' + side + '">' + abbr(name) + '</span>';
+    if (!id) return ab.replace('class="wab ', 'class="wab on ');
+    return ab + '<img class="wl ' + side + '" src="' + LOGOBASE + id + '.png" alt="" ' +
+      'referrerpolicy="no-referrer" onerror="logoFail(this)">';
+  };
+  return '<div class="wp">' +
+      '<div class="srw"><svg viewBox="0 0 184 184" aria-hidden="true">' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="var(--hair)" stroke-width="' + SW + '"></circle>' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="' + aCol + '" stroke-width="' + SW + '" ' +
+          'stroke-linecap="round" stroke-dasharray="' + aLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+          'transform="rotate(' + (-90 - 360 * pa / 100 + GAP / C * 360).toFixed(2) + ' 92 92)"></circle>' +
+        '<circle cx="92" cy="92" r="' + R + '" fill="none" stroke="' + hCol + '" stroke-width="' + SW + '" ' +
+          'stroke-linecap="round" stroke-dasharray="' + hLen.toFixed(1) + ' ' + C.toFixed(1) + '" ' +
+          'transform="rotate(-90 92 92)"></circle>' +
+      '</svg><span class="wdiv"></span>' +
+      lg(g.ai, 'wlL', g.a) + lg(g.hi, 'wlR', g.h) + '</div>' +
+    '<div class="srlegend">' +
+      '<div class="srside"><div class="srpct ' + (aFav ? '' : 'dim') + '">' +
+        pa.toFixed(0) + '<span class="pc">%</span></div>' +
+        '<div class="srteam">' + g.a + '</div></div>' +
+      '<div class="srside"><div class="srpct ' + (aFav ? 'dim' : '') + '">' +
+        ph.toFixed(0) + '<span class="pc">%</span></div>' +
+        '<div class="srteam">' + g.h + '</div></div>' +
+    '</div></div>';
+  // No explanatory note under the ring. The percentages carry themselves, and
+  // the derivation -- normal CDF on the projected margin, sigma 15.68, and the
+  // calibration check over 1,659 held-out games -- is stated on the
+  // methodology page, which is where someone looking for it goes. It is not
+  // lost by being dropped from every card.
+}
+
+function winPanel(g) {
+  if (!g || g.u || g.pm == null) return '';
+  const ph = normCdf(g.pm / SIGMA) * 100;
+  return splitRing(g, 100 - ph, ph);
+}
+
+// Grouped under a day heading, in kickoff order -- fifty-nine cards in one
+// undivided grid is a wall.
+//
+// This is a function rather than the one-shot IIFE it started as, because the
+// three summary cards above are now filters and the grid has to be rebuilt.
+let FILTER = 'all';
+
+function matches(g) {
+  if (FILTER === 'close') return !g.u && g.pm != null && Math.abs(g.pm) < 3;
+  if (FILTER === 'moved') return g.mv != null && Math.abs(g.mv) >= 3;
+  return true;                                   // 'all'
+}
+
+function renderCards() {
+  let out = '', day = null, open = false, n = 0;
+  GAMES.forEach(function (g) {
+    if (!matches(g)) return;
+    if (g.d !== day) {
+      if (open) out += '</div>';
+      out += '<div class="dayhead">' + g.d + '</div><div class="grid">';
+      day = g.d; open = true;
+    }
+    out += card(g).replace('<article class="gc', '<article data-i="' + GAMES.indexOf(g) + '" class="gc');
+    n++;
+  });
+  if (open) out += '</div>';
+  if (!n) out = '<p class="empty">No games match that filter this week.</p>';
+  document.getElementById('cards').innerHTML = out;
+  const lbl = {all: 'all games', close: 'close games only',
+               moved: 'lines that moved 3+ only'}[FILTER];
+  document.getElementById('fcount').textContent = n + ' of ' + GAMES.length +
+    ' games — ' + lbl;
+}
+
+document.querySelectorAll('.scard.f').forEach(function (b) {
+  b.addEventListener('click', function () {
+    // One filter at a time; clicking the active one clears back to all.
+    FILTER = (b.dataset.f === FILTER || b.dataset.f === 'all') ? 'all' : b.dataset.f;
+    document.querySelectorAll('.scard.f').forEach(function (x) {
+      const on = x.dataset.f === FILTER;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderCards();
+  });
+});
+
+// Expanding a card: one open at a time, so the grid does not jump around.
+document.addEventListener('click', function (e) {
+  const c = e.target.closest('.gc');
+  if (!c || c.classList.contains('dim')) return;
+  if (e.target.closest('[data-team]')) return;
+  const wasOpen = c.classList.contains('open');
+  document.querySelectorAll('.gc.open').forEach(function (x) {
+    x.classList.remove('open');
+    const d = x.querySelector('.wp'); if (d) d.remove();
+  });
+  if (wasOpen) return;
+  c.classList.add('open');
+  c.insertAdjacentHTML('beforeend', winPanel(GAMES[+c.dataset.i]));
+});
+
+renderCards();
+
+function setView(v) {
+  if (v !== 'week5' && v !== 'accuracy') v = 'week5';
+  document.querySelectorAll('.view').forEach(e => e.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  document.querySelectorAll('.vswitch a').forEach(
+    a => a.classList.toggle('on', a.dataset.v === v));
+}
+addEventListener('hashchange', () => setView(location.hash.slice(1)));
+setView(location.hash.slice(1) || 'week5');
+</script>
